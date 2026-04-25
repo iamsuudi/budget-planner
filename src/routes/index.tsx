@@ -1,87 +1,183 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { TopAppBar, BottomNavBar, GlassCard, ProgressBar, TransactionItem } from '../components/ui'
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({
+  component: HomePage,
+})
 
-function App() {
+const mockTransactions = [
+  {
+    id: '1',
+    name: 'Luxury Apparel Store',
+    category: 'Shopping',
+    date: 'Oct 14, 2023',
+    amount: 1240.0,
+    paymentMethod: 'Debit Card',
+    icon: 'shopping_bag',
+    iconColor: 'bg-secondary/10 text-secondary',
+  },
+  {
+    id: '2',
+    name: 'Midnight Bistro',
+    category: 'Dining',
+    date: 'Oct 12, 2023',
+    amount: 85.5,
+    paymentMethod: 'Mobile Pay',
+    icon: 'restaurant',
+    iconColor: 'bg-tertiary/10 text-tertiary',
+  },
+  {
+    id: '3',
+    name: 'Swift Cab Services',
+    category: 'Transport',
+    date: 'Oct 10, 2023',
+    amount: 42.0,
+    paymentMethod: 'Debit Card',
+    icon: 'commute',
+    iconColor: 'bg-primary/10 text-primary',
+  },
+  {
+    id: '4',
+    name: 'CloudStream Premium',
+    category: 'Entertainment',
+    date: 'Oct 08, 2023',
+    amount: 15.99,
+    paymentMethod: 'Auto-Pay',
+    icon: 'subscriptions',
+    iconColor: 'bg-secondary-container/10 text-secondary-container',
+  },
+]
+
+const navItems = [
+  { icon: 'home', label: 'Home', to: '/', active: true },
+  { icon: 'insights', label: 'Reports', to: '/reports' },
+  { icon: 'account_circle', label: 'Profile', to: '/profile' },
+  { icon: 'settings', label: 'Settings', to: '/settings' },
+]
+
+function HomePage() {
   return (
-    <main className="page-wrap px-4 pb-8 pt-14">
-      <section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
-        <div className="pointer-events-none absolute -left-20 -top-24 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(79,184,178,0.32),transparent_66%)]" />
-        <div className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(47,106,74,0.18),transparent_66%)]" />
-        <p className="island-kicker mb-3">TanStack Start Base Template</p>
-        <h1 className="display-title mb-5 max-w-3xl text-4xl leading-[1.02] font-bold tracking-tight text-[var(--sea-ink)] sm:text-6xl">
-          Start simple, ship quickly.
-        </h1>
-        <p className="mb-8 max-w-2xl text-base text-[var(--sea-ink-soft)] sm:text-lg">
-          This base starter intentionally keeps things light: two routes, clean
-          structure, and the essentials you need to build from scratch.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="/about"
-            className="rounded-full border border-[rgba(50,143,151,0.3)] bg-[rgba(79,184,178,0.14)] px-5 py-2.5 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(79,184,178,0.24)]"
-          >
-            About This Starter
-          </a>
-          <a
-            href="https://tanstack.com/router"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-[rgba(23,58,64,0.2)] bg-white/50 px-5 py-2.5 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(23,58,64,0.35)]"
-          >
-            Router Guide
-          </a>
+    <div className="min-h-screen bg-surface-dim text-on-surface antialiased">
+      <TopAppBar />
+      
+      <main className="pt-24 pb-32 px-6 max-w-5xl mx-auto space-y-10">
+        {/* Month Navigation */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container border border-white/5 text-secondary hover:text-secondary-fixed transition-all">
+              <span className="material-symbols-outlined">chevron_left</span>
+            </button>
+            <div className="text-center min-w-[140px]">
+              <h2 className="text-2xl font-bold text-on-surface">
+                October 2023
+              </h2>
+            </div>
+            <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container border border-white/5 text-secondary hover:text-secondary-fixed transition-all">
+              <span className="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
+          <div className="hidden md:flex gap-2">
+            <span className="px-4 py-1 rounded-full bg-tertiary/10 text-tertiary text-sm font-semibold">
+              On Track
+            </span>
+          </div>
         </div>
-      </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          [
-            'Type-Safe Routing',
-            'Routes and links stay in sync across every page.',
-          ],
-          [
-            'Server Functions',
-            'Call server code from your UI without creating API boilerplate.',
-          ],
-          [
-            'Streaming by Default',
-            'Ship progressively rendered responses for faster experiences.',
-          ],
-          [
-            'Tailwind Native',
-            'Design quickly with utility-first styling and reusable tokens.',
-          ],
-        ].map(([title, desc], index) => (
-          <article
-            key={title}
-            className="island-shell feature-card rise-in rounded-2xl p-5"
-            style={{ animationDelay: `${index * 90 + 80}ms` }}
-          >
-            <h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-              {title}
-            </h2>
-            <p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
-          </article>
-        ))}
-      </section>
+        {/* Main Hero Card (Bento Grid Style) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Net Balance Section */}
+          <div className="md:col-span-2 glass-card rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 blur-[80px] rounded-full" />
+            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary/10 blur-[80px] rounded-full" />
+            <div className="relative z-10 flex flex-col h-full justify-between gap-xl">
+              <div>
+                <p className="text-sm font-semibold text-on-surface-variant opacity-70 mb-1">
+                  Net Balance
+                </p>
+                <h1 className="text-5xl font-extrabold text-on-surface tracking-tight">
+                  $12,450.00
+                </h1>
+              </div>
+              <div className="grid grid-cols-2 gap-6 border-t border-white/10 pt-6">
+                <div>
+                  <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-1">
+                    Monthly Budget
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-cyan-400 text-sm">flag</span>
+                    <p className="text-2xl font-bold text-secondary">
+                      $8,000.00
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-1">
+                    Total Expenses
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary text-sm">trending_up</span>
+                    <p className="text-2xl font-bold text-primary-container">
+                      $3,550.24
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-      <section className="island-shell mt-8 rounded-2xl p-6">
-        <p className="island-kicker mb-2">Quick Start</p>
-        <ul className="m-0 list-disc space-y-2 pl-5 text-sm text-[var(--sea-ink-soft)]">
-          <li>
-            Edit <code>src/routes/index.tsx</code> to customize the home page.
-          </li>
-          <li>
-            Update <code>src/components/Header.tsx</code> and{' '}
-            <code>src/components/Footer.tsx</code> for brand links.
-          </li>
-          <li>
-            Add routes in <code>src/routes</code> and tweak visual tokens in{' '}
-            <code>src/styles.css</code>.
-          </li>
-        </ul>
-      </section>
-    </main>
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-6">
+            <button className="flex-1 bg-primary-container text-on-primary-fixed-variant rounded-[1.5rem] p-6 flex flex-col items-start justify-between shadow-lg glow-violet hover:brightness-110 active:scale-95 transition-all">
+              <span className="material-symbols-outlined text-4xl">add_circle</span>
+              <div className="text-left">
+                <p className="text-2xl font-bold leading-tight">
+                  Add<br />Expense
+                </p>
+              </div>
+            </button>
+            <button className="flex-1 border border-secondary text-secondary rounded-[1.5rem] p-6 flex flex-col items-start justify-between hover:bg-secondary/10 active:scale-95 transition-all">
+              <span className="material-symbols-outlined text-4xl">payments</span>
+              <div className="text-left">
+                <p className="text-2xl font-bold leading-tight text-on-surface">
+                  Set<br />Budget
+                </p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Budget Progress */}
+        <GlassCard>
+          <div className="flex justify-between items-center mb-2">
+            <p className="text-sm font-semibold text-on-surface">
+              Spending Limit Progress
+            </p>
+            <p className="text-sm font-semibold text-tertiary">
+              44% of $8,000 used
+            </p>
+          </div>
+          <ProgressBar percentage={44} color="gradient" showGlow />
+        </GlassCard>
+
+        {/* Transaction List Section */}
+        <section className="space-y-4">
+          <div className="flex justify-between items-end px-2">
+            <h3 className="text-2xl font-bold text-on-surface">
+              Recent Transactions
+            </h3>
+            <button className="text-sm font-semibold text-secondary hover:underline">
+              View All
+            </button>
+          </div>
+          <div className="space-y-2">
+            {mockTransactions.map((transaction) => (
+              <TransactionItem key={transaction.id} transaction={transaction} />
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <BottomNavBar items={navItems} />
+    </div>
   )
 }

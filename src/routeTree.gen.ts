@@ -9,55 +9,133 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as ReportsIndexRouteImport } from './routes/reports/index'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as PaymentMethodIndexRouteImport } from './routes/payment-method/index'
+import { Route as ExpenseCategoryIndexRouteImport } from './routes/expense-category/index'
+import { Route as PaymentMethodAddRouteImport } from './routes/payment-method/add'
+import { Route as ExpenseCategoryAddRouteImport } from './routes/expense-category/add'
 
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsIndexRoute = ReportsIndexRouteImport.update({
+  id: '/reports/',
+  path: '/reports/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentMethodIndexRoute = PaymentMethodIndexRouteImport.update({
+  id: '/payment-method/',
+  path: '/payment-method/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpenseCategoryIndexRoute = ExpenseCategoryIndexRouteImport.update({
+  id: '/expense-category/',
+  path: '/expense-category/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentMethodAddRoute = PaymentMethodAddRouteImport.update({
+  id: '/payment-method/add',
+  path: '/payment-method/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpenseCategoryAddRoute = ExpenseCategoryAddRouteImport.update({
+  id: '/expense-category/add',
+  path: '/expense-category/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/expense-category/add': typeof ExpenseCategoryAddRoute
+  '/payment-method/add': typeof PaymentMethodAddRoute
+  '/expense-category/': typeof ExpenseCategoryIndexRoute
+  '/payment-method/': typeof PaymentMethodIndexRoute
+  '/profile/': typeof ProfileIndexRoute
+  '/reports/': typeof ReportsIndexRoute
+  '/settings/': typeof SettingsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/expense-category/add': typeof ExpenseCategoryAddRoute
+  '/payment-method/add': typeof PaymentMethodAddRoute
+  '/expense-category': typeof ExpenseCategoryIndexRoute
+  '/payment-method': typeof PaymentMethodIndexRoute
+  '/profile': typeof ProfileIndexRoute
+  '/reports': typeof ReportsIndexRoute
+  '/settings': typeof SettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/expense-category/add': typeof ExpenseCategoryAddRoute
+  '/payment-method/add': typeof PaymentMethodAddRoute
+  '/expense-category/': typeof ExpenseCategoryIndexRoute
+  '/payment-method/': typeof PaymentMethodIndexRoute
+  '/profile/': typeof ProfileIndexRoute
+  '/reports/': typeof ReportsIndexRoute
+  '/settings/': typeof SettingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths:
+    | '/'
+    | '/expense-category/add'
+    | '/payment-method/add'
+    | '/expense-category/'
+    | '/payment-method/'
+    | '/profile/'
+    | '/reports/'
+    | '/settings/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to:
+    | '/'
+    | '/expense-category/add'
+    | '/payment-method/add'
+    | '/expense-category'
+    | '/payment-method'
+    | '/profile'
+    | '/reports'
+    | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/expense-category/add'
+    | '/payment-method/add'
+    | '/expense-category/'
+    | '/payment-method/'
+    | '/profile/'
+    | '/reports/'
+    | '/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  ExpenseCategoryAddRoute: typeof ExpenseCategoryAddRoute
+  PaymentMethodAddRoute: typeof PaymentMethodAddRoute
+  ExpenseCategoryIndexRoute: typeof ExpenseCategoryIndexRoute
+  PaymentMethodIndexRoute: typeof PaymentMethodIndexRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
+  ReportsIndexRoute: typeof ReportsIndexRoute
+  SettingsIndexRoute: typeof SettingsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -65,12 +143,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings/': {
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports/': {
+      id: '/reports/'
+      path: '/reports'
+      fullPath: '/reports/'
+      preLoaderRoute: typeof ReportsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof ProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-method/': {
+      id: '/payment-method/'
+      path: '/payment-method'
+      fullPath: '/payment-method/'
+      preLoaderRoute: typeof PaymentMethodIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expense-category/': {
+      id: '/expense-category/'
+      path: '/expense-category'
+      fullPath: '/expense-category/'
+      preLoaderRoute: typeof ExpenseCategoryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-method/add': {
+      id: '/payment-method/add'
+      path: '/payment-method/add'
+      fullPath: '/payment-method/add'
+      preLoaderRoute: typeof PaymentMethodAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expense-category/add': {
+      id: '/expense-category/add'
+      path: '/expense-category/add'
+      fullPath: '/expense-category/add'
+      preLoaderRoute: typeof ExpenseCategoryAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  ExpenseCategoryAddRoute: ExpenseCategoryAddRoute,
+  PaymentMethodAddRoute: PaymentMethodAddRoute,
+  ExpenseCategoryIndexRoute: ExpenseCategoryIndexRoute,
+  PaymentMethodIndexRoute: PaymentMethodIndexRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
+  ReportsIndexRoute: ReportsIndexRoute,
+  SettingsIndexRoute: SettingsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
