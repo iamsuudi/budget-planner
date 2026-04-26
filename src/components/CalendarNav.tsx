@@ -20,13 +20,12 @@ export function CalendarNav({
     <GlassCard
       className={'flex items-center justify-between gap-5' + className}
     >
-      <button
+      <IconButton
         onClick={goToPrevMonth}
         disabled={locked}
-        className="cursor-pointer"
-      >
-        <IconButton icon="chevron_left" className="w-10 h-10" />
-      </button>
+        icon="chevron_left"
+        className="w-10 h-10 cursor-pointer"
+      />
       <div className="text-center">
         <h2 className="text-xl font-bold text-on-surface tracking-tight">
           {monthName} {year}
@@ -35,13 +34,12 @@ export function CalendarNav({
           Monthly Analytics
         </p>
       </div>
-      <button
+      <IconButton
         onClick={goToNextMonth}
         disabled={!canGoNext || locked}
-        className="cursor-pointer"
-      >
-        <IconButton icon="chevron_right" className="w-10 h-10" />
-      </button>
+        icon="chevron_right"
+        className="w-10 h-10 cursor-pointer"
+      />
     </GlassCard>
   )
 }

@@ -57,6 +57,10 @@ import {
   Loader2,
   MoreVertical,
   Plus,
+  Download,
+  RefreshCw,
+  HardDrive,
+  WifiOff,
 } from 'lucide-react'
 
 export type IconName = keyof typeof ICONS
@@ -129,6 +133,10 @@ const ICONS = {
   baby: Baby,
   gift: Gift,
   bike: Bike,
+  download: Download,
+  refresh: RefreshCw,
+  hard_drive: HardDrive,
+  wifi_off: WifiOff,
 } as Record<string, LucideIcon>
 
 export function getIcon(name: string): LucideIcon {

@@ -341,3 +341,13 @@ export async function setCurrency(currency: string): Promise<void> {
 }
 
 export { getDB }
+
+export async function clearAllData(): Promise<void> {
+  const db = await getDB()
+  await db.clear('user')
+  await db.clear('wallets')
+  await db.clear('expenseCategories')
+  await db.clear('paymentMethods')
+  await db.clear('invoices')
+  await db.clear('monthBudgets')
+}

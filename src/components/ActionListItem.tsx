@@ -10,29 +10,36 @@ interface ActionListItemProps {
   showChevron?: boolean
   onClick?: () => void
   danger?: boolean
+  disabled?: boolean
 }
 
-export function ActionListItem({ 
-  icon, 
-  iconBg, 
+export function ActionListItem({
+  icon,
+  iconBg,
   iconColor = 'text-violet-400',
-  title, 
-  description, 
+  title,
+  description,
   showChevron = true,
   onClick,
-  danger = false 
+  danger = false,
+  disabled = false,
 }: ActionListItemProps) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       className="glass-card flex items-center justify-between p-6 rounded-xl hover:bg-white/5 transition-all group w-full text-left"
     >
       <div className="flex items-center gap-4">
-        <div className={`w-10 h-10 flex items-center justify-center rounded-lg ${iconBg}`}>
+        <div
+          className={`w-10 h-10 flex items-center justify-center rounded-lg ${iconBg}`}
+        >
           <Icon name={icon} className={iconColor} size={20} />
         </div>
         <div>
-          <p className={`text-sm font-semibold ${danger ? 'text-error' : 'text-on-background'}`}>
+          <p
+            className={`text-sm font-semibold ${danger ? 'text-error' : 'text-on-background'}`}
+          >
             {title}
           </p>
           {description && (

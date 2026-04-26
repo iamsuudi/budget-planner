@@ -4,6 +4,7 @@ import { CurrencyProvider } from '#/lib/currency-context'
 
 import '#/styles.css'
 import { BottomNavBar } from '#/components/BottomNavBar'
+import { SWProgressBar } from '#/components/SWProgressBar'
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -19,6 +20,7 @@ function RootComponent() {
               <Outlet />
             </div>
             <BottomNavBar />
+            <SWProgressBar />
           </div>
         </div>
       </MonthProvider>

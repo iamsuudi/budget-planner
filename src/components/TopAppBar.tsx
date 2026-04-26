@@ -1,8 +1,9 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Wifi, WifiOff } from 'lucide-react'
 import { getUser } from '#/lib/storage'
 import type { User as UserType } from '#/types'
 import { useLocation, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import { useOnlineStatus } from '#/hooks/useOneline'
 
 interface TopAppBarProps {
   title?: string
@@ -20,6 +21,7 @@ export function TopAppBar({
   const [user, setUser] = useState<UserType | null>(null)
   const { pathname } = useLocation()
   const router = useRouter()
+  const isOnline = useOnlineStatus()
 
   let path = pathname.split('/').find((p) => p != '')
   path = path ? path[0].toUpperCase() + path.slice(1) : 'Home'
@@ -45,19 +47,47 @@ export function TopAppBar({
           </span>
         </div>
         <div className="flex items-center gap-4">
-          {/* <button className="text-slate-500 hover:text-cyan-400 transition-colors active:scale-95 duration-200">
-            <Bell className="w-5 h-5" />
-          </button> */}
-          {showProfile && (
+          {showProfile ? (
+            <div className="flex items-center gap-3">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center border ${
+                  isOnline
+                    ? 'bg-green-500/20 border-green-500/40 text-green-400'
+                    : 'bg-orange-500/20 border-orange-500/40 text-orange-400'
+                }`}
+                title={isOnline ? 'Online' : 'Offline'}
+              >
+                {isOnline ? (
+                  <Wifi className="w-4 h-4" />
+                ) : (
+                  <WifiOff className="w-4 h-4" />
+                )}
+              </div>
+              <div
+                className="w-9 h-9 rounded-full overflow-hidden bg-primary border border-violet-500/30 cursor-pointer"
+                onClick={() => router.navigate({ to: '/profile' })}
+              >
+                <img
+                  alt="User Profile"
+                  className="w-full h-full object-cover"
+                  src={user?.profilePicture}
+                />
+              </div>
+            </div>
+          ) : (
             <div
-              className="w-9 h-9 rounded-full overflow-hidden bg-primary border border-violet-500/30 cursor-pointer"
-              onClick={() => router.navigate({ to: '/profile' })}
+              className={`w-8 h-8 rounded-full flex items-center justify-center border ${
+                isOnline
+                  ? 'bg-green-500/20 border-green-500/40 text-green-400'
+                  : 'bg-orange-500/20 border-orange-500/40 text-orange-400'
+              }`}
+              title={isOnline ? 'Online' : 'Offline'}
             >
-              <img
-                alt="User Profile"
-                className="w-full h-full object-cover"
-                src={user?.profilePicture}
-              />
+              {isOnline ? (
+                <Wifi className="w-4 h-4" />
+              ) : (
+                <WifiOff className="w-4 h-4" />
+              )}
             </div>
           )}
         </div>

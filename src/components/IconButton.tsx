@@ -5,6 +5,7 @@ interface IconButtonProps {
   icon: string
   onClick?: () => void
   className?: string
+  disabled?: boolean
   variant?: 'default' | 'ghost'
 }
 
@@ -12,6 +13,7 @@ export function IconButton({
   icon,
   onClick,
   className = '',
+  disabled = false,
   variant = 'default',
 }: IconButtonProps) {
   const IconComponent =
@@ -35,6 +37,7 @@ export function IconButton({
         }
         ${className}
       `}
+      disabled={disabled}
     >
       <IconComponent className="w-5 h-5" />
     </button>
