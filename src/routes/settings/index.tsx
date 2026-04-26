@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useCurrency } from '#/lib/currency-context'
+import { useGetWallets, useGetPaymentMethods } from '#/hooks/query'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
 import { ToggleSwitch } from '#/components/ToggleSwitch'
@@ -16,6 +17,10 @@ function SettingsPage() {
   const [notifications, setNotifications] = useState(true)
   const [biometric, setBiometric] = useState(true)
   const { currency } = useCurrency()
+  const { data: wallets = [] } = useGetWallets()
+  const { data: paymentMethods = [] } = useGetPaymentMethods()
+
+  const firstPaymentMethod = paymentMethods.at(0)
 
   return (
     <div className="">
@@ -32,7 +37,63 @@ function SettingsPage() {
         <div className="flex flex-col gap-6">
           <section>
             <h3 className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">
-              App Preferences
+              Wallet
+            </h3>
+            <GlassCard className="p-1 flex flex-col gap-1">
+              <Link
+                to="/wallets"
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+                    <span className="material-symbols-outlined text-lg">
+                      account_balance
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-on-surface">
+                      My Wallets
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      {wallets.length} Bank accounts
+                    </p>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
+                  chevron_right
+                </span>
+              </Link>
+              <Link
+                to="/payment-method"
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                    <span className="material-symbols-outlined text-lg">
+                      credit_card
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Payment Methods
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      {firstPaymentMethod
+                        ? `Default: ${firstPaymentMethod.name}`
+                        : 'Add payment methods'}
+                    </p>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
+                  chevron_right
+                </span>
+              </Link>
+            </GlassCard>
+          </section>
+
+          <section>
+            <h3 className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">
+              General
             </h3>
             <GlassCard className="p-1 flex flex-col gap-1">
               <Link
