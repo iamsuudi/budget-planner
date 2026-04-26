@@ -22,6 +22,7 @@ import { Route as SettingsPaymentMethodIndexRouteImport } from './routes/setting
 import { Route as SettingsExpenseCategoryIndexRouteImport } from './routes/settings/expense-category/index'
 import { Route as SettingsCurrencyIndexRouteImport } from './routes/settings/currency/index'
 import { Route as SettingsWalletsAddRouteImport } from './routes/settings/wallets/add'
+import { Route as SettingsSecurityPinRouteImport } from './routes/settings/security/pin'
 import { Route as SettingsPaymentMethodAddRouteImport } from './routes/settings/payment-method/add'
 import { Route as SettingsExpenseCategoryAddRouteImport } from './routes/settings/expense-category/add'
 import { Route as SettingsWalletsEditIdRouteImport } from './routes/settings/wallets/edit.$id'
@@ -95,6 +96,11 @@ const SettingsWalletsAddRoute = SettingsWalletsAddRouteImport.update({
   path: '/settings/wallets/add',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsSecurityPinRoute = SettingsSecurityPinRouteImport.update({
+  id: '/settings/security/pin',
+  path: '/settings/security/pin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsPaymentMethodAddRoute =
   SettingsPaymentMethodAddRouteImport.update({
     id: '/settings/payment-method/add',
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/transactions/': typeof TransactionsIndexRoute
   '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
   '/settings/payment-method/add': typeof SettingsPaymentMethodAddRoute
+  '/settings/security/pin': typeof SettingsSecurityPinRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
   '/settings/currency/': typeof SettingsCurrencyIndexRoute
   '/settings/expense-category/': typeof SettingsExpenseCategoryIndexRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByTo {
   '/transactions': typeof TransactionsIndexRoute
   '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
   '/settings/payment-method/add': typeof SettingsPaymentMethodAddRoute
+  '/settings/security/pin': typeof SettingsSecurityPinRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
   '/settings/currency': typeof SettingsCurrencyIndexRoute
   '/settings/expense-category': typeof SettingsExpenseCategoryIndexRoute
@@ -177,6 +185,7 @@ export interface FileRoutesById {
   '/transactions/': typeof TransactionsIndexRoute
   '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
   '/settings/payment-method/add': typeof SettingsPaymentMethodAddRoute
+  '/settings/security/pin': typeof SettingsSecurityPinRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
   '/settings/currency/': typeof SettingsCurrencyIndexRoute
   '/settings/expense-category/': typeof SettingsExpenseCategoryIndexRoute
@@ -199,6 +208,7 @@ export interface FileRouteTypes {
     | '/transactions/'
     | '/settings/expense-category/add'
     | '/settings/payment-method/add'
+    | '/settings/security/pin'
     | '/settings/wallets/add'
     | '/settings/currency/'
     | '/settings/expense-category/'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/transactions'
     | '/settings/expense-category/add'
     | '/settings/payment-method/add'
+    | '/settings/security/pin'
     | '/settings/wallets/add'
     | '/settings/currency'
     | '/settings/expense-category'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/transactions/'
     | '/settings/expense-category/add'
     | '/settings/payment-method/add'
+    | '/settings/security/pin'
     | '/settings/wallets/add'
     | '/settings/currency/'
     | '/settings/expense-category/'
@@ -260,6 +272,7 @@ export interface RootRouteChildren {
   TransactionsIndexRoute: typeof TransactionsIndexRoute
   SettingsExpenseCategoryAddRoute: typeof SettingsExpenseCategoryAddRoute
   SettingsPaymentMethodAddRoute: typeof SettingsPaymentMethodAddRoute
+  SettingsSecurityPinRoute: typeof SettingsSecurityPinRoute
   SettingsWalletsAddRoute: typeof SettingsWalletsAddRoute
   SettingsCurrencyIndexRoute: typeof SettingsCurrencyIndexRoute
   SettingsExpenseCategoryIndexRoute: typeof SettingsExpenseCategoryIndexRoute
@@ -363,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsWalletsAddRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings/security/pin': {
+      id: '/settings/security/pin'
+      path: '/settings/security/pin'
+      fullPath: '/settings/security/pin'
+      preLoaderRoute: typeof SettingsSecurityPinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/payment-method/add': {
       id: '/settings/payment-method/add'
       path: '/settings/payment-method/add'
@@ -412,6 +432,7 @@ const rootRouteChildren: RootRouteChildren = {
   TransactionsIndexRoute: TransactionsIndexRoute,
   SettingsExpenseCategoryAddRoute: SettingsExpenseCategoryAddRoute,
   SettingsPaymentMethodAddRoute: SettingsPaymentMethodAddRoute,
+  SettingsSecurityPinRoute: SettingsSecurityPinRoute,
   SettingsWalletsAddRoute: SettingsWalletsAddRoute,
   SettingsCurrencyIndexRoute: SettingsCurrencyIndexRoute,
   SettingsExpenseCategoryIndexRoute: SettingsExpenseCategoryIndexRoute,

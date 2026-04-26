@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useCurrency } from '#/lib/currency-context'
 import { useToast } from '#/lib/toast'
+import { useSecurity } from '#/lib/security'
 import { clearAllData } from '#/lib/storage'
 import { useGetWallets, useGetPaymentMethods } from '#/hooks/query'
 import { usePWAInstall } from '#/hooks/usePWAInstall'
@@ -23,6 +24,7 @@ import {
   Wifi,
   FolderOpen,
   Trash2,
+  LockKeyhole,
 } from 'lucide-react'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
@@ -37,7 +39,6 @@ export const Route = createFileRoute('/settings/')({
 function SettingsPage() {
   const [darkTheme, setDarkTheme] = useState(true)
   const [notifications, setNotifications] = useState(true)
-  const [biometric, setBiometric] = useState(true)
   const { currency } = useCurrency()
   const { data: wallets = [] } = useGetWallets()
   const { data: paymentMethods = [] } = useGetPaymentMethods()
@@ -45,6 +46,7 @@ function SettingsPage() {
   const { showUpdate, applyUpdate } = usePWAUpdate()
   const { usage, quota, loading, formatBytes, percentage } = useStorageUsage()
   const { showToast } = useToast()
+  const { pinEnabled, biometricEnabled, toggleBiometric } = useSecurity()
   const isOnline = navigator.onLine
 
   const firstPaymentMethod = paymentMethods.at(0)
@@ -58,7 +60,7 @@ function SettingsPage() {
   }
 
   const handleUpdate = () => {
-    if (!installable || !showUpdate) return
+    if (!showUpdate) return
     applyUpdate()
     showToast('Updating app...', 'info')
   }
@@ -161,7 +163,10 @@ function SettingsPage() {
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
               </Link>
-              <div className="flex items-center justify-between p-3 rounded-lg">
+              <Link
+                to="/settings/currency"
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
                     <CircleDollarSign className="w-5 h-5" />
@@ -175,13 +180,9 @@ function SettingsPage() {
                     </p>
                   </div>
                 </div>
-                <Link to="/settings/currency">
-                  <div className="flex items-center gap-1 px-2 py-1 bg-surface-container rounded-lg border border-white/5">
-                    <span className="text-xs text-primary">{currency.cc}</span>
-                    <ArrowDownUp className="w-3 h-3 text-slate-400" />
-                  </div>
-                </Link>
-              </div>
+                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+              </Link>
+
               <div className="flex items-center justify-between p-3 rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-on-primary-fixed-variant/10 flex items-center justify-center text-on-primary-fixed-variant">
@@ -226,22 +227,38 @@ function SettingsPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">
-                      Biometric Lock
+                      Biometric Unlock
                     </p>
                     <p className="text-xs text-on-surface-variant">
-                      FaceID or Fingerprint
+                      {biometricEnabled ? 'Enabled' : 'Disabled'}
                     </p>
                   </div>
                 </div>
-                <ToggleSwitch checked={biometric} onChange={setBiometric} />
+                <ToggleSwitch
+                  checked={biometricEnabled}
+                  onChange={toggleBiometric}
+                  disabled={!pinEnabled}
+                />
               </div>
-              <ActionListItem
-                icon="lock_reset"
-                iconBg="bg-slate-700/30"
-                iconColor="text-slate-300"
-                title="Change Security PIN"
-                description="Last updated 2 months ago"
-              />
+              <Link
+                to="/settings/security/pin"
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-slate-400/10 flex items-center justify-center text-slate-300">
+                    <LockKeyhole className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Security PIN
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      {pinEnabled ? 'Enabled' : 'Not set'}
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+              </Link>
             </GlassCard>
           </section>
 
