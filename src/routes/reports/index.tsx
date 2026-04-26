@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { TopAppBar, BottomNavBar, GlassCard, CategoryCard, IconButton } from '../../components/ui'
+import { useCurrency } from '../../lib/currency-context'
 
 export const Route = createFileRoute('/reports/')({
   component: ReportsPage,
@@ -56,6 +57,8 @@ const navItems = [
 ]
 
 function ReportsPage() {
+  const { formatAmount } = useCurrency()
+  
   return (
     <div className="min-h-screen bg-background text-on-background">
       <TopAppBar showProfile={false} />
@@ -99,7 +102,7 @@ function ReportsPage() {
                   Monthly Balance
                 </p>
                 <p className="text-2xl font-bold text-tertiary">
-                  +$1,450.00
+                  +{formatAmount(1450)}
                 </p>
               </div>
             </div>
@@ -127,11 +130,11 @@ function ReportsPage() {
               <div className="flex gap-8">
                 <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-widest text-slate-500">Total Budgeted</span>
-                  <span className="text-xl font-bold text-white">$2,020.00</span>
+                  <span className="text-xl font-bold text-white">{formatAmount(2020)}</span>
                 </div>
                 <div className="flex flex-col border-l border-white/10 pl-8">
                   <span className="text-[10px] uppercase tracking-widest text-slate-500">Unallocated</span>
-                  <span className="text-xl font-bold text-secondary">$480.00</span>
+                  <span className="text-xl font-bold text-secondary">{formatAmount(480)}</span>
                 </div>
               </div>
             </div>

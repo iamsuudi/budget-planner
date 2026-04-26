@@ -1,4 +1,6 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { MonthProvider } from '../lib/month-context'
+import { CurrencyProvider } from '../lib/currency-context'
 
 import '../styles.css'
 
@@ -8,8 +10,10 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <>
-      <Outlet />
-    </>
+    <CurrencyProvider>
+      <MonthProvider>
+        <Outlet />
+      </MonthProvider>
+    </CurrencyProvider>
   )
 }

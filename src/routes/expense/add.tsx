@@ -1,0 +1,276 @@
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useState, useEffect, useMemo } from 'react'
+import { TopAppBar, BottomNavBar } from '../../components/ui'
+import {
+  getAllCategories,
+  getAllPaymentMethods,
+  addInvoice,
+} from '../../lib/storage'
+import { useCurrency } from '../../lib/currency-context'
+import type { ExpenseCategory, PaymentMethod } from '../../types'
+
+export const Route = createFileRoute('/expense/add')({
+  component: AddExpensePage,
+})
+
+const navItems = [
+  { icon: 'home', label: 'Home', to: '/', active: true },
+  { icon: 'insights', label: 'Reports', to: '/reports' },
+  { icon: 'account_circle', label: 'Profile', to: '/profile' },
+  { icon: 'settings', label: 'Settings', to: '/settings' },
+]
+
+function AddExpensePage() {
+  const navigate = useNavigate()
+  const { getSymbol } = useCurrency()
+  const [categories, setCategories] = useState<ExpenseCategory[]>([])
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+
+  const [amount, setAmount] = useState('')
+  const [selectedCategoryId, setSelectedCategoryId] = useState('')
+  const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('')
+  const [note, setNote] = useState('')
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  async function loadData() {
+    try {
+      const [cats, pms] = await Promise.all([
+        getAllCategories(),
+        getAllPaymentMethods(),
+      ])
+      setCategories(cats)
+      setPaymentMethods(pms)
+      if (cats.length > 0) setSelectedCategoryId(cats[0].id)
+      if (pms.length > 0) setSelectedPaymentMethodId(pms[0].id)
+    } catch (error) {
+      console.error('Failed to load data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleSave() {
+    if (!amount || !selectedCategoryId || !selectedPaymentMethodId) return
+
+    const category = categories.find((c) => c.id === selectedCategoryId)
+    const paymentMethod = paymentMethods.find(
+      (pm) => pm.id === selectedPaymentMethodId,
+    )
+    if (!category || !paymentMethod) return
+
+    setSaving(true)
+    try {
+      await addInvoice({
+        amount: parseFloat(amount),
+        date: new Date().toISOString(),
+        categoryId: selectedCategoryId,
+        categoryName: category.name,
+        paymentMethodId: selectedPaymentMethodId,
+        paymentMethodName: paymentMethod.name,
+        note: note.trim() || undefined,
+      })
+      navigate({ to: '/' })
+    } catch (error) {
+      console.error('Failed to save expense:', error)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const isValid = useMemo(() => {
+    return (
+      !!amount &&
+      parseFloat(amount) > 0 &&
+      selectedCategoryId &&
+      selectedPaymentMethodId
+    )
+  }, [amount, selectedCategoryId, selectedPaymentMethodId])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background text-on-surface flex items-center justify-center">
+        <p className="text-slate-500">Loading...</p>
+      </div>
+    )
+  }
+
+  if (categories.length === 0 || paymentMethods.length === 0) {
+    return (
+      <div className="min-h-screen bg-background text-on-surface">
+        <TopAppBar />
+        <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+          <header className="mb-8">
+            <div className="flex items-center gap-2 mb-2">
+              <Link
+                to="/"
+                className="text-secondary material-symbols-outlined hover:text-cyan-400 transition-colors"
+              >
+                arrow_back
+              </Link>
+              <span className="text-secondary text-sm uppercase tracking-widest">
+                Expense
+              </span>
+            </div>
+            <h1 className="text-3xl font-bold text-white">Add Expense</h1>
+          </header>
+
+          {categories.length === 0 && (
+            <div className="glass-panel rounded-xl p-6 mb-4">
+              <p className="text-slate-400 mb-4">
+                You need to create at least one expense category first.
+              </p>
+              <Link
+                to="/expense-category/add"
+                className="text-secondary hover:underline"
+              >
+                Create Category
+              </Link>
+            </div>
+          )}
+
+          {paymentMethods.length === 0 && (
+            <div className="glass-panel rounded-xl p-6">
+              <p className="text-slate-400 mb-4">
+                You need to create at least one payment method first.
+              </p>
+              <Link
+                to="/payment-method/add"
+                className="text-secondary hover:underline"
+              >
+                Create Payment Method
+              </Link>
+            </div>
+          )}
+        </main>
+        <BottomNavBar items={navItems} />
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-background text-on-surface">
+      <TopAppBar />
+
+      <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+        <header className="mb-8">
+          <div className="flex items-center gap-2 mb-2">
+            <Link
+              to="/"
+              className="text-secondary material-symbols-outlined hover:text-cyan-400 transition-colors"
+            >
+              arrow_back
+            </Link>
+            <span className="text-secondary text-sm uppercase tracking-widest">
+              Expense
+            </span>
+          </div>
+          <h1 className="text-3xl font-bold text-white">Add Expense</h1>
+          <p className="text-slate-400 mt-2">Record a new expense.</p>
+        </header>
+
+        <div className="glass-panel rounded-xl p-6 space-y-6">
+          <section className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm text-violet-400">Amount</label>
+              <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-4 py-3 flex items-center">
+                <span className="text-slate-500 mr-2">{getSymbol()}</span>
+                <input
+                  className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
+                  placeholder="0.00"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="space-y-4">
+            <label className="text-sm text-violet-400">Category</label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  className={`p-4 rounded-lg border transition-all active:scale-95 ${
+                    selectedCategoryId === cat.id
+                      ? 'bg-violet-500/20 border-violet-500/50 text-violet-400 electric-glow'
+                      : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
+                  }`}
+                  onClick={() => setSelectedCategoryId(cat.id)}
+                >
+                  <span className="material-symbols-outlined block mb-1">
+                    {cat.icon}
+                  </span>
+                  <span className="text-xs">{cat.name}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="space-y-4">
+            <label className="text-sm text-violet-400">Payment Method</label>
+            <div className="grid grid-cols-1 gap-3">
+              {paymentMethods.map((pm) => (
+                <button
+                  key={pm.id}
+                  className={`p-4 rounded-lg border flex items-center gap-3 transition-all active:scale-95 ${
+                    selectedPaymentMethodId === pm.id
+                      ? 'bg-violet-500/20 border-violet-500/50 text-violet-400'
+                      : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
+                  }`}
+                  onClick={() => setSelectedPaymentMethodId(pm.id)}
+                >
+                  <span className="material-symbols-outlined">credit_card</span>
+                  <span>{pm.name}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm text-violet-400">Note (Optional)</label>
+              <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-4 py-3">
+                <input
+                  className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
+                  placeholder="Add a note..."
+                  type="text"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                />
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
+          <button
+            onClick={handleSave}
+            disabled={!isValid || saving}
+            className="w-full sm:w-auto px-10 py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {saving ? 'Saving...' : 'Save Expense'}
+          </button>
+          <Link
+            to="/"
+            className="w-full sm:w-auto px-10 py-3 border border-secondary text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/5 transition-all active:scale-95 text-center"
+          >
+            Cancel
+          </Link>
+        </div>
+
+        <div className="fixed -bottom-32 -left-32 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10" />
+        <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
+      </main>
+
+      <BottomNavBar items={navItems} />
+    </div>
+  )
+}

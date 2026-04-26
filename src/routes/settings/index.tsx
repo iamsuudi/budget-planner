@@ -1,7 +1,13 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
-import { TopAppBar, BottomNavBar, GlassCard, ActionListItem, ToggleSwitch } from '../../components/ui'
+import {
+  TopAppBar,
+  BottomNavBar,
+  GlassCard,
+  ActionListItem,
+  ToggleSwitch,
+} from '../../components/ui'
+import { useCurrency } from '../../lib/currency-context'
 
 export const Route = createFileRoute('/settings/')({
   component: SettingsPage,
@@ -18,11 +24,12 @@ function SettingsPage() {
   const [darkTheme, setDarkTheme] = useState(true)
   const [notifications, setNotifications] = useState(true)
   const [biometric, setBiometric] = useState(true)
+  const { currency } = useCurrency()
 
   return (
     <div className="min-h-screen bg-background text-on-background">
       <TopAppBar showProfile={true} />
-      
+
       <main className="pt-20 px-6 max-w-4xl mx-auto">
         {/* Settings Header */}
         <div className="mb-10">
@@ -41,25 +48,52 @@ function SettingsPage() {
               Account Settings
             </h3>
             <GlassCard className="p-2 flex flex-col gap-2">
-              <ActionListItem
-                icon="person"
-                iconBg="bg-primary/10"
-                iconColor="text-primary"
-                title="Personal Information"
-                description="Manage your profile details"
-              />
-              <Link to="/payment-method" className="glass-card flex items-center justify-between p-6 rounded-xl hover:bg-white/5 transition-all group w-full text-left">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-secondary/10 text-secondary">
-                  <span className="material-symbols-outlined">credit_card</span>
+              <Link
+                to="/payment-method"
+                className="glass-card flex items-center justify-between p-6 rounded-xl hover:bg-white/5 transition-all group w-full text-left"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-secondary/10 text-secondary">
+                    <span className="material-symbols-outlined">
+                      credit_card
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Payment Methods
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      Manage payment methods
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-on-surface">Payment Methods</p>
-                  <p className="text-xs text-on-surface-variant">Manage payment methods</p>
+                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
+                  chevron_right
+                </span>
+              </Link>
+              <Link
+                to="/wallets"
+                className="glass-card flex items-center justify-between p-6 rounded-xl hover:bg-white/5 transition-all group w-full text-left"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-violet-500/10 text-violet-400">
+                    <span className="material-symbols-outlined">
+                      account_balance
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-on-surface">
+                      My Wallets
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      Manage bank accounts
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">chevron_right</span>
-            </Link>
+                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
+                  chevron_right
+                </span>
+              </Link>
             </GlassCard>
           </section>
 
@@ -69,17 +103,26 @@ function SettingsPage() {
               App Preferences
             </h3>
             <GlassCard className="p-2 flex flex-col gap-2">
-              <Link to="/expense-category" className="flex items-center justify-between p-4 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group">
+              <Link
+                to="/expense-category"
+                className="flex items-center justify-between p-4 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
                     <span className="material-symbols-outlined">category</span>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-on-surface">Expense Categories</p>
-                    <p className="text-xs text-on-surface-variant">Manage spending categories & budgets</p>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Expense Categories
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      Manage spending categories & budgets
+                    </p>
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">chevron_right</span>
+                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
+                  chevron_right
+                </span>
               </Link>
               <div className="flex items-center justify-between p-4 rounded-lg">
                 <div className="flex items-center gap-4">
@@ -87,29 +130,22 @@ function SettingsPage() {
                     <span className="material-symbols-outlined">payments</span>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-on-surface">Base Currency</p>
-                    <p className="text-xs text-on-surface-variant">USD - United States Dollar</p>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Base Currency
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      {currency.cc} - {currency.name}
+                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 px-3 py-1 bg-surface-container rounded-lg border border-white/5">
-                  <span className="text-xs text-primary">USD</span>
-                  <span className="material-symbols-outlined text-slate-400 text-base">expand_more</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between p-4 rounded-lg">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
-                    <span className="material-symbols-outlined">payments</span>
+                <Link to="/settings/currency">
+                  <div className="flex items-center gap-1 px-3 py-1 bg-surface-container rounded-lg border border-white/5">
+                    <span className="text-xs text-primary">{currency.cc}</span>
+                    <span className="material-symbols-outlined text-slate-400 text-base">
+                      expand_more
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">Base Currency</p>
-                    <p className="text-xs text-on-surface-variant">USD - United States Dollar</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 px-3 py-1 bg-surface-container rounded-lg border border-white/5">
-                  <span className="text-xs text-primary">USD</span>
-                  <span className="material-symbols-outlined text-slate-400 text-base">expand_more</span>
-                </div>
+                </Link>
               </div>
               <div className="flex items-center justify-between p-4 rounded-lg">
                 <div className="flex items-center gap-4">
@@ -117,8 +153,12 @@ function SettingsPage() {
                     <span className="material-symbols-outlined">dark_mode</span>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-on-surface">Electric Dark Theme</p>
-                    <p className="text-xs text-on-surface-variant">High-contrast visual mode</p>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Electric Dark Theme
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      High-contrast visual mode
+                    </p>
                   </div>
                 </div>
                 <ToggleSwitch checked={darkTheme} onChange={setDarkTheme} />
@@ -126,14 +166,23 @@ function SettingsPage() {
               <div className="flex items-center justify-between p-4 rounded-lg">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
-                    <span className="material-symbols-outlined">notifications_active</span>
+                    <span className="material-symbols-outlined">
+                      notifications_active
+                    </span>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-on-surface">Push Notifications</p>
-                    <p className="text-xs text-on-surface-variant">Alerts for unusual spending</p>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Push Notifications
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      Alerts for unusual spending
+                    </p>
                   </div>
                 </div>
-                <ToggleSwitch checked={notifications} onChange={setNotifications} />
+                <ToggleSwitch
+                  checked={notifications}
+                  onChange={setNotifications}
+                />
               </div>
             </GlassCard>
           </section>
@@ -147,11 +196,17 @@ function SettingsPage() {
               <div className="flex items-center justify-between p-4 rounded-lg">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center text-error">
-                    <span className="material-symbols-outlined">fingerprint</span>
+                    <span className="material-symbols-outlined">
+                      fingerprint
+                    </span>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-on-surface">Biometric Lock</p>
-                    <p className="text-xs text-on-surface-variant">FaceID or Fingerprint</p>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Biometric Lock
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      FaceID or Fingerprint
+                    </p>
                   </div>
                 </div>
                 <ToggleSwitch checked={biometric} onChange={setBiometric} />

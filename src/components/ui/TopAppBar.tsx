@@ -1,8 +1,11 @@
 interface TopAppBarProps {
   showProfile?: boolean
+  profilePicture?: string
 }
 
-export function TopAppBar({ showProfile = true }: TopAppBarProps) {
+export function TopAppBar({ showProfile = true, profilePicture }: TopAppBarProps) {
+  const defaultAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23d0bcff' width='100' height='100'/%3E%3Ctext x='50' y='55' dominant-baseline='middle' text-anchor='middle' fill='%230b1326' font-size='40' font-family='sans-serif'%3E%3F%3C/text%3E%3C/svg%3E"
+  
   return (
     <header className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 h-16">
       <div className="flex items-center gap-2">
@@ -22,7 +25,7 @@ export function TopAppBar({ showProfile = true }: TopAppBarProps) {
             <img
               alt="User Profile"
               className="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBL-58AopKdJepj_zcXbl_GOtHLuzeP3ai3Lm-fkHXVayqrEeg9AklVBgVdGzvDqU0HuJCRxhrCdr-oxhklqsA_DQTYrtIES7RMuqwvqBt-biVuJGXQDnaOKdiIzflSWGCyETju91pCJUPPHO27l2qGcVDw373zCLFENwUD2MJZxnUfmIAxiIVh4kZmfLovtDwp-36c6GuPQIo2y1r042V9S8GJkVpCECIBN3LJIr7E6SkCZ_f8V_4M2Q3UwciRkk8esqE-dFJYK59"
+              src={profilePicture || defaultAvatar}
             />
           </div>
         )}

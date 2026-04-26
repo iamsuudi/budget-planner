@@ -1,204 +1,201 @@
-Welcome to your new TanStack Start app! 
+# Budget Manager - Architecture Overview
 
-# Getting Started
+A React-based budget management application using TanStack Router, IndexedDB for offline storage, and Tailwind CSS.
 
-To run this application:
+## Tech Stack
 
-```bash
-bun install
-bun --bun run dev
+- **Framework**: React 19 + TanStack Router
+- **Styling**: Tailwind CSS v4
+- **Storage**: IndexedDB via `idb` library
+- **Build**: Vite
+
+## Project Structure
+
+```
+src/
+├── components/ui/          # Reusable UI components
+│   ├── BottomNavBar.tsx    # Navigation bar with active states
+│   ├── TopAppBar.tsx       # Header with logo and profile
+│   ├── GlassCard.tsx       # Glassmorphism card container
+│   ├── ProgressBar.tsx     # Budget progress indicator
+│   ├── TransactionItem.tsx
+│   ├── CategoryCard.tsx
+│   ├── ActionListItem.tsx
+│   ├── ToggleSwitch.tsx
+│   └── IconButton.tsx
+│
+├── lib/                    # Core utilities
+│   ├── storage.ts          # IndexedDB operations
+│   ├── icons.ts            # Icon definitions and styles
+│   ├── month-context.tsx  # Global month state management
+│   └── index.ts
+│
+├── routes/                 # TanStack Router pages
+│   ├── index.tsx           # Home page (/)
+│   ├── reports/           # Reports page (/reports)
+│   ├── profile/           # Profile page (/profile)
+│   ├── settings/          # Settings page (/settings)
+│   ├── expense/           # Add expense (/expense/add)
+│   ├── expense-category/   # Category management
+│   │   ├── index.tsx       # List categories
+│   │   ├── add.tsx         # Add category
+│   │   └── edit.tsx       # Edit category
+│   ├── payment-method/     # Payment methods
+│   │   ├── index.tsx
+│   │   ├── add.tsx
+│   │   └── edit.tsx
+│   └── budget/             # Set monthly budget
+│       └── index.tsx
+│
+├── types/                  # TypeScript type definitions
+│   ├── expense.ts         # ExpenseCategory
+│   ├── payment-method.ts  # PaymentMethod
+│   ├── invoice.ts          # Invoice
+│   └── month.ts           # Month, MonthBudget
+│
+├── styles.css             # Global styles + Tailwind config
+└── main.tsx              # App entry point
 ```
 
-# Building For Production
+## Data Layer
 
-To build this application for production:
+### IndexedDB Stores
 
-```bash
-bun --bun run build
-```
+1. **expenseCategories**
+   - `id`: string (unique)
+   - `name`: string
+   - `icon`: string
+   - `createdAt`: number (timestamp)
+   - `deletedAt`: number | undefined (soft delete)
 
-## Testing
+2. **paymentMethods**
+   - `id`: string
+   - `name`: string
+   - `createdAt`: number
+   - `deletedAt`: number | undefined
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+3. **invoices** (expenses)
+   - `id`: string
+   - `amount`: number
+   - `date`: ISO string
+   - `categoryId`: string
+   - `categoryName`: string (denormalized for history)
+   - `paymentMethodId`: string
+   - `paymentMethodName`: string
+   - `note`: string | undefined
+   - `createdAt`: number
+   - `updatedAt`: number
 
-```bash
-bun --bun run test
-```
+4. **monthBudgets**
+   - `id`: string
+   - `monthId`: string (e.g., "2024-10")
+   - `year`: number
+   - `number`: number (1-12)
+   - `totalBudget`: number
+   - `categoryBudgets`: Record<string, number>
+   - `createdAt`: number
+   - `updatedAt`: number
 
-## Styling
+## Global State
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+### Month Context (`month-context.tsx`)
 
-### Removing Tailwind CSS
+Provides centralized month navigation across the app:
 
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `bun install @tailwindcss/vite tailwindcss -D`
-
-## Linting & Formatting
-
-
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
-
-```bash
-bun --bun run lint
-bun --bun run format
-bun --bun run check
-```
-
-
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
+```typescript
+interface MonthContextType {
+  currentMonth: { year: number; month: number; monthName: string }
+  setCurrentMonth: (year: number, month: number) => void
+  goToPrevMonth: () => void
+  goToNextMonth: () => void
+  isCurrentMonth: (year: number, month: number) => boolean
 }
 ```
 
-## API Routes
+- Default: Current month on app load
+- Persists during session (resets on reload)
+- All pages can access current month via `useMonth()` hook
 
-You can create API routes by using the `server` property in your route definitions:
+Icon Styles (`icons.ts`)
 
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
+```
+AVAILABLE_ICONS: string[]
+getIconStyle(icon: string): { bg, border, color }
 ```
 
-## Data Fetching
+## Page Flow
 
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
+### Home (`/`)
+- Shows expenses for current month
+- Navigation arrows to change month
+- Two action buttons:
+  - **Add Expense** → `/expense/add`
+  - **Set Budget** → `/budget`
 
-For example:
+### Add Expense (`/expense/add`)
+- Select category (from expenseCategories)
+- Enter amount
+- Select payment method
+- Optional note
 
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
+### Set Budget (`/budget`)
+- Set total monthly budget
+- Optionally set per-category budgets
+- Shows spending per category
 
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
+### Reports (`/reports`)
+- Monthly analytics
+- Category spending breakdown
+- Budget health strategy
 
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
+### Expense Categories (`/expense-category`)
+- CRUD for categories
+- Each category has name + icon
+
+### Payment Methods (`/payment-method`)
+- CRUD for payment methods
+- Simple name only
+
+### Settings (`/settings`)
+- Links to Payment Methods
+- Links to Expense Categories
+- App preferences (toggles)
+
+## Design System
+
+### Colors
+- Primary: Violet (#d0bcff)
+- Secondary: Cyan (#4cd7f6)
+- Tertiary: Emerald (#4edea3)
+- Background: Deep Navy (#0b1326)
+
+### Components
+- Glass cards with backdrop blur
+- Glow effects on hover/active
+- Material Symbols Outlined icons
+
+## Adding New Pages
+
+1. Create route file in `src/routes/[page]/index.tsx`
+2. Export route with `createFileRoute('/path')`
+3. Use existing components from `components/ui`
+4. Use storage functions from `lib/storage`
+5. Add to bottom nav in relevant pages
+
+## Storage Pattern
+
+```typescript
+// Get all (excludes soft-deleted)
+const items = await db.getAllStore('storeName')
+return items.filter(item => !item.deletedAt)
+
+// Soft delete
+await db.put('storeName', { ...item, deletedAt: Date.now() })
 ```
 
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
+## Key Files
 
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+- `src/routes/__root.tsx` - Root with MonthProvider
+- `src/lib/storage.ts` - All IndexedDB operations
+- `src/lib/month-context.tsx` - Global month state
+- `src/lib/icons.ts` - Icon system

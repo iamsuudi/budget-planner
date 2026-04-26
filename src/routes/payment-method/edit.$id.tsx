@@ -1,43 +1,83 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { TopAppBar, BottomNavBar } from '../../components/ui'
-import { addCategory } from '../../lib/storage'
-import { AVAILABLE_ICONS, getIconStyle } from '../../lib/icons'
+import { getPaymentMethodById, updatePaymentMethod } from '../../lib/storage'
 
-export const Route = createFileRoute('/expense-category/add')({
-  component: AddCategoryPage,
+export const Route = createFileRoute('/payment-method/edit/$id')({
+  component: EditPaymentMethodPage,
 })
 
 const navItems = [
   { icon: 'home', label: 'Home', to: '/' },
   { icon: 'insights', label: 'Reports', to: '/reports' },
-  {
-    icon: 'category',
-    label: 'Categories',
-    to: '/expense-category',
-    active: true,
-  },
-  { icon: 'person', label: 'Profile', to: '/profile' },
+  { icon: 'account_circle', label: 'Profile', to: '/profile' },
+  { icon: 'settings', label: 'Settings', to: '/settings', active: true },
 ]
 
-function AddCategoryPage() {
+function EditPaymentMethodPage() {
+  const { id } = Route.useParams()
   const navigate = useNavigate()
+
   const [name, setName] = useState('')
-  const [selectedIcon, setSelectedIcon] = useState('restaurant')
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
+  useEffect(() => {
+    loadPaymentMethod()
+  }, [id])
+
+  async function loadPaymentMethod() {
+    if (!id) return
+    try {
+      const method = await getPaymentMethodById(id)
+      if (method) {
+        setName(method.name)
+      }
+    } catch (error) {
+      console.error('Failed to load payment method:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   async function handleSave() {
-    if (!name.trim()) return
+    if (!name.trim() || !id) return
 
     setSaving(true)
     try {
-      await addCategory({ name: name.trim(), icon: selectedIcon })
-      navigate({ to: '/expense-category' })
+      await updatePaymentMethod(id, { name: name.trim() })
+      navigate({ to: '/payment-method' })
     } catch (error) {
-      console.error('Failed to save category:', error)
+      console.error('Failed to update payment method:', error)
     } finally {
       setSaving(false)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background text-on-surface flex items-center justify-center">
+        <p className="text-slate-500">Loading...</p>
+      </div>
+    )
+  }
+
+  if (!name) {
+    return (
+      <div className="min-h-screen bg-background text-on-surface">
+        <TopAppBar showProfile />
+        <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+          <p className="text-slate-500">Payment method not found.</p>
+          <Link
+            to="/payment-method"
+            className="text-secondary hover:underline mt-4 block"
+          >
+            Back to Payment Methods
+          </Link>
+        </main>
+        <BottomNavBar items={navItems} />
+      </div>
+    )
   }
 
   return (
@@ -48,59 +88,34 @@ function AddCategoryPage() {
         <header className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <Link
-              to="/expense-category"
+              to="/payment-method"
               className="text-secondary material-symbols-outlined hover:text-cyan-400 transition-colors"
             >
               arrow_back
             </Link>
             <span className="text-secondary text-sm uppercase tracking-widest">
-              Budgeting
+              Settings
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-white">Add Category</h1>
-          <p className="text-slate-400 mt-2">Create a new spending category.</p>
+          <h1 className="text-3xl font-bold text-white">Edit Payment Method</h1>
+          <p className="text-slate-400 mt-2">Update payment method details.</p>
         </header>
 
         <div className="glass-panel rounded-xl p-6 space-y-6">
           <section className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm text-violet-400">Category Name</label>
+              <label className="text-sm text-violet-400">
+                Payment Method Name
+              </label>
               <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-4 py-3">
                 <input
                   className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
-                  placeholder="e.g., Entertainment"
+                  placeholder="e.g., Visa ending 4242"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-            </div>
-          </section>
-
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm text-violet-400">Icon</label>
-              <span className="text-xs text-slate-500 capitalize">
-                Selected: {selectedIcon}
-              </span>
-            </div>
-            <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-3">
-              {AVAILABLE_ICONS.map((icon) => {
-                const styles = getIconStyle(icon)
-                return (
-                  <button
-                    key={icon}
-                    className={`aspect-square rounded-lg flex items-center justify-center transition-all active:scale-95 ${
-                      selectedIcon === icon
-                        ? `${styles.bg} border ${styles.border} ${styles.color} electric-glow`
-                        : 'glass-panel hover:bg-white/10 text-slate-400 border border-transparent'
-                    }`}
-                    onClick={() => setSelectedIcon(icon)}
-                  >
-                    <span className="material-symbols-outlined">{icon}</span>
-                  </button>
-                )
-              })}
             </div>
           </section>
         </div>
@@ -114,7 +129,7 @@ function AddCategoryPage() {
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
           <Link
-            to="/expense-category"
+            to="/payment-method"
             className="w-full sm:w-auto px-10 py-3 border border-secondary text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/5 transition-all active:scale-95 text-center"
           >
             Cancel

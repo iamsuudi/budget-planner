@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { TopAppBar, BottomNavBar } from '../../components/ui'
-import { addCategory } from '../../lib/storage'
+import { getCategoryById, updateCategory } from '../../lib/storage'
 import { AVAILABLE_ICONS, getIconStyle } from '../../lib/icons'
 
-export const Route = createFileRoute('/expense-category/add')({
-  component: AddCategoryPage,
+export const Route = createFileRoute('/expense-category/edit/$id')({
+  component: EditCategoryPage,
 })
 
 const navItems = [
@@ -20,24 +20,72 @@ const navItems = [
   { icon: 'person', label: 'Profile', to: '/profile' },
 ]
 
-function AddCategoryPage() {
+function EditCategoryPage() {
+  const { id } = Route.useParams()
   const navigate = useNavigate()
+
   const [name, setName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState('restaurant')
+  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
+  useEffect(() => {
+    loadCategory()
+  }, [id])
+
+  async function loadCategory() {
+    if (!id) return
+    try {
+      const category = await getCategoryById(id)
+      if (category) {
+        setName(category.name)
+        setSelectedIcon(category.icon)
+      }
+    } catch (error) {
+      console.error('Failed to load category:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   async function handleSave() {
-    if (!name.trim()) return
+    if (!name.trim() || !id) return
 
     setSaving(true)
     try {
-      await addCategory({ name: name.trim(), icon: selectedIcon })
+      await updateCategory(id, { name: name.trim(), icon: selectedIcon })
       navigate({ to: '/expense-category' })
     } catch (error) {
-      console.error('Failed to save category:', error)
+      console.error('Failed to update category:', error)
     } finally {
       setSaving(false)
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background text-on-surface flex items-center justify-center">
+        <p className="text-slate-500">Loading...</p>
+      </div>
+    )
+  }
+
+  if (!name) {
+    return (
+      <div className="min-h-screen bg-background text-on-surface">
+        <TopAppBar showProfile />
+        <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+          <p className="text-slate-500">Category not found.</p>
+          <Link
+            to="/expense-category"
+            className="text-secondary hover:underline mt-4 block"
+          >
+            Back to Categories
+          </Link>
+        </main>
+        <BottomNavBar items={navItems} />
+      </div>
+    )
   }
 
   return (
@@ -57,8 +105,8 @@ function AddCategoryPage() {
               Budgeting
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-white">Add Category</h1>
-          <p className="text-slate-400 mt-2">Create a new spending category.</p>
+          <h1 className="text-3xl font-bold text-white">Edit Category</h1>
+          <p className="text-slate-400 mt-2">Update category details.</p>
         </header>
 
         <div className="glass-panel rounded-xl p-6 space-y-6">
