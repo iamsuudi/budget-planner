@@ -6,5 +6,5 @@ interface PageProps {
 }
 
 export function Page({ children, className = '' }: PageProps) {
-  return <main className={`py-10 px-4 ${className}`}>{children}</main>
+  return <main className={`py-24 px-4 ${className}`}>{children}</main>
 }
