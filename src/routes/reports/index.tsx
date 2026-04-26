@@ -66,7 +66,7 @@ function ReportsPage() {
 
   return (
     <div className="">
-      <TopAppBar showProfile={false} />
+      <TopAppBar showProfile />
 
       <Page>
         <section className="mb-6">

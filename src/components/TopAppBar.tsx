@@ -1,4 +1,4 @@
-import { Wallet, ArrowLeft, Bell } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { getUser } from '#/lib/storage'
 import type { User as UserType } from '#/types'
 import { useLocation, useRouter } from '@tanstack/react-router'
@@ -11,23 +11,15 @@ interface TopAppBarProps {
   backTo?: string
 }
 
-const INDEX_ROUTES = ['/', '/wallets', '/payment-method', '/expense-category', '/budget', '/reports', '/settings', '/profile']
-
 export function TopAppBar({
   title,
-  showProfile = true,
-  showBack,
-  backTo,
+  showProfile = false,
+  showBack = false,
+  backTo = '/',
 }: TopAppBarProps) {
   const [user, setUser] = useState<UserType | null>(null)
   const { pathname } = useLocation()
   const router = useRouter()
-
-  const isNestedRoute = !INDEX_ROUTES.includes(pathname) && pathname !== '/expense/add'
-  const autoShowBack = showBack ?? isNestedRoute
-
-  const parentPath = pathname.split('/').slice(0, -1).join('/') || '/'
-  const defaultBackTo = backTo || (parentPath === '' ? '/' : parentPath)
 
   let path = pathname.split('/').find((p) => p != '')
   path = path ? path[0].toUpperCase() + path.slice(1) : 'Home'
@@ -41,30 +33,26 @@ export function TopAppBar({
   return (
     <header className="fixed top-0 w-full z-50">
       <div className="max-w-lg w-full bg-slate-950/80 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 h-16">
-        {autoShowBack ? (
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
+          {showBack && (
             <ArrowLeft
-              className="w-5 h-5 text-violet-500 cursor-pointer"
-              onClick={() => router.navigate({ to: defaultBackTo })}
+              className="w-5 h-5 text-secondary cursor-pointer"
+              onClick={() => router.navigate({ to: backTo })}
             />
-            <span className="text-lg font-black text-violet-500 italic tracking-tighter">
-              {title ?? path}
-            </span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-violet-500" />
-            <span className="text-lg font-black text-violet-500 italic tracking-tighter">
-              {title ?? path}
-            </span>
-          </div>
-        )}
+          )}
+          <span className="text-lg font-black text-secondary tracking-tighter">
+            {title ?? path}
+          </span>
+        </div>
         <div className="flex items-center gap-4">
-          <button className="text-slate-500 hover:text-cyan-400 transition-colors active:scale-95 duration-200">
+          {/* <button className="text-slate-500 hover:text-cyan-400 transition-colors active:scale-95 duration-200">
             <Bell className="w-5 h-5" />
-          </button>
+          </button> */}
           {showProfile && (
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-primary border border-violet-500/30">
+            <div
+              className="w-9 h-9 rounded-full overflow-hidden bg-primary border border-violet-500/30 cursor-pointer"
+              onClick={() => router.navigate({ to: '/profile' })}
+            >
               <img
                 alt="User Profile"
                 className="w-full h-full object-cover"

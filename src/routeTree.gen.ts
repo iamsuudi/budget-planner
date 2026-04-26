@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TransactionsIndexRouteImport } from './routes/transactions/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as ReportsIndexRouteImport } from './routes/reports/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
@@ -30,6 +31,11 @@ import { Route as SettingsExpenseCategoryEditIdRouteImport } from './routes/sett
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransactionsIndexRoute = TransactionsIndexRouteImport.update({
+  id: '/transactions/',
+  path: '/transactions/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/profile/': typeof ProfileIndexRoute
   '/reports/': typeof ReportsIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/transactions/': typeof TransactionsIndexRoute
   '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
   '/settings/payment-method/add': typeof SettingsPaymentMethodAddRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileIndexRoute
   '/reports': typeof ReportsIndexRoute
   '/settings': typeof SettingsIndexRoute
+  '/transactions': typeof TransactionsIndexRoute
   '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
   '/settings/payment-method/add': typeof SettingsPaymentMethodAddRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/profile/': typeof ProfileIndexRoute
   '/reports/': typeof ReportsIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/transactions/': typeof TransactionsIndexRoute
   '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
   '/settings/payment-method/add': typeof SettingsPaymentMethodAddRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/profile/'
     | '/reports/'
     | '/settings/'
+    | '/transactions/'
     | '/settings/expense-category/add'
     | '/settings/payment-method/add'
     | '/settings/wallets/add'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reports'
     | '/settings'
+    | '/transactions'
     | '/settings/expense-category/add'
     | '/settings/payment-method/add'
     | '/settings/wallets/add'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/profile/'
     | '/reports/'
     | '/settings/'
+    | '/transactions/'
     | '/settings/expense-category/add'
     | '/settings/payment-method/add'
     | '/settings/wallets/add'
@@ -245,6 +257,7 @@ export interface RootRouteChildren {
   ProfileIndexRoute: typeof ProfileIndexRoute
   ReportsIndexRoute: typeof ReportsIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
+  TransactionsIndexRoute: typeof TransactionsIndexRoute
   SettingsExpenseCategoryAddRoute: typeof SettingsExpenseCategoryAddRoute
   SettingsPaymentMethodAddRoute: typeof SettingsPaymentMethodAddRoute
   SettingsWalletsAddRoute: typeof SettingsWalletsAddRoute
@@ -264,6 +277,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transactions/': {
+      id: '/transactions/'
+      path: '/transactions'
+      fullPath: '/transactions/'
+      preLoaderRoute: typeof TransactionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings/': {
@@ -389,6 +409,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileIndexRoute: ProfileIndexRoute,
   ReportsIndexRoute: ReportsIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
+  TransactionsIndexRoute: TransactionsIndexRoute,
   SettingsExpenseCategoryAddRoute: SettingsExpenseCategoryAddRoute,
   SettingsPaymentMethodAddRoute: SettingsPaymentMethodAddRoute,
   SettingsWalletsAddRoute: SettingsWalletsAddRoute,

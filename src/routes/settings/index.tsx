@@ -35,7 +35,7 @@ function SettingsPage() {
 
   return (
     <div className="">
-      <TopAppBar showProfile={true} />
+      <TopAppBar showProfile />
 
       <Page>
         <div className="mb-6">

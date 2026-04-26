@@ -1,14 +1,20 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ChevronRight, Flag, PiggyBank, PlusCircle, Wallet, Receipt } from 'lucide-react'
+import { ChevronRight, Flag, PiggyBank, PlusCircle, Wallet } from 'lucide-react'
 import { useMemo } from 'react'
-import { useGetInvoicesByMonth, useGetMonthBudget } from '#/hooks/query'
+import {
+  useGetInvoicesByMonth,
+  useGetMonthBudget,
+  useGetCategories,
+} from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
 import { useCurrency } from '#/lib/currency-context'
+import { getIconStyle } from '#/lib/icons'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
 import { ProgressBar } from '#/components/ProgressBar'
 import { TopAppBar } from '#/components/TopAppBar'
 import { CalendarNav } from '#/components/CalendarNav'
+import { Icon } from '#/components/Icon'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -21,6 +27,15 @@ function HomePage() {
 
   const { data: invoices = [], isLoading } = useGetInvoicesByMonth(year, month)
   const { data: monthBudget } = useGetMonthBudget(year, month)
+  const { data: categories = [] } = useGetCategories()
+
+  const categoryMap = useMemo(() => {
+    const map: Record<string, { name: string; icon: string }> = {}
+    categories.forEach((cat) => {
+      map[cat.id] = { name: cat.name, icon: cat.icon }
+    })
+    return map
+  }, [categories])
 
   const totalExpenses = useMemo(() => {
     return invoices.reduce((sum, inv) => sum + inv.amount, 0)
@@ -33,23 +48,10 @@ function HomePage() {
 
   return (
     <div className="">
-      <TopAppBar />
+      <TopAppBar showProfile />
 
       <Page className="space-y-6">
-        <div className="flex items-center justify-between">
-          <CalendarNav />
-          {monthBudget && monthBudget.totalBudget > 0 && (
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold ${budgetPercentage >= 100 ? 'bg-error/10 text-error' : 'bg-tertiary/10 text-tertiary'}`}
-            >
-              {budgetPercentage >= 100
-                ? 'Over'
-                : budgetPercentage >= 80
-                  ? 'Near'
-                  : 'On Track'}
-            </span>
-          )}
-        </div>
+        <CalendarNav />
 
         <GlassCard className="p-4 relative overflow-hidden">
           <div className="absolute -top-16 -right-16 w-32 h-32 bg-primary/20 blur-[60px] rounded-full" />
@@ -83,36 +85,44 @@ function HomePage() {
                     className={`text-lg font-bold ${(monthBudget?.totalBudget || 0) - totalExpenses >= 0 ? 'text-tertiary' : 'text-error'}`}
                   >
                     {formatAmount(
-                      Math.max(
-                        (monthBudget?.totalBudget || 0) - totalExpenses,
-                        0,
-                      ),
+                      (monthBudget?.totalBudget || 0) - totalExpenses,
                     )}
                   </p>
                 </div>
               </div>
             </div>
           </div>
+          {monthBudget && monthBudget.totalBudget > 0 && (
+            <span
+              className={`absolute top-5 right-5 px-3 py-1 rounded-full text-xs font-semibold ${budgetPercentage >= 100 ? 'bg-error/10 text-error' : 'bg-tertiary/10 text-tertiary'}`}
+            >
+              {budgetPercentage >= 100
+                ? 'Over'
+                : budgetPercentage >= 80
+                  ? 'Near'
+                  : 'On Track'}
+            </span>
+          )}
         </GlassCard>
 
-        <div className="flex flex-col gap-3">
-          <Link
-            to="/expense/add"
-            className="bg-primary-container text-on-primary-fixed-variant rounded-xl p-4 flex items-center justify-between shadow-lg glow-violet hover:brightness-110 active:scale-98 transition-all"
-          >
-            <PlusCircle className="w-6 h-6" />
-            <span className="text-lg font-bold">Add Expense</span>
-            <ChevronRight className="w-5 h-5" />
-          </Link>
+        <div className="flex gap-6">
           <Link
             to="/budget"
-            className="border border-secondary text-secondary rounded-xl p-4 flex items-center justify-between hover:bg-secondary/10 active:scale-98 transition-all"
+            className="flex-1 border border-secondary text-secondary rounded-xl py-3 px-5 flex gap-2 items-center hover:bg-secondary/10 active:scale-98 transition-all"
           >
-            <Wallet className="w-6 h-6" />
+            <Wallet className="w-5 h-5" />
             <span className="text-lg font-bold text-on-surface">
               Set Budget
             </span>
-            <ChevronRight className="w-5 h-5" />
+            {/* <ChevronRight className="w-5 h-5" />*/}
+          </Link>
+          <Link
+            to="/expense/add"
+            className="flex-1 border border-primary text-primary rounded-xl py-3 px-5 flex gap-2 items-center hover:bg-primary/10 active:scale-98 transition-all"
+          >
+            <PlusCircle className="w-5 h-5" />
+            <span className="font-bold text-on-surface">Add Expense</span>
+            {/* <ChevronRight className="w-5 h-5" />*/}
           </Link>
         </div>
 
@@ -137,45 +147,59 @@ function HomePage() {
         )}
 
         <section className="space-y-3">
-          <h3 className="text-lg font-bold text-on-surface">Recent</h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-on-surface">Recent</h3>
+            <Link
+              to="/transactions"
+              className="text-xs text-secondary hover:text-cyan-400 transition-colors"
+            >
+              View all
+            </Link>
+          </div>
           {isLoading ? (
             <p className="text-slate-500">Loading...</p>
           ) : invoices.length === 0 ? (
             <p className="text-slate-500 text-sm">No expenses this month.</p>
           ) : (
             <div className="space-y-2">
-              {invoices.slice(0, 8).map((inv) => (
-                <div
-                  key={inv.id}
-                  className="glass-card flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-high transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
-                      <Receipt className="w-5 h-5" />
+              {invoices.slice(0, 8).map((inv) => {
+                const category = categoryMap[inv.categoryId]
+                const style = getIconStyle(category.icon || 'receipt')
+                return (
+                  <div
+                    key={inv.id}
+                    className="glass-card flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-high transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-9 h-9 rounded-full ${style.bg} flex items-center justify-center ${style.color}`}
+                      >
+                        <Icon name={category.icon || 'receipt'} size={18} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-on-surface">
+                          {inv.note || category.name || inv.categoryName}
+                        </p>
+                        <p className="text-[10px] text-on-surface-variant opacity-60">
+                          {category.name || inv.categoryName} •{' '}
+                          {new Date(inv.date).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                          })}
+                        </p>
+                      </div>
                     </div>
-                    <div>
+                    <div className="text-right">
                       <p className="text-sm font-semibold text-on-surface">
-                        {inv.note || inv.categoryName}
+                        {formatAmount(inv.amount)}
                       </p>
-                      <p className="text-[10px] text-on-surface-variant opacity-60">
-                        {inv.categoryName} •{' '}
-                        {new Date(inv.date).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                        })}
+                      <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">
+                        {inv.paymentMethodName}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-on-surface">
-                      -{formatAmount(inv.amount)}
-                    </p>
-                    <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">
-                      {inv.paymentMethodName}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </section>

@@ -18,7 +18,7 @@ export function CalendarNav({
 
   return (
     <GlassCard
-      className={'flex items-center justify-between gap-3' + className}
+      className={'flex items-center justify-between gap-5' + className}
     >
       <button
         onClick={goToPrevMonth}
