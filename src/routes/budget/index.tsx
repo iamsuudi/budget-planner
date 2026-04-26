@@ -1,5 +1,4 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useMemo } from 'react'
 import {
   useGetMonthBudget,
@@ -13,6 +12,8 @@ import { useCurrency } from '#/lib/currency-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
+import { CancelButton } from '#/components/CancelButton'
+import { CalendarNav } from '#/components/CalendarNav'
 
 export const Route = createFileRoute('/budget/')({
   component: BudgetPage,
@@ -20,9 +21,9 @@ export const Route = createFileRoute('/budget/')({
 
 function BudgetPage() {
   const navigate = useNavigate()
-  const { currentMonth, goToPrevMonth, goToNextMonth } = useMonth()
+  const { currentMonth } = useMonth()
   const { formatAmount, getSymbol } = useCurrency()
-  const { year, month, monthName } = currentMonth
+  const { year, month } = currentMonth
 
   const { data: categories = [] } = useGetCategories()
   const { data: monthBudget } = useGetMonthBudget(year, month)
@@ -30,7 +31,8 @@ function BudgetPage() {
   const setMonthBudget = useSetMonthBudget()
 
   const [totalBudgetInput, setTotalBudgetInput] = useState(
-    monthBudget?.totalBudget.toString() || '',
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    monthBudget?.totalBudget?.toString() || '',
   )
   const [categoryBudgets, setCategoryBudgets] = useState<
     Record<string, string>
@@ -38,7 +40,9 @@ function BudgetPage() {
     const savedCategoryBudgets = monthBudget?.categoryBudgets || {}
     const initial: Record<string, string> = {}
     categories.forEach((cat) => {
-      initial[cat.id] = savedCategoryBudgets[cat.id].toString() || ''
+      const budgetValue = savedCategoryBudgets[cat.id]
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      initial[cat.id] = budgetValue != null ? String(budgetValue) : ''
     })
     return initial
   })
@@ -76,40 +80,10 @@ function BudgetPage() {
     <div className="">
       <TopAppBar title="Budget" showBack backTo="/" />
 
-      <Page>
-        <header className="mb-6">
-          <div className="flex items-center gap-3 mb-3">
-            <Link
-              to="/"
-              className="text-secondary hover:text-cyan-400 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={goToPrevMonth}
-                className="p-1 text-slate-500 hover:text-secondary"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <span className="text-white font-semibold">
-                {monthName} {year}
-              </span>
-              <button
-                onClick={goToNextMonth}
-                className="p-1 text-slate-500 hover:text-secondary"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-          <h1 className="text-2xl font-bold text-white">Set Budget</h1>
-          <p className="text-slate-400 text-sm mt-1">
-            Set monthly budget for this month
-          </p>
-        </header>
+      <Page className="space-y-6">
+        <CalendarNav locked />
 
-        <div className="glass-panel rounded-xl p-4 space-y-4 mb-6">
+        <div className="glass-panel rounded-xl p-4 space-y-4">
           <div className="space-y-2">
             <label className="text-sm text-violet-400">
               Total Monthly Budget
@@ -129,7 +103,7 @@ function BudgetPage() {
           </div>
         </div>
 
-        <div className="mb-6">
+        <div className="">
           <h2 className="text-base font-semibold text-white mb-3">
             Category Budgets
           </h2>
@@ -209,12 +183,7 @@ function BudgetPage() {
           >
             {setMonthBudget.isPending ? 'Saving...' : 'Save Budget'}
           </button>
-          <Link
-            to="/"
-            className="py-3 border border-secondary text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/5 transition-all active:scale-98 text-center"
-          >
-            Cancel
-          </Link>
+          <CancelButton to="/" />
         </div>
 
         <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />

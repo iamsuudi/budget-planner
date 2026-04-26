@@ -1,10 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useCurrency } from '#/lib/currency-context'
 import { CategoryCard } from '#/components/CategoryCard'
-import { GlassCard } from '#/components/GlassCard'
-import { IconButton } from '#/components/IconButton'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { CalendarNav } from '#/components/CalendarNav'
 
 export const Route = createFileRoute('/reports/')({
   component: ReportsPage,
@@ -62,18 +61,7 @@ function ReportsPage() {
 
       <Page>
         <section className="mb-6">
-          <GlassCard className="flex items-center justify-between">
-            <IconButton icon="chevron_left" className="w-10 h-10" />
-            <div className="text-center">
-              <h2 className="text-lg font-bold text-on-surface tracking-tight">
-                October 2023
-              </h2>
-              <p className="text-[10px] text-outline uppercase tracking-widest mt-0.5">
-                Monthly Analytics
-              </p>
-            </div>
-            <IconButton icon="chevron_right" className="w-10 h-10" />
-          </GlassCard>
+          <CalendarNav />
         </section>
 
         <section className="mb-6">

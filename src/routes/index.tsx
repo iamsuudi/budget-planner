@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ChevronLeft, ChevronRight, Flag, PiggyBank, PlusCircle, Wallet, Receipt } from 'lucide-react'
+import { ChevronRight, Flag, PiggyBank, PlusCircle, Wallet, Receipt } from 'lucide-react'
 import { useMemo } from 'react'
 import { useGetInvoicesByMonth, useGetMonthBudget } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
@@ -8,16 +8,16 @@ import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
 import { ProgressBar } from '#/components/ProgressBar'
 import { TopAppBar } from '#/components/TopAppBar'
+import { CalendarNav } from '#/components/CalendarNav'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
 })
 
 function HomePage() {
-  const { currentMonth, goToPrevMonth, goToNextMonth, isCurrentMonth } =
-    useMonth()
+  const { currentMonth, isCurrentMonth } = useMonth()
   const { formatAmount } = useCurrency()
-  const { year, month, monthName } = currentMonth
+  const { year, month } = currentMonth
 
   const { data: invoices = [], isLoading } = useGetInvoicesByMonth(year, month)
   const { data: monthBudget } = useGetMonthBudget(year, month)
@@ -31,34 +31,13 @@ function HomePage() {
     return Math.min((totalExpenses / monthBudget.totalBudget) * 100, 100)
   }, [totalExpenses, monthBudget])
 
-  const canGoNext = !isCurrentMonth(year, month)
-
   return (
     <div className="">
       <TopAppBar />
 
       <Page className="space-y-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={goToPrevMonth}
-              className="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-container border border-white/5 text-secondary hover:text-secondary-fixed transition-all"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-on-surface">
-                {monthName} {year}
-              </h2>
-            </div>
-            <button
-              onClick={goToNextMonth}
-              disabled={!canGoNext}
-              className="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-container border border-white/5 text-secondary hover:text-secondary-fixed transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+          <CalendarNav />
           {monthBudget && monthBudget.totalBudget > 0 && (
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold ${budgetPercentage >= 100 ? 'bg-error/10 text-error' : 'bg-tertiary/10 text-tertiary'}`}
