@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+import { CURRENCIES, useCurrency } from '#/lib/currency-context'
+import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
-import { useCurrency, CURRENCIES } from '#/lib/currency-context'
 
 export const Route = createFileRoute('/settings/currency/')({
   component: CurrencyPage,
@@ -24,29 +25,29 @@ function CurrencyPage() {
   }
 
   return (
-    <div className="">
+    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
       <TopAppBar title="Select Currency" showBack backTo={'/settings'} />
 
-      <main className="pt-20 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
-        <div className="mb-4">
+      <Page className="">
+        <div className="mb-3">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search currency..."
-            className="w-full bg-surface-container-high rounded-xl px-4 py-3 text-on-surface placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            placeholder="Search..."
+            className="w-full bg-surface-container-high rounded-lg px-3 py-2 text-on-surface placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm"
           />
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           {filteredCurrencies.map((c) => (
             <button
               key={c.cc}
               onClick={() => handleSelect(c.cc)}
-              className="flex items-center justify-between p-4 rounded-xl hover:bg-white/5 transition-colors text-left"
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors text-left"
             >
               <div className="flex items-center gap-3">
-                <span className="text-lg font-semibold text-violet-400 w-12">
+                <span className="text-lg font-semibold text-violet-400 w-8">
                   {c.symbol}
                 </span>
                 <div>
@@ -57,14 +58,14 @@ function CurrencyPage() {
                 </div>
               </div>
               {currentCurrency.cc === c.cc && (
-                <span className="material-symbols-outlined text-tertiary">
+                <span className="material-symbols-outlined text-tertiary text-lg">
                   check_circle
                 </span>
               )}
             </button>
           ))}
         </div>
-      </main>
+      </Page>
     </div>
   )
 }

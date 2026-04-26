@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useGetCategories, useDeleteCategory } from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
+import { BottomNavBar } from '#/components/BottomNavBar'
+import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/expense-category/')({
@@ -12,7 +14,7 @@ function ExpenseCategoryPage() {
   const deleteCategory = useDeleteCategory()
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this category?')) {
+    if (confirm('Delete this category?')) {
       deleteCategory.mutate(id)
     }
   }
@@ -21,52 +23,48 @@ function ExpenseCategoryPage() {
     <div className="min-h-screen bg-background text-on-surface">
       <TopAppBar showProfile />
 
-      <main className="pt-24 pb-32 px-6 max-w-7xl mx-auto">
-        <section className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+      <Page>
+        <section className="flex justify-between items-center mb-6 gap-3">
           <div>
-            <h2 className="text-3xl font-bold text-white mb-1">
-              Manage Categories
-            </h2>
-            <p className="text-slate-400">Organize your spending categories.</p>
+            <h2 className="text-2xl font-bold text-white mb-1">Categories</h2>
+            <p className="text-slate-400 text-sm">Organize spending.</p>
           </div>
           <Link
             to="/expense-category/add"
-            className="bg-primary-container text-on-primary-container py-3 px-6 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:scale-105 active:scale-95 transition-all"
+            className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
           >
-            <span className="material-symbols-outlined">add_circle</span>
-            Add New Category
+            <span className="material-symbols-outlined text-lg">add_circle</span>
+            Add
           </Link>
         </section>
 
         {isLoading ? (
-          <div className="text-center py-10 text-slate-500">Loading...</div>
+          <div className="text-center py-8 text-slate-500">Loading...</div>
         ) : categories.length === 0 ? (
-          <div className="text-center py-10">
-            <p className="text-slate-500 mb-4">
-              No categories yet. Create your first category!
-            </p>
+          <div className="text-center py-8">
+            <p className="text-slate-500 mb-4">No categories yet.</p>
             <Link
               to="/expense-category/add"
-              className="text-secondary hover:underline"
+              className="text-secondary hover:underline text-sm"
             >
               Add Category
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 gap-3">
             {categories.map((category) => {
               const styles = getIconStyle(category.icon)
               return (
                 <div
                   key={category.id}
-                  className="glass-card p-6 rounded-xl flex flex-col justify-between group hover:border-violet-500/40 transition-all"
+                  className="glass-card p-4 rounded-lg flex flex-col justify-between group"
                 >
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start justify-between mb-3">
                     <div
-                      className={`${styles.bg} p-3 rounded-lg border ${styles.border}`}
+                      className={`${styles.bg} p-2 rounded-lg border ${styles.border}`}
                     >
                       <span
-                        className={`material-symbols-outlined text-3xl ${styles.color}`}
+                        className={`material-symbols-outlined text-xl ${styles.color}`}
                       >
                         {category.icon}
                       </span>
@@ -75,22 +73,24 @@ function ExpenseCategoryPage() {
                       <Link
                         to={`/expense-category/edit/$id`}
                         params={{ id: category.id }}
-                        className="p-2 text-slate-500 hover:text-secondary transition-colors"
+                        className="p-1 text-slate-500 hover:text-secondary transition-colors"
                       >
-                        <span className="material-symbols-outlined">edit</span>
+                        <span className="material-symbols-outlined text-lg">
+                          edit
+                        </span>
                       </Link>
                       <button
                         onClick={() => handleDelete(category.id)}
-                        className="p-2 text-slate-500 hover:text-error transition-colors"
+                        className="p-1 text-slate-500 hover:text-error transition-colors"
                       >
-                        <span className="material-symbols-outlined">
+                        <span className="material-symbols-outlined text-lg">
                           delete
                         </span>
                       </button>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">
+                    <h3 className="text-base font-bold text-white">
                       {category.name}
                     </h3>
                   </div>
@@ -99,22 +99,18 @@ function ExpenseCategoryPage() {
             })}
             <Link
               to="/expense-category/add"
-              className="border-2 border-dashed border-slate-800 p-6 rounded-xl flex flex-col items-center justify-center gap-4 group hover:border-violet-500/30 hover:bg-violet-500/5 transition-all cursor-pointer"
+              className="border-2 border-dashed border-slate-800 p-4 rounded-lg flex flex-col items-center justify-center gap-2 group hover:border-violet-500/30 hover:bg-violet-500/5 transition-all cursor-pointer min-h-[100px]"
             >
-              <div className="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span className="material-symbols-outlined text-slate-600 group-hover:text-violet-400">
-                  add
-                </span>
-              </div>
-              <div className="text-center">
-                <span className="text-sm text-slate-500 block">
-                  Create Category
-                </span>
-              </div>
+              <span className="material-symbols-outlined text-slate-600 group-hover:text-violet-400 text-2xl">
+                add
+              </span>
+              <span className="text-xs text-slate-500">Add</span>
             </Link>
           </div>
         )}
-      </main>
+      </Page>
+
+      <BottomNavBar />
     </div>
   )
 }

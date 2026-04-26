@@ -5,6 +5,7 @@ import {
   useUpdatePaymentMethod,
   useDeletePaymentMethod,
 } from '#/hooks/query'
+import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/payment-method/edit/$id')({
@@ -50,18 +51,17 @@ function EditPaymentMethodPage() {
 
   if (!method) {
     return (
-      <div className="">
+      <div className="min-h-screen bg-background text-on-surface">
         <TopAppBar showProfile />
-
-        <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+        <Page>
           <p className="text-slate-500">Payment method not found.</p>
           <Link
             to="/payment-method"
-            className="text-secondary hover:underline mt-4 block"
+            className="text-secondary hover:underline mt-4 block text-sm"
           >
             Back to Payment Methods
           </Link>
-        </main>
+        </Page>
       </div>
     )
   }
@@ -70,8 +70,8 @@ function EditPaymentMethodPage() {
     <div className="">
       <TopAppBar showProfile />
 
-      <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
-        <header className="mb-8">
+      <Page>
+        <header className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <Link
               to="/payment-method"
@@ -83,20 +83,20 @@ function EditPaymentMethodPage() {
               Settings
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-white">Edit Payment Method</h1>
-          <p className="text-slate-400 mt-2">Update payment method details.</p>
+          <h1 className="text-2xl font-bold text-white">Edit Payment Method</h1>
+          <p className="text-slate-400 text-sm mt-1">Update payment details.</p>
         </header>
 
-        <div className="glass-panel rounded-xl p-6 space-y-6">
-          <section className="space-y-4">
+        <div className="glass-panel rounded-xl p-4 space-y-4">
+          <section className="space-y-2">
             <div className="space-y-2">
               <label className="text-sm text-violet-400">
                 Payment Method Name
               </label>
-              <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-4 py-3">
+              <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2">
                 <input
                   className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
-                  placeholder="e.g., Visa ending 4242"
+                  placeholder="e.g., Visa"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -106,26 +106,25 @@ function EditPaymentMethodPage() {
           </section>
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
+        <div className="mt-6 flex flex-col gap-3">
           <button
             onClick={handleSave}
             disabled={!name.trim() || updatePaymentMethod.isPending}
-            className="w-full sm:w-auto px-10 py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+            className="py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {updatePaymentMethod.isPending ? 'Saving...' : 'Save Changes'}
           </button>
           <button
             onClick={handleDelete}
             disabled={deletePaymentMethod.isPending}
-            className="w-full sm:w-auto px-10 py-3 bg-error-container text-error rounded-xl text-sm font-semibold hover:bg-error/10 transition-all active:scale-95 text-center"
+            className="py-3 bg-error-container text-error rounded-xl text-sm font-semibold hover:bg-error/10 transition-all active:scale-95"
           >
             {deletePaymentMethod.isPending ? 'Deleting...' : 'Delete'}
           </button>
         </div>
-
-        <div className="fixed -bottom-32 -left-32 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10" />
-        <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
-      </main>
+        <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />
+        <div className="fixed -top-32 -right-32 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] -z-10" />
+      </Page>
     </div>
   )
 }

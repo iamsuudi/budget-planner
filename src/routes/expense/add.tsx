@@ -4,8 +4,11 @@ import {
   useGetCategories,
   useGetPaymentMethods,
   useCreateInvoice,
+  useGetInvoicesByMonth,
 } from '#/hooks/query'
 import { useCurrency } from '#/lib/currency-context'
+import { useMonth } from '#/lib/month-context'
+import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/expense/add')({
@@ -15,8 +18,13 @@ export const Route = createFileRoute('/expense/add')({
 function AddExpensePage() {
   const navigate = useNavigate()
   const { getSymbol } = useCurrency()
+  const { currentMonth } = useMonth()
   const { data: categories = [] } = useGetCategories()
   const { data: paymentMethods = [] } = useGetPaymentMethods()
+  const { data: invoices = [] } = useGetInvoicesByMonth(
+    currentMonth.year,
+    currentMonth.month,
+  )
   const createInvoice = useCreateInvoice()
 
   const [amount, setAmount] = useState('')
@@ -58,6 +66,11 @@ function AddExpensePage() {
     )
   }, [amount, selectedCategoryId, selectedPaymentMethodId])
 
+  const recentAmount =
+    invoices.length > 0
+      ? invoices.reduce((sum, inv) => sum + inv.amount, 0)
+      : 0
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-on-surface flex items-center justify-center">
@@ -70,7 +83,7 @@ function AddExpensePage() {
     return (
       <div className="">
         <TopAppBar />
-        <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+        <Page pt="pt-6">
           <header className="mb-8">
             <div className="flex items-center gap-2 mb-2">
               <Link
@@ -113,7 +126,7 @@ function AddExpensePage() {
               </Link>
             </div>
           )}
-        </main>
+        </Page>
       </div>
     )
   }
@@ -122,7 +135,7 @@ function AddExpensePage() {
     <div className="">
       <TopAppBar />
 
-      <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+      <Page pt="pt-6">
         <header className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <Link
@@ -139,11 +152,11 @@ function AddExpensePage() {
           <p className="text-slate-400 mt-2">Record a new expense.</p>
         </header>
 
-        <div className="glass-panel rounded-xl p-6 space-y-6">
-          <section className="space-y-4">
+        <div className="glass-panel rounded-xl p-4 space-y-4">
+          <section className="space-y-2">
             <div className="space-y-2">
               <label className="text-sm text-violet-400">Amount</label>
-              <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-4 py-3 flex items-center">
+              <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2 flex items-center">
                 <span className="text-slate-500 mr-2">{getSymbol()}</span>
                 <input
                   className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
@@ -158,20 +171,27 @@ function AddExpensePage() {
             </div>
           </section>
 
-          <section className="space-y-4">
+          {recentAmount > 0 && (
+            <p className="text-xs text-slate-500 text-center">
+              This month's spending: {getSymbol()}
+              {recentAmount.toFixed(2)}
+            </p>
+          )}
+
+          <section className="space-y-2">
             <label className="text-sm text-violet-400">Category</label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
-                  className={`p-4 rounded-lg border transition-all active:scale-95 ${
+                  className={`p-3 rounded-lg border transition-all active:scale-95 ${
                     selectedCategoryId === cat.id
                       ? 'bg-violet-500/20 border-violet-500/50 text-violet-400 electric-glow'
                       : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
                   }`}
                   onClick={() => setSelectedCategoryId(cat.id)}
                 >
-                  <span className="material-symbols-outlined block mb-1">
+                  <span className="material-symbols-outlined block mb-1 text-lg">
                     {cat.icon}
                   </span>
                   <span className="text-xs">{cat.name}</span>
@@ -180,30 +200,32 @@ function AddExpensePage() {
             </div>
           </section>
 
-          <section className="space-y-4">
+          <section className="space-y-2">
             <label className="text-sm text-violet-400">Payment Method</label>
-            <div className="grid grid-cols-1 gap-3">
+            <div className="flex flex-col gap-2">
               {paymentMethods.map((pm) => (
                 <button
                   key={pm.id}
-                  className={`p-4 rounded-lg border flex items-center gap-3 transition-all active:scale-95 ${
+                  className={`p-3 rounded-lg border flex items-center gap-2 transition-all active:scale-95 text-sm ${
                     selectedPaymentMethodId === pm.id
                       ? 'bg-violet-500/20 border-violet-500/50 text-violet-400'
                       : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
                   }`}
                   onClick={() => setSelectedPaymentMethodId(pm.id)}
                 >
-                  <span className="material-symbols-outlined">credit_card</span>
+                  <span className="material-symbols-outlined text-lg">
+                    credit_card
+                  </span>
                   <span>{pm.name}</span>
                 </button>
               ))}
             </div>
           </section>
 
-          <section className="space-y-4">
+          <section className="space-y-2">
             <div className="space-y-2">
               <label className="text-sm text-violet-400">Note (Optional)</label>
-              <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-4 py-3">
+              <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2">
                 <input
                   className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
                   placeholder="Add a note..."
@@ -216,25 +238,25 @@ function AddExpensePage() {
           </section>
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
+        <div className="mt-6 flex flex-col gap-3">
           <button
             onClick={handleSave}
             disabled={!isValid || createInvoice.isPending}
-            className="w-full sm:w-auto px-10 py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {createInvoice.isPending ? 'Saving...' : 'Save Expense'}
           </button>
           <Link
             to="/"
-            className="w-full sm:w-auto px-10 py-3 border border-secondary text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/5 transition-all active:scale-95 text-center"
+            className="w-full py-3 border border-secondary text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/5 transition-all active:scale-95 text-center"
           >
             Cancel
           </Link>
         </div>
 
-        <div className="fixed -bottom-32 -left-32 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10" />
-        <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
-      </main>
+        <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />
+        <div className="fixed -top-32 -right-32 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] -z-10" />
+      </Page>
     </div>
   )
 }

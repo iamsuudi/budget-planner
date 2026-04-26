@@ -4,6 +4,7 @@ import { BottomNavBar } from '#/components/BottomNavBar'
 import { CategoryCard } from '#/components/CategoryCard'
 import { GlassCard } from '#/components/GlassCard'
 import { IconButton } from '#/components/IconButton'
+import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/reports/')({
@@ -60,26 +61,24 @@ function ReportsPage() {
     <div className="">
       <TopAppBar showProfile={false} />
 
-      <main className="pt-24 pb-32 px-6 max-w-5xl mx-auto">
-        {/* Month Navigation Card */}
-        <section className="mb-10">
-          <GlassCard className="flex items-center justify-between shadow-xl">
-            <IconButton icon="chevron_left" className="w-12 h-12" />
+      <Page>
+        <section className="mb-6">
+          <GlassCard className="flex items-center justify-between">
+            <IconButton icon="chevron_left" className="w-10 h-10" />
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-on-surface tracking-tight">
+              <h2 className="text-lg font-bold text-on-surface tracking-tight">
                 October 2023
               </h2>
-              <p className="text-xs text-outline uppercase tracking-widest mt-1">
+              <p className="text-[10px] text-outline uppercase tracking-widest mt-0.5">
                 Monthly Analytics
               </p>
             </div>
-            <IconButton icon="chevron_right" className="w-12 h-12" />
+            <IconButton icon="chevron_right" className="w-10 h-10" />
           </GlassCard>
         </section>
 
-        {/* Summary Decorative Section */}
-        <section className="mb-10">
-          <div className="relative w-full h-48 rounded-xl overflow-hidden glass-card rim-light p-6 flex items-end">
+        <section className="mb-6">
+          <div className="relative h-36 rounded-xl overflow-hidden glass-card p-4 flex items-end">
             <img
               alt="Financial Analytics"
               className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay"
@@ -87,14 +86,14 @@ function ReportsPage() {
             />
             <div className="relative z-10 w-full flex justify-between items-center">
               <div>
-                <p className="text-xs text-primary uppercase tracking-widest">
+                <p className="text-[10px] text-primary uppercase tracking-widest">
                   Total Performance
                 </p>
-                <h4 className="text-3xl font-bold text-on-surface">On Track</h4>
+                <h4 className="text-2xl font-bold text-on-surface">On Track</h4>
               </div>
               <div className="text-right">
-                <p className="text-xs text-outline">Monthly Balance</p>
-                <p className="text-2xl font-bold text-tertiary">
+                <p className="text-[10px] text-outline">Balance</p>
+                <p className="text-lg font-bold text-tertiary">
                   +{formatAmount(1450)}
                 </p>
               </div>
@@ -102,84 +101,44 @@ function ReportsPage() {
           </div>
         </section>
 
-        {/* Reports Bento Grid / List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex flex-col gap-3">
           {mockCategories.map((category) => (
             <CategoryCard key={category.id} category={category} />
           ))}
         </div>
 
-        {/* Budget Health Strategy Section */}
-        <section className="mt-10 bg-surface-container-lowest p-8 rounded-2xl border border-white/5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 blur-[100px] rounded-full" />
-          <div className="flex flex-col md:flex-row items-center gap-10 relative z-10">
-            <div className="w-full md:w-1/2">
-              <h3 className="text-xl font-bold text-white mb-2">
-                Budget Health Strategy
-              </h3>
-              <p className="text-slate-400 mb-4">
-                Your categorized spending is currently{' '}
-                <span className="text-tertiary font-bold">12% lower</span> than
-                last month. We recommend allocating the surplus to your
-                "Education" category to maximize your potential.
-              </p>
-              <div className="flex gap-8">
-                <div className="flex flex-col">
-                  <span className="text-[10px] uppercase tracking-widest text-slate-500">
-                    Total Budgeted
-                  </span>
-                  <span className="text-xl font-bold text-white">
-                    {formatAmount(2020)}
-                  </span>
-                </div>
-                <div className="flex flex-col border-l border-white/10 pl-8">
-                  <span className="text-[10px] uppercase tracking-widest text-slate-500">
-                    Unallocated
-                  </span>
-                  <span className="text-xl font-bold text-secondary">
-                    {formatAmount(480)}
-                  </span>
-                </div>
+        <section className="mt-6 bg-surface-container-lowest p-4 rounded-xl border border-white/5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/10 blur-[60px] rounded-full" />
+          <div className="relative z-10">
+            <h3 className="text-base font-bold text-white mb-2">
+              Budget Health Strategy
+            </h3>
+            <p className="text-xs text-slate-400 mb-3">
+              Your categorized spending is currently{' '}
+              <span className="text-tertiary font-bold">12% lower</span> than
+              last month.
+            </p>
+            <div className="flex gap-6">
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-widest text-slate-500">
+                  Budgeted
+                </span>
+                <span className="text-base font-bold text-white">
+                  {formatAmount(2020)}
+                </span>
               </div>
-            </div>
-            <div className="w-full md:w-1/2 flex justify-center">
-              <div className="relative w-48 h-48">
-                <svg className="w-full h-full transform -rotate-90">
-                  <circle
-                    className="text-slate-800"
-                    cx="96"
-                    cy="96"
-                    fill="transparent"
-                    r="88"
-                    stroke="currentColor"
-                    strokeWidth="12"
-                  />
-                  <circle
-                    className="text-violet-500"
-                    cx="96"
-                    cy="96"
-                    fill="transparent"
-                    r="88"
-                    stroke="currentColor"
-                    strokeDasharray="552.92"
-                    strokeDashoffset="138.23"
-                    strokeWidth="12"
-                    style={{
-                      filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.5))',
-                    }}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-5xl font-extrabold text-white">75</span>
-                  <span className="text-[10px] uppercase tracking-widest text-violet-400 font-bold">
-                    Score
-                  </span>
-                </div>
+              <div className="flex flex-col border-l border-white/10 pl-4">
+                <span className="text-[10px] uppercase tracking-widest text-slate-500">
+                  Unallocated
+                </span>
+                <span className="text-base font-bold text-secondary">
+                  {formatAmount(480)}
+                </span>
               </div>
             </div>
           </div>
         </section>
-      </main>
+      </Page>
     </div>
   )
 }

@@ -14,8 +14,10 @@ function RootComponent() {
     <CurrencyProvider>
       <MonthProvider>
         <div className="bg-surface-dim text-on-surface antialiased">
-          <div className="relative max-w-md mx-auto min-h-screen">
-            <Outlet />
+          <div className="relative max-w-lg mx-auto h-screen no-scrollbar overflow-auto">
+            <div className="h-fit min-h-screen">
+              <Outlet />
+            </div>
             <BottomNavBar />
           </div>
         </div>

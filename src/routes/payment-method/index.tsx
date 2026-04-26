@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useGetPaymentMethods, useDeletePaymentMethod } from '#/hooks/query'
-import { BottomNavBar } from '#/components/BottomNavBar'
+import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/payment-method/')({
@@ -12,17 +12,17 @@ function PaymentMethodPage() {
   const deletePaymentMethod = useDeletePaymentMethod()
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this payment method?')) {
+    if (confirm('Delete this payment method?')) {
       deletePaymentMethod.mutate(id)
     }
   }
 
   return (
-    <div className="">
+    <div className="min-h-screen bg-background text-on-background">
       <TopAppBar showProfile />
 
-      <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
-        <header className="mb-8">
+      <Page>
+        <header className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <Link
               to="/settings"
@@ -34,73 +34,77 @@ function PaymentMethodPage() {
               Settings
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-white">Payment Methods</h1>
-          <p className="text-slate-400 mt-2">
-            Manage your payment methods for tracking expenses.
+          <h1 className="text-2xl font-bold text-white">Payment Methods</h1>
+          <p className="text-slate-400 text-sm mt-1">
+            Manage your payment methods.
           </p>
         </header>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <Link
             to="/payment-method/add"
-            className="bg-primary-container text-on-primary-container py-3 px-6 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:scale-105 active:scale-95 transition-all w-full sm:w-auto"
+            className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center justify-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
           >
-            <span className="material-symbols-outlined">add_circle</span>
-            Add New Payment Method
+            <span className="material-symbols-outlined text-lg">
+              add_circle
+            </span>
+            Add Method
           </Link>
         </div>
 
         {isLoading ? (
-          <div className="text-center py-10 text-slate-500">Loading...</div>
+          <div className="text-center py-8 text-slate-500">Loading...</div>
         ) : methods.length === 0 ? (
-          <div className="text-center py-10">
+          <div className="text-center py-8">
             <p className="text-slate-500 mb-4">No payment methods yet.</p>
             <Link
               to="/payment-method/add"
-              className="text-secondary hover:underline"
+              className="text-secondary hover:underline text-sm"
             >
               Add Payment Method
             </Link>
           </div>
         ) : (
-          <section className="flex flex-col gap-3">
+          <section className="flex flex-col gap-2">
             {methods.map((method) => (
               <div
                 key={method.id}
-                className="glass-card flex items-center justify-between p-4 rounded-xl hover:bg-white/5 transition-all group"
+                className="glass-card flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-all group"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-secondary/10 text-secondary">
-                    <span className="material-symbols-outlined">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-secondary/10 text-secondary">
+                    <span className="material-symbols-outlined text-lg">
                       credit_card
                     </span>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">
-                      {method.name}
-                    </p>
-                  </div>
+                  <p className="text-sm font-semibold text-on-surface">
+                    {method.name}
+                  </p>
                 </div>
                 <div className="flex gap-1">
                   <Link
                     to={`/payment-method/edit/$id`}
                     params={{ id: method.id }}
-                    className="p-2 text-slate-500 hover:text-secondary transition-colors"
+                    className="p-1 text-slate-500 hover:text-secondary transition-colors"
                   >
-                    <span className="material-symbols-outlined">edit</span>
+                    <span className="material-symbols-outlined text-lg">
+                      edit
+                    </span>
                   </Link>
                   <button
                     onClick={() => handleDelete(method.id)}
-                    className="p-2 text-slate-500 hover:text-error transition-colors"
+                    className="p-1 text-slate-500 hover:text-error transition-colors"
                   >
-                    <span className="material-symbols-outlined">delete</span>
+                    <span className="material-symbols-outlined text-lg">
+                      delete
+                    </span>
                   </button>
                 </div>
               </div>
             ))}
           </section>
         )}
-      </main>
+      </Page>
     </div>
   )
 }

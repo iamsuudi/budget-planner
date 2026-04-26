@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useGetWallets, useDeleteWallet } from '#/hooks/query'
 import { ActionListItem } from '#/components/ActionListItem'
+import { BottomNavBar } from '#/components/BottomNavBar'
 import { GlassCard } from '#/components/GlassCard'
+import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/wallets/')({
@@ -13,19 +15,19 @@ function WalletsPage() {
   const deleteWallet = useDeleteWallet()
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this wallet?')) {
+    if (confirm('Delete this wallet?')) {
       deleteWallet.mutate(id)
     }
   }
 
   return (
-    <div className="">
+    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
       <TopAppBar title="My Wallets" showBack backTo={'/profile'} />
 
-      <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
-        <section className="flex flex-col gap-4">
+      <Page className="min-h-screen">
+        <section className="flex flex-col gap-3">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-widest px-2">
+            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-widest">
               Bank Accounts ({wallets.length})
             </h2>
             <Link
@@ -37,14 +39,13 @@ function WalletsPage() {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-10 text-slate-500">Loading...</div>
+            <div className="text-center py-8 text-slate-500">Loading...</div>
           ) : wallets.length === 0 ? (
-            <GlassCard className="p-8 text-center">
-              <span className="material-symbols-outlined text-4xl text-slate-500 mb-2">
-                {' '}
-                account_balance{' '}
+            <GlassCard className="p-6 text-center">
+              <span className="material-symbols-outlined text-3xl text-slate-500 mb-2">
+                account_balance
               </span>
-              <p className="text-slate-400">No wallets yet</p>
+              <p className="text-slate-400 text-sm">No wallets yet</p>
               <Link
                 to="/wallets/add"
                 className="text-violet-400 text-sm font-medium mt-2 inline-block"
@@ -81,7 +82,9 @@ function WalletsPage() {
             ))
           )}
         </section>
-      </main>
+      </Page>
+
+      <BottomNavBar />
     </div>
   )
 }

@@ -1,11 +1,15 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect, useRef } from 'react'
 import { useGetUser, useUpdateUser } from '#/hooks/query'
+import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/profile/edit')({
   component: ProfileEditPage,
 })
+
+const defaultAvatar =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23d0bcff' width='100' height='100'/%3E%3Ctext x='50' y='55' dominant-baseline='middle' text-anchor='middle' fill='%230b1326' font-size='40' font-family='sans-serif'%3E%3F%3C/text%3E%3C/svg%3E"
 
 function ProfileEditPage() {
   const navigate = useNavigate()
@@ -77,25 +81,25 @@ function ProfileEditPage() {
   }
 
   return (
-    <div className="">
+    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
       <TopAppBar title="Edit Profile" showBack backTo={'/profile'} />
 
-      <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
-        <section className="flex flex-col gap-6">
+      <Page className="min-h-screen">
+        <section className="flex flex-col gap-4">
           <div className="flex flex-col items-center">
-            <div className="relative group mb-4">
-              <div className="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-violet-500 to-secondary glow-violet">
-                <div className="w-full h-full rounded-full overflow-hidden border-4 border-surface">
+            <div className="relative group mb-3">
+              <div className="w-20 h-20 rounded-full p-0.5 bg-gradient-to-tr from-violet-500 to-secondary glow-violet">
+                <div className="w-full h-full rounded-full overflow-hidden border-2 border-surface">
                   <img
-                    alt="P"
-                    className="w-full h-full object-cover bg-primary"
-                    src={profilePicture}
+                    alt="Profile Avatar"
+                    className="w-full h-full object-cover"
+                    src={profilePicture || defaultAvatar}
                   />
                 </div>
               </div>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="absolute bottom-2 right-2 bg-primary-container text-on-primary-container p-2 rounded-full shadow-lg border border-white/20 transition-all hover:scale-110 active:scale-95"
+                className="absolute bottom-0 right-0 bg-primary-container text-on-primary-container p-1.5 rounded-full shadow-lg border border-white/20 transition-all hover:scale-110 active:scale-95"
               >
                 <span className="material-symbols-outlined text-sm">
                   photo_camera
@@ -112,32 +116,32 @@ function ProfileEditPage() {
             {profilePicture && (
               <button
                 onClick={handleRemoveImage}
-                className="text-sm text-error hover:underline"
+                className="text-xs text-error hover:underline"
               >
                 Remove Photo
               </button>
             )}
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div>
-              <label className="block text-sm text-slate-400 mb-2">Name</label>
+              <label className="block text-xs text-slate-400 mb-1">Name</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
-                className="w-full bg-surface-container-high rounded-xl px-4 py-3 text-on-surface placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full bg-surface-container-high rounded-lg px-3 py-2 text-on-surface placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm"
               />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-2">Email</label>
+              <label className="block text-xs text-slate-400 mb-1">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="w-full bg-surface-container-high rounded-xl px-4 py-3 text-on-surface placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full bg-surface-container-high rounded-lg px-3 py-2 text-on-surface placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm"
               />
             </div>
           </div>
@@ -145,12 +149,12 @@ function ProfileEditPage() {
           <button
             onClick={handleSave}
             disabled={updateUser.isPending}
-            className="w-full bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold py-4 rounded-xl shadow-lg shadow-violet-500/20 transition-all hover:shadow-violet-500/40 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold py-3 rounded-xl shadow-md transition-all hover:shadow-lg active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {updateUser.isPending ? 'Saving...' : 'Save Changes'}
           </button>
         </section>
-      </main>
+      </Page>
     </div>
   )
 }
