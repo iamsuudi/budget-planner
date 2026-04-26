@@ -1,5 +1,4 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import {
   useGetPaymentMethodById,
@@ -8,8 +7,9 @@ import {
 } from '#/hooks/query'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { CancelButton } from '#/components/CancelButton'
 
-export const Route = createFileRoute('/payment-method/edit/$id')({
+export const Route = createFileRoute('/settings/payment-method/edit/$id')({
   component: EditPaymentMethodPage,
 })
 
@@ -32,13 +32,13 @@ function EditPaymentMethodPage() {
 
     updatePaymentMethod.mutate(
       { id, updates: { name: name.trim() } },
-      { onSuccess: () => navigate({ to: '/payment-method' }) },
+      { onSuccess: () => navigate({ to: '/settings/payment-method' }) },
     )
   }
 
   const handleDelete = () => {
     deletePaymentMethod.mutate(id, {
-      onSuccess: () => navigate({ to: '/payment-method' }),
+      onSuccess: () => navigate({ to: '/settings/payment-method' }),
     })
   }
 
@@ -53,11 +53,15 @@ function EditPaymentMethodPage() {
   if (!method) {
     return (
       <div className="min-h-screen bg-background text-on-surface">
-        <TopAppBar showProfile />
+        <TopAppBar
+          title="Edit Payment Method"
+          showBack
+          backTo={'/settings/payment-method'}
+        />
         <Page>
           <p className="text-slate-500">Payment method not found.</p>
           <Link
-            to="/payment-method"
+            to="/settings/payment-method"
             className="text-secondary hover:underline mt-4 block text-sm"
           >
             Back to Payment Methods
@@ -69,25 +73,13 @@ function EditPaymentMethodPage() {
 
   return (
     <div className="">
-      <TopAppBar showProfile />
+      <TopAppBar
+        title="Edit Payment Method"
+        showBack
+        backTo={'/settings/payment-method'}
+      />
 
       <Page>
-        <header className="mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <Link
-              to="/payment-method"
-              className="text-secondary hover:text-cyan-400 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <span className="text-secondary text-sm uppercase tracking-widest">
-              Settings
-            </span>
-          </div>
-          <h1 className="text-2xl font-bold text-white">Edit Payment Method</h1>
-          <p className="text-slate-400 text-sm mt-1">Update payment details.</p>
-        </header>
-
         <div className="glass-panel rounded-xl p-4 space-y-4">
           <section className="space-y-2">
             <div className="space-y-2">
@@ -115,6 +107,7 @@ function EditPaymentMethodPage() {
           >
             {updatePaymentMethod.isPending ? 'Saving...' : 'Save Changes'}
           </button>
+          <CancelButton to="/payment-method" />
           <button
             onClick={handleDelete}
             disabled={deletePaymentMethod.isPending}

@@ -11,15 +11,24 @@ interface TopAppBarProps {
   backTo?: string
 }
 
+const INDEX_ROUTES = ['/', '/wallets', '/payment-method', '/expense-category', '/budget', '/reports', '/settings', '/profile']
+
 export function TopAppBar({
   title,
   showProfile = true,
-  showBack = false,
+  showBack,
   backTo,
 }: TopAppBarProps) {
   const [user, setUser] = useState<UserType | null>(null)
   const { pathname } = useLocation()
   const router = useRouter()
+
+  const isNestedRoute = !INDEX_ROUTES.includes(pathname) && pathname !== '/expense/add'
+  const autoShowBack = showBack ?? isNestedRoute
+
+  const parentPath = pathname.split('/').slice(0, -1).join('/') || '/'
+  const defaultBackTo = backTo || (parentPath === '' ? '/' : parentPath)
+
   let path = pathname.split('/').find((p) => p != '')
   path = path ? path[0].toUpperCase() + path.slice(1) : 'Home'
 
@@ -32,11 +41,11 @@ export function TopAppBar({
   return (
     <header className="fixed top-0 w-full z-50">
       <div className="max-w-lg w-full bg-slate-950/80 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 h-16">
-        {showBack ? (
+        {autoShowBack ? (
           <div className="flex items-center gap-2">
             <ArrowLeft
               className="w-5 h-5 text-violet-500 cursor-pointer"
-              onClick={() => router.navigate({ to: backTo })}
+              onClick={() => router.navigate({ to: defaultBackTo })}
             />
             <span className="text-lg font-black text-violet-500 italic tracking-tighter">
               {title ?? path}

@@ -74,7 +74,7 @@ function BudgetPage() {
 
   return (
     <div className="">
-      <TopAppBar />
+      <TopAppBar title="Budget" showBack backTo="/" />
 
       <Page>
         <header className="mb-6">
@@ -153,7 +153,11 @@ function BudgetPage() {
                       <div
                         className={`${style.bg} p-1.5 rounded-lg border ${style.border}`}
                       >
-                        <Icon name={cat.icon} className={style.color} size={18} />
+                        <Icon
+                          name={cat.icon}
+                          className={style.color}
+                          size={18}
+                        />
                       </div>
                       <span className="text-white font-semibold text-sm">
                         {cat.name}

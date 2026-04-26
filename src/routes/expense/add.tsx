@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft, CreditCard } from 'lucide-react'
+import { CreditCard } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import {
   useGetCategories,
@@ -12,6 +12,7 @@ import { useMonth } from '#/lib/month-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
+import { CancelButton } from '#/components/CancelButton'
 
 export const Route = createFileRoute('/expense/add')({
   component: AddExpensePage,
@@ -82,30 +83,16 @@ function AddExpensePage() {
   if (categories.length === 0 || paymentMethods.length === 0) {
     return (
       <div className="">
-        <TopAppBar />
-        <Page className="space-y-6">
-          <header className="mb-8">
-            <div className="flex items-center gap-2 mb-2">
-              <Link
-                to="/"
-                className="text-secondary hover:text-cyan-400 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </Link>
-              <span className="text-secondary text-sm uppercase tracking-widest">
-                Expense
-              </span>
-            </div>
-            <h1 className="text-3xl font-bold text-white">Add Expense</h1>
-          </header>
+        <TopAppBar title="Add Expense" showBack backTo="/" />
 
+        <Page className="space-y-6">
           {categories.length === 0 && (
             <div className="glass-panel rounded-xl p-6 mb-4">
               <p className="text-slate-400 mb-4">
                 You need to create at least one expense category first.
               </p>
               <Link
-                to="/expense-category/add"
+                to="/settings/expense-category/add"
                 className="text-secondary hover:underline"
               >
                 Create Category
@@ -119,7 +106,7 @@ function AddExpensePage() {
                 You need to create at least one payment method first.
               </p>
               <Link
-                to="/payment-method/add"
+                to="/settings/payment-method/add"
                 className="text-secondary hover:underline"
               >
                 Create Payment Method
@@ -133,25 +120,9 @@ function AddExpensePage() {
 
   return (
     <div className="">
-      <TopAppBar />
+      <TopAppBar title="Add Expense" showBack backTo="/" />
 
       <Page className="space-y-6">
-        <header className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <Link
-              to="/"
-              className="text-secondary hover:text-cyan-400 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <span className="text-secondary text-sm uppercase tracking-widest">
-              Expense
-            </span>
-          </div>
-          <h1 className="text-3xl font-bold text-white">Add Expense</h1>
-          <p className="text-slate-400 mt-2">Record a new expense.</p>
-        </header>
-
         <div className="glass-panel rounded-xl p-4 space-y-4">
           <section className="space-y-2">
             <div className="space-y-2">
@@ -246,12 +217,7 @@ function AddExpensePage() {
           >
             {createInvoice.isPending ? 'Saving...' : 'Save Expense'}
           </button>
-          <Link
-            to="/"
-            className="w-full py-3 border border-secondary text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/5 transition-all active:scale-95 text-center"
-          >
-            Cancel
-          </Link>
+          <CancelButton to="/" />
         </div>
 
         <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />

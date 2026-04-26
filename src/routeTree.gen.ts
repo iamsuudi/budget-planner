@@ -10,31 +10,26 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as WalletsIndexRouteImport } from './routes/wallets/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as ReportsIndexRouteImport } from './routes/reports/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
-import { Route as PaymentMethodIndexRouteImport } from './routes/payment-method/index'
-import { Route as ExpenseCategoryIndexRouteImport } from './routes/expense-category/index'
 import { Route as BudgetIndexRouteImport } from './routes/budget/index'
-import { Route as WalletsAddRouteImport } from './routes/wallets/add'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
-import { Route as PaymentMethodAddRouteImport } from './routes/payment-method/add'
 import { Route as ExpenseAddRouteImport } from './routes/expense/add'
-import { Route as ExpenseCategoryAddRouteImport } from './routes/expense-category/add'
+import { Route as SettingsWalletsIndexRouteImport } from './routes/settings/wallets/index'
+import { Route as SettingsPaymentMethodIndexRouteImport } from './routes/settings/payment-method/index'
+import { Route as SettingsExpenseCategoryIndexRouteImport } from './routes/settings/expense-category/index'
 import { Route as SettingsCurrencyIndexRouteImport } from './routes/settings/currency/index'
-import { Route as WalletsEditIdRouteImport } from './routes/wallets/edit.$id'
-import { Route as PaymentMethodEditIdRouteImport } from './routes/payment-method/edit.$id'
-import { Route as ExpenseCategoryEditIdRouteImport } from './routes/expense-category/edit.$id'
+import { Route as SettingsWalletsAddRouteImport } from './routes/settings/wallets/add'
+import { Route as SettingsPaymentMethodAddRouteImport } from './routes/settings/payment-method/add'
+import { Route as SettingsExpenseCategoryAddRouteImport } from './routes/settings/expense-category/add'
+import { Route as SettingsWalletsEditIdRouteImport } from './routes/settings/wallets/edit.$id'
+import { Route as SettingsPaymentMethodEditIdRouteImport } from './routes/settings/payment-method/edit.$id'
+import { Route as SettingsExpenseCategoryEditIdRouteImport } from './routes/settings/expense-category/edit.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WalletsIndexRoute = WalletsIndexRouteImport.update({
-  id: '/wallets/',
-  path: '/wallets/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
@@ -52,24 +47,9 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
   path: '/profile/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PaymentMethodIndexRoute = PaymentMethodIndexRouteImport.update({
-  id: '/payment-method/',
-  path: '/payment-method/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExpenseCategoryIndexRoute = ExpenseCategoryIndexRouteImport.update({
-  id: '/expense-category/',
-  path: '/expense-category/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BudgetIndexRoute = BudgetIndexRouteImport.update({
   id: '/budget/',
   path: '/budget/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WalletsAddRoute = WalletsAddRouteImport.update({
-  id: '/wallets/add',
-  path: '/wallets/add',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileEditRoute = ProfileEditRouteImport.update({
@@ -77,178 +57,204 @@ const ProfileEditRoute = ProfileEditRouteImport.update({
   path: '/profile/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PaymentMethodAddRoute = PaymentMethodAddRouteImport.update({
-  id: '/payment-method/add',
-  path: '/payment-method/add',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ExpenseAddRoute = ExpenseAddRouteImport.update({
   id: '/expense/add',
   path: '/expense/add',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExpenseCategoryAddRoute = ExpenseCategoryAddRouteImport.update({
-  id: '/expense-category/add',
-  path: '/expense-category/add',
+const SettingsWalletsIndexRoute = SettingsWalletsIndexRouteImport.update({
+  id: '/settings/wallets/',
+  path: '/settings/wallets/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsPaymentMethodIndexRoute =
+  SettingsPaymentMethodIndexRouteImport.update({
+    id: '/settings/payment-method/',
+    path: '/settings/payment-method/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsExpenseCategoryIndexRoute =
+  SettingsExpenseCategoryIndexRouteImport.update({
+    id: '/settings/expense-category/',
+    path: '/settings/expense-category/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const SettingsCurrencyIndexRoute = SettingsCurrencyIndexRouteImport.update({
   id: '/settings/currency/',
   path: '/settings/currency/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WalletsEditIdRoute = WalletsEditIdRouteImport.update({
-  id: '/wallets/edit/$id',
-  path: '/wallets/edit/$id',
+const SettingsWalletsAddRoute = SettingsWalletsAddRouteImport.update({
+  id: '/settings/wallets/add',
+  path: '/settings/wallets/add',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PaymentMethodEditIdRoute = PaymentMethodEditIdRouteImport.update({
-  id: '/payment-method/edit/$id',
-  path: '/payment-method/edit/$id',
+const SettingsPaymentMethodAddRoute =
+  SettingsPaymentMethodAddRouteImport.update({
+    id: '/settings/payment-method/add',
+    path: '/settings/payment-method/add',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsExpenseCategoryAddRoute =
+  SettingsExpenseCategoryAddRouteImport.update({
+    id: '/settings/expense-category/add',
+    path: '/settings/expense-category/add',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsWalletsEditIdRoute = SettingsWalletsEditIdRouteImport.update({
+  id: '/settings/wallets/edit/$id',
+  path: '/settings/wallets/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExpenseCategoryEditIdRoute = ExpenseCategoryEditIdRouteImport.update({
-  id: '/expense-category/edit/$id',
-  path: '/expense-category/edit/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const SettingsPaymentMethodEditIdRoute =
+  SettingsPaymentMethodEditIdRouteImport.update({
+    id: '/settings/payment-method/edit/$id',
+    path: '/settings/payment-method/edit/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsExpenseCategoryEditIdRoute =
+  SettingsExpenseCategoryEditIdRouteImport.update({
+    id: '/settings/expense-category/edit/$id',
+    path: '/settings/expense-category/edit/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/expense-category/add': typeof ExpenseCategoryAddRoute
   '/expense/add': typeof ExpenseAddRoute
-  '/payment-method/add': typeof PaymentMethodAddRoute
   '/profile/edit': typeof ProfileEditRoute
-  '/wallets/add': typeof WalletsAddRoute
   '/budget/': typeof BudgetIndexRoute
-  '/expense-category/': typeof ExpenseCategoryIndexRoute
-  '/payment-method/': typeof PaymentMethodIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/reports/': typeof ReportsIndexRoute
   '/settings/': typeof SettingsIndexRoute
-  '/wallets/': typeof WalletsIndexRoute
-  '/expense-category/edit/$id': typeof ExpenseCategoryEditIdRoute
-  '/payment-method/edit/$id': typeof PaymentMethodEditIdRoute
-  '/wallets/edit/$id': typeof WalletsEditIdRoute
+  '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
+  '/settings/payment-method/add': typeof SettingsPaymentMethodAddRoute
+  '/settings/wallets/add': typeof SettingsWalletsAddRoute
   '/settings/currency/': typeof SettingsCurrencyIndexRoute
+  '/settings/expense-category/': typeof SettingsExpenseCategoryIndexRoute
+  '/settings/payment-method/': typeof SettingsPaymentMethodIndexRoute
+  '/settings/wallets/': typeof SettingsWalletsIndexRoute
+  '/settings/expense-category/edit/$id': typeof SettingsExpenseCategoryEditIdRoute
+  '/settings/payment-method/edit/$id': typeof SettingsPaymentMethodEditIdRoute
+  '/settings/wallets/edit/$id': typeof SettingsWalletsEditIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/expense-category/add': typeof ExpenseCategoryAddRoute
   '/expense/add': typeof ExpenseAddRoute
-  '/payment-method/add': typeof PaymentMethodAddRoute
   '/profile/edit': typeof ProfileEditRoute
-  '/wallets/add': typeof WalletsAddRoute
   '/budget': typeof BudgetIndexRoute
-  '/expense-category': typeof ExpenseCategoryIndexRoute
-  '/payment-method': typeof PaymentMethodIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/reports': typeof ReportsIndexRoute
   '/settings': typeof SettingsIndexRoute
-  '/wallets': typeof WalletsIndexRoute
-  '/expense-category/edit/$id': typeof ExpenseCategoryEditIdRoute
-  '/payment-method/edit/$id': typeof PaymentMethodEditIdRoute
-  '/wallets/edit/$id': typeof WalletsEditIdRoute
+  '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
+  '/settings/payment-method/add': typeof SettingsPaymentMethodAddRoute
+  '/settings/wallets/add': typeof SettingsWalletsAddRoute
   '/settings/currency': typeof SettingsCurrencyIndexRoute
+  '/settings/expense-category': typeof SettingsExpenseCategoryIndexRoute
+  '/settings/payment-method': typeof SettingsPaymentMethodIndexRoute
+  '/settings/wallets': typeof SettingsWalletsIndexRoute
+  '/settings/expense-category/edit/$id': typeof SettingsExpenseCategoryEditIdRoute
+  '/settings/payment-method/edit/$id': typeof SettingsPaymentMethodEditIdRoute
+  '/settings/wallets/edit/$id': typeof SettingsWalletsEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/expense-category/add': typeof ExpenseCategoryAddRoute
   '/expense/add': typeof ExpenseAddRoute
-  '/payment-method/add': typeof PaymentMethodAddRoute
   '/profile/edit': typeof ProfileEditRoute
-  '/wallets/add': typeof WalletsAddRoute
   '/budget/': typeof BudgetIndexRoute
-  '/expense-category/': typeof ExpenseCategoryIndexRoute
-  '/payment-method/': typeof PaymentMethodIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/reports/': typeof ReportsIndexRoute
   '/settings/': typeof SettingsIndexRoute
-  '/wallets/': typeof WalletsIndexRoute
-  '/expense-category/edit/$id': typeof ExpenseCategoryEditIdRoute
-  '/payment-method/edit/$id': typeof PaymentMethodEditIdRoute
-  '/wallets/edit/$id': typeof WalletsEditIdRoute
+  '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
+  '/settings/payment-method/add': typeof SettingsPaymentMethodAddRoute
+  '/settings/wallets/add': typeof SettingsWalletsAddRoute
   '/settings/currency/': typeof SettingsCurrencyIndexRoute
+  '/settings/expense-category/': typeof SettingsExpenseCategoryIndexRoute
+  '/settings/payment-method/': typeof SettingsPaymentMethodIndexRoute
+  '/settings/wallets/': typeof SettingsWalletsIndexRoute
+  '/settings/expense-category/edit/$id': typeof SettingsExpenseCategoryEditIdRoute
+  '/settings/payment-method/edit/$id': typeof SettingsPaymentMethodEditIdRoute
+  '/settings/wallets/edit/$id': typeof SettingsWalletsEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/expense-category/add'
     | '/expense/add'
-    | '/payment-method/add'
     | '/profile/edit'
-    | '/wallets/add'
     | '/budget/'
-    | '/expense-category/'
-    | '/payment-method/'
     | '/profile/'
     | '/reports/'
     | '/settings/'
-    | '/wallets/'
-    | '/expense-category/edit/$id'
-    | '/payment-method/edit/$id'
-    | '/wallets/edit/$id'
+    | '/settings/expense-category/add'
+    | '/settings/payment-method/add'
+    | '/settings/wallets/add'
     | '/settings/currency/'
+    | '/settings/expense-category/'
+    | '/settings/payment-method/'
+    | '/settings/wallets/'
+    | '/settings/expense-category/edit/$id'
+    | '/settings/payment-method/edit/$id'
+    | '/settings/wallets/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/expense-category/add'
     | '/expense/add'
-    | '/payment-method/add'
     | '/profile/edit'
-    | '/wallets/add'
     | '/budget'
-    | '/expense-category'
-    | '/payment-method'
     | '/profile'
     | '/reports'
     | '/settings'
-    | '/wallets'
-    | '/expense-category/edit/$id'
-    | '/payment-method/edit/$id'
-    | '/wallets/edit/$id'
+    | '/settings/expense-category/add'
+    | '/settings/payment-method/add'
+    | '/settings/wallets/add'
     | '/settings/currency'
+    | '/settings/expense-category'
+    | '/settings/payment-method'
+    | '/settings/wallets'
+    | '/settings/expense-category/edit/$id'
+    | '/settings/payment-method/edit/$id'
+    | '/settings/wallets/edit/$id'
   id:
     | '__root__'
     | '/'
-    | '/expense-category/add'
     | '/expense/add'
-    | '/payment-method/add'
     | '/profile/edit'
-    | '/wallets/add'
     | '/budget/'
-    | '/expense-category/'
-    | '/payment-method/'
     | '/profile/'
     | '/reports/'
     | '/settings/'
-    | '/wallets/'
-    | '/expense-category/edit/$id'
-    | '/payment-method/edit/$id'
-    | '/wallets/edit/$id'
+    | '/settings/expense-category/add'
+    | '/settings/payment-method/add'
+    | '/settings/wallets/add'
     | '/settings/currency/'
+    | '/settings/expense-category/'
+    | '/settings/payment-method/'
+    | '/settings/wallets/'
+    | '/settings/expense-category/edit/$id'
+    | '/settings/payment-method/edit/$id'
+    | '/settings/wallets/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ExpenseCategoryAddRoute: typeof ExpenseCategoryAddRoute
   ExpenseAddRoute: typeof ExpenseAddRoute
-  PaymentMethodAddRoute: typeof PaymentMethodAddRoute
   ProfileEditRoute: typeof ProfileEditRoute
-  WalletsAddRoute: typeof WalletsAddRoute
   BudgetIndexRoute: typeof BudgetIndexRoute
-  ExpenseCategoryIndexRoute: typeof ExpenseCategoryIndexRoute
-  PaymentMethodIndexRoute: typeof PaymentMethodIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   ReportsIndexRoute: typeof ReportsIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
-  WalletsIndexRoute: typeof WalletsIndexRoute
-  ExpenseCategoryEditIdRoute: typeof ExpenseCategoryEditIdRoute
-  PaymentMethodEditIdRoute: typeof PaymentMethodEditIdRoute
-  WalletsEditIdRoute: typeof WalletsEditIdRoute
+  SettingsExpenseCategoryAddRoute: typeof SettingsExpenseCategoryAddRoute
+  SettingsPaymentMethodAddRoute: typeof SettingsPaymentMethodAddRoute
+  SettingsWalletsAddRoute: typeof SettingsWalletsAddRoute
   SettingsCurrencyIndexRoute: typeof SettingsCurrencyIndexRoute
+  SettingsExpenseCategoryIndexRoute: typeof SettingsExpenseCategoryIndexRoute
+  SettingsPaymentMethodIndexRoute: typeof SettingsPaymentMethodIndexRoute
+  SettingsWalletsIndexRoute: typeof SettingsWalletsIndexRoute
+  SettingsExpenseCategoryEditIdRoute: typeof SettingsExpenseCategoryEditIdRoute
+  SettingsPaymentMethodEditIdRoute: typeof SettingsPaymentMethodEditIdRoute
+  SettingsWalletsEditIdRoute: typeof SettingsWalletsEditIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -258,13 +264,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/wallets/': {
-      id: '/wallets/'
-      path: '/wallets'
-      fullPath: '/wallets/'
-      preLoaderRoute: typeof WalletsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings/': {
@@ -288,32 +287,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/payment-method/': {
-      id: '/payment-method/'
-      path: '/payment-method'
-      fullPath: '/payment-method/'
-      preLoaderRoute: typeof PaymentMethodIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/expense-category/': {
-      id: '/expense-category/'
-      path: '/expense-category'
-      fullPath: '/expense-category/'
-      preLoaderRoute: typeof ExpenseCategoryIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/budget/': {
       id: '/budget/'
       path: '/budget'
       fullPath: '/budget/'
       preLoaderRoute: typeof BudgetIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/wallets/add': {
-      id: '/wallets/add'
-      path: '/wallets/add'
-      fullPath: '/wallets/add'
-      preLoaderRoute: typeof WalletsAddRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile/edit': {
@@ -323,13 +301,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileEditRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/payment-method/add': {
-      id: '/payment-method/add'
-      path: '/payment-method/add'
-      fullPath: '/payment-method/add'
-      preLoaderRoute: typeof PaymentMethodAddRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/expense/add': {
       id: '/expense/add'
       path: '/expense/add'
@@ -337,11 +308,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpenseAddRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/expense-category/add': {
-      id: '/expense-category/add'
-      path: '/expense-category/add'
-      fullPath: '/expense-category/add'
-      preLoaderRoute: typeof ExpenseCategoryAddRouteImport
+    '/settings/wallets/': {
+      id: '/settings/wallets/'
+      path: '/settings/wallets'
+      fullPath: '/settings/wallets/'
+      preLoaderRoute: typeof SettingsWalletsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/payment-method/': {
+      id: '/settings/payment-method/'
+      path: '/settings/payment-method'
+      fullPath: '/settings/payment-method/'
+      preLoaderRoute: typeof SettingsPaymentMethodIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/expense-category/': {
+      id: '/settings/expense-category/'
+      path: '/settings/expense-category'
+      fullPath: '/settings/expense-category/'
+      preLoaderRoute: typeof SettingsExpenseCategoryIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings/currency/': {
@@ -351,25 +336,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsCurrencyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/wallets/edit/$id': {
-      id: '/wallets/edit/$id'
-      path: '/wallets/edit/$id'
-      fullPath: '/wallets/edit/$id'
-      preLoaderRoute: typeof WalletsEditIdRouteImport
+    '/settings/wallets/add': {
+      id: '/settings/wallets/add'
+      path: '/settings/wallets/add'
+      fullPath: '/settings/wallets/add'
+      preLoaderRoute: typeof SettingsWalletsAddRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/payment-method/edit/$id': {
-      id: '/payment-method/edit/$id'
-      path: '/payment-method/edit/$id'
-      fullPath: '/payment-method/edit/$id'
-      preLoaderRoute: typeof PaymentMethodEditIdRouteImport
+    '/settings/payment-method/add': {
+      id: '/settings/payment-method/add'
+      path: '/settings/payment-method/add'
+      fullPath: '/settings/payment-method/add'
+      preLoaderRoute: typeof SettingsPaymentMethodAddRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/expense-category/edit/$id': {
-      id: '/expense-category/edit/$id'
-      path: '/expense-category/edit/$id'
-      fullPath: '/expense-category/edit/$id'
-      preLoaderRoute: typeof ExpenseCategoryEditIdRouteImport
+    '/settings/expense-category/add': {
+      id: '/settings/expense-category/add'
+      path: '/settings/expense-category/add'
+      fullPath: '/settings/expense-category/add'
+      preLoaderRoute: typeof SettingsExpenseCategoryAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/wallets/edit/$id': {
+      id: '/settings/wallets/edit/$id'
+      path: '/settings/wallets/edit/$id'
+      fullPath: '/settings/wallets/edit/$id'
+      preLoaderRoute: typeof SettingsWalletsEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/payment-method/edit/$id': {
+      id: '/settings/payment-method/edit/$id'
+      path: '/settings/payment-method/edit/$id'
+      fullPath: '/settings/payment-method/edit/$id'
+      preLoaderRoute: typeof SettingsPaymentMethodEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/expense-category/edit/$id': {
+      id: '/settings/expense-category/edit/$id'
+      path: '/settings/expense-category/edit/$id'
+      fullPath: '/settings/expense-category/edit/$id'
+      preLoaderRoute: typeof SettingsExpenseCategoryEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -377,22 +383,22 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ExpenseCategoryAddRoute: ExpenseCategoryAddRoute,
   ExpenseAddRoute: ExpenseAddRoute,
-  PaymentMethodAddRoute: PaymentMethodAddRoute,
   ProfileEditRoute: ProfileEditRoute,
-  WalletsAddRoute: WalletsAddRoute,
   BudgetIndexRoute: BudgetIndexRoute,
-  ExpenseCategoryIndexRoute: ExpenseCategoryIndexRoute,
-  PaymentMethodIndexRoute: PaymentMethodIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   ReportsIndexRoute: ReportsIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
-  WalletsIndexRoute: WalletsIndexRoute,
-  ExpenseCategoryEditIdRoute: ExpenseCategoryEditIdRoute,
-  PaymentMethodEditIdRoute: PaymentMethodEditIdRoute,
-  WalletsEditIdRoute: WalletsEditIdRoute,
+  SettingsExpenseCategoryAddRoute: SettingsExpenseCategoryAddRoute,
+  SettingsPaymentMethodAddRoute: SettingsPaymentMethodAddRoute,
+  SettingsWalletsAddRoute: SettingsWalletsAddRoute,
   SettingsCurrencyIndexRoute: SettingsCurrencyIndexRoute,
+  SettingsExpenseCategoryIndexRoute: SettingsExpenseCategoryIndexRoute,
+  SettingsPaymentMethodIndexRoute: SettingsPaymentMethodIndexRoute,
+  SettingsWalletsIndexRoute: SettingsWalletsIndexRoute,
+  SettingsExpenseCategoryEditIdRoute: SettingsExpenseCategoryEditIdRoute,
+  SettingsPaymentMethodEditIdRoute: SettingsPaymentMethodEditIdRoute,
+  SettingsWalletsEditIdRoute: SettingsWalletsEditIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

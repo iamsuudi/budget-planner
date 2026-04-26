@@ -4,7 +4,7 @@ import { useCreateWallet } from '#/hooks/query'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
-export const Route = createFileRoute('/wallets/add')({
+export const Route = createFileRoute('/settings/wallets/add')({
   component: AddWalletPage,
 })
 
@@ -19,13 +19,13 @@ function AddWalletPage() {
 
     createWallet.mutate(
       { name: name.trim(), accountNumber: accountNumber.trim() },
-      { onSuccess: () => navigate({ to: '/wallets' }) },
+      { onSuccess: () => navigate({ to: '/settings/wallets' }) },
     )
   }
 
   return (
     <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar title="Add Wallet" showBack backTo={'/wallets'} />
+      <TopAppBar title="Add Wallet" showBack backTo={'/settings/wallets'} />
 
       <Page className="min-h-screen">
         <section className="flex flex-col gap-4">
@@ -58,7 +58,9 @@ function AddWalletPage() {
 
           <button
             onClick={handleSave}
-            disabled={createWallet.isPending || !name.trim() || !accountNumber.trim()}
+            disabled={
+              createWallet.isPending || !name.trim() || !accountNumber.trim()
+            }
             className="w-full bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold py-3 rounded-xl shadow-md transition-all hover:shadow-lg active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {createWallet.isPending ? 'Adding...' : 'Add Wallet'}

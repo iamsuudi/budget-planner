@@ -2,12 +2,11 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { PlusCircle, Edit2, Trash2, Plus } from 'lucide-react'
 import { useGetCategories, useDeleteCategory } from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
-import { BottomNavBar } from '#/components/BottomNavBar'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
 
-export const Route = createFileRoute('/expense-category/')({
+export const Route = createFileRoute('/settings/expense-category/')({
   component: ExpenseCategoryPage,
 })
 
@@ -23,7 +22,7 @@ function ExpenseCategoryPage() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar showProfile />
+      <TopAppBar title="Expense Categories" showBack backTo="/settings" />
 
       <Page>
         <section className="flex justify-between items-center mb-6 gap-3">
@@ -32,7 +31,7 @@ function ExpenseCategoryPage() {
             <p className="text-slate-400 text-sm">Organize spending.</p>
           </div>
           <Link
-            to="/expense-category/add"
+            to="/settings/expense-category/add"
             className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
           >
             <PlusCircle className="w-4 h-4" />
@@ -46,7 +45,7 @@ function ExpenseCategoryPage() {
           <div className="text-center py-8">
             <p className="text-slate-500 mb-4">No categories yet.</p>
             <Link
-              to="/expense-category/add"
+              to="/settings/expense-category/add"
               className="text-secondary hover:underline text-sm"
             >
               Add Category
@@ -65,11 +64,15 @@ function ExpenseCategoryPage() {
                     <div
                       className={`${styles.bg} p-2 rounded-lg border ${styles.border}`}
                     >
-                      <Icon name={category.icon} className={styles.color} size={20} />
+                      <Icon
+                        name={category.icon}
+                        className={styles.color}
+                        size={20}
+                      />
                     </div>
                     <div className="flex gap-1">
                       <Link
-                        to={`/expense-category/edit/$id`}
+                        to={`/settings/expense-category/edit/$id`}
                         params={{ id: category.id }}
                         className="p-1 text-slate-500 hover:text-secondary transition-colors"
                       >
@@ -92,7 +95,7 @@ function ExpenseCategoryPage() {
               )
             })}
             <Link
-              to="/expense-category/add"
+              to="/settings/expense-category/add"
               className="border-2 border-dashed border-slate-800 p-4 rounded-lg flex flex-col items-center justify-center gap-2 group hover:border-violet-500/30 hover:bg-violet-500/5 transition-all cursor-pointer min-h-[100px]"
             >
               <Plus className="w-6 h-6 text-slate-600 group-hover:text-violet-400" />
@@ -101,8 +104,6 @@ function ExpenseCategoryPage() {
           </div>
         )}
       </Page>
-
-      <BottomNavBar />
     </div>
   )
 }

@@ -1,10 +1,15 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { useGetWalletById, useUpdateWallet, useDeleteWallet } from '#/hooks/query'
+import {
+  useGetWalletById,
+  useUpdateWallet,
+  useDeleteWallet,
+} from '#/hooks/query'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { CancelButton } from '#/components/CancelButton'
 
-export const Route = createFileRoute('/wallets/edit/$id')({
+export const Route = createFileRoute('/settings/wallets/edit/$id')({
   component: EditWalletPage,
 })
 
@@ -28,19 +33,24 @@ function EditWalletPage() {
     if (!name.trim() || !accountNumber.trim()) return
 
     updateWallet.mutate(
-      { id, updates: { name: name.trim(), accountNumber: accountNumber.trim() } },
-      { onSuccess: () => navigate({ to: '/wallets' }) },
+      {
+        id,
+        updates: { name: name.trim(), accountNumber: accountNumber.trim() },
+      },
+      { onSuccess: () => navigate({ to: '/settings/wallets' }) },
     )
   }
 
   const handleDelete = () => {
-    deleteWallet.mutate(id, { onSuccess: () => navigate({ to: '/wallets' }) })
+    deleteWallet.mutate(id, {
+      onSuccess: () => navigate({ to: '/settings/wallets' }),
+    })
   }
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-        <TopAppBar title="Edit Wallet" showBack backTo={'/wallets'} />
+        <TopAppBar title="Edit Wallet" showBack backTo={'/settingswallets'} />
         <Page>
           <p className="text-slate-400">Loading...</p>
         </Page>
@@ -50,7 +60,7 @@ function EditWalletPage() {
 
   return (
     <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar title="Edit Wallet" showBack backTo={'/wallets'} />
+      <TopAppBar title="Edit Wallet" showBack backTo={'/settings/wallets'} />
 
       <Page className="min-h-screen">
         <section className="flex flex-col gap-4">
@@ -83,11 +93,15 @@ function EditWalletPage() {
 
           <button
             onClick={handleSave}
-            disabled={updateWallet.isPending || !name.trim() || !accountNumber.trim()}
+            disabled={
+              updateWallet.isPending || !name.trim() || !accountNumber.trim()
+            }
             className="w-full bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold py-3 rounded-xl shadow-md transition-all hover:shadow-lg active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {updateWallet.isPending ? 'Saving...' : 'Save Changes'}
           </button>
+
+          <CancelButton to="/settings/wallets" />
 
           <button
             onClick={handleDelete}

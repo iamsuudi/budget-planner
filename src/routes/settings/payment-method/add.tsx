@@ -1,11 +1,11 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft } from 'lucide-react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useCreatePaymentMethod } from '#/hooks/query'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { CancelButton } from '#/components/CancelButton'
 
-export const Route = createFileRoute('/payment-method/add')({
+export const Route = createFileRoute('/settings/payment-method/add')({
   component: AddPaymentMethodPage,
 })
 
@@ -19,33 +19,19 @@ function AddPaymentMethodPage() {
 
     createPaymentMethod.mutate(
       { name: name.trim() },
-      { onSuccess: () => navigate({ to: '/payment-method' }) },
+      { onSuccess: () => navigate({ to: '/settings/payment-method' }) },
     )
   }
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar showProfile />
+      <TopAppBar
+        title="Add Payment Method"
+        showBack
+        backTo={'/settings/payment-method'}
+      />
 
       <Page>
-        <header className="mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <Link
-              to="/payment-method"
-              className="text-secondary hover:text-cyan-400 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <span className="text-secondary text-sm uppercase tracking-widest">
-              Settings
-            </span>
-          </div>
-          <h1 className="text-2xl font-bold text-white">Add Payment Method</h1>
-          <p className="text-slate-400 text-sm mt-1">
-            Add a new payment method.
-          </p>
-        </header>
-
         <div className="glass-panel rounded-xl p-4 space-y-4">
           <section className="space-y-2">
             <div className="space-y-2">
@@ -73,12 +59,7 @@ function AddPaymentMethodPage() {
           >
             {createPaymentMethod.isPending ? 'Saving...' : 'Save Changes'}
           </button>
-          <Link
-            to="/payment-method"
-            className="py-3 border border-secondary text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/5 transition-all active:scale-95 text-center"
-          >
-            Cancel
-          </Link>
+          <CancelButton to="/payment-method" />
         </div>
 
         <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />

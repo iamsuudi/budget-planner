@@ -52,7 +52,7 @@ function SettingsPage() {
             </h3>
             <GlassCard className="p-1 flex flex-col gap-1">
               <Link
-                to="/wallets"
+                to="/settings/wallets"
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3">
@@ -71,7 +71,7 @@ function SettingsPage() {
                 <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
               </Link>
               <Link
-                to="/payment-method"
+                to="/settings/payment-method"
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3">
@@ -100,7 +100,7 @@ function SettingsPage() {
             </h3>
             <GlassCard className="p-1 flex flex-col gap-1">
               <Link
-                to="/expense-category"
+                to="/settings/expense-category"
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3">

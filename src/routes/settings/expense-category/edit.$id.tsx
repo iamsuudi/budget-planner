@@ -1,5 +1,4 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { ArrowLeft } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import {
   useGetCategoryById,
@@ -7,12 +6,12 @@ import {
   useDeleteCategory,
 } from '#/hooks/query'
 import { AVAILABLE_ICONS, getIconStyle } from '#/lib/icons'
-import { BottomNavBar } from '#/components/BottomNavBar'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
+import { CancelButton } from '#/components/CancelButton'
 
-export const Route = createFileRoute('/expense-category/edit/$id')({
+export const Route = createFileRoute('/settings/expense-category/edit/$id')({
   component: EditCategoryPage,
 })
 
@@ -37,13 +36,13 @@ function EditCategoryPage() {
 
     updateCategory.mutate(
       { id, updates: { name: name.trim(), icon: selectedIcon } },
-      { onSuccess: () => navigate({ to: '/expense-category' }) },
+      { onSuccess: () => navigate({ to: '/settings/expense-category' }) },
     )
   }
 
   const handleDelete = () => {
     deleteCategory.mutate(id, {
-      onSuccess: () => navigate({ to: '/expense-category' }),
+      onSuccess: () => navigate({ to: '/settings/expense-category' }),
     })
   }
 
@@ -58,42 +57,33 @@ function EditCategoryPage() {
   if (!category) {
     return (
       <div className="min-h-screen bg-background text-on-surface">
-        <TopAppBar showProfile />
+        <TopAppBar
+          title="Edit Category"
+          showBack
+          backTo="/settings/expense-category"
+        />
         <Page>
           <p className="text-slate-500">Category not found.</p>
           <Link
-            to="/expense-category"
+            to="/settings/expense-category"
             className="text-secondary hover:underline mt-4 block text-sm"
           >
             Back to Categories
           </Link>
         </Page>
-        <BottomNavBar />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar showProfile />
+      <TopAppBar
+        title="Edit Category"
+        showBack
+        backTo="/settings/expense-category"
+      />
 
       <Page>
-        <header className="mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <Link
-              to="/expense-category"
-              className="text-secondary hover:text-cyan-400 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <span className="text-secondary text-sm uppercase tracking-widest">
-              Budgeting
-            </span>
-          </div>
-          <h1 className="text-2xl font-bold text-white">Edit Category</h1>
-          <p className="text-slate-400 text-sm mt-1">Update category details.</p>
-        </header>
-
         <div className="glass-panel rounded-xl p-4 space-y-4">
           <section className="space-y-2">
             <div className="space-y-2">
@@ -146,6 +136,7 @@ function EditCategoryPage() {
           >
             {updateCategory.isPending ? 'Saving...' : 'Save Changes'}
           </button>
+          <CancelButton to="/settings/expense-category" />
           <button
             onClick={handleDelete}
             disabled={deleteCategory.isPending}
@@ -158,8 +149,6 @@ function EditCategoryPage() {
         <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />
         <div className="fixed -top-32 -right-32 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] -z-10" />
       </Page>
-
-      <BottomNavBar />
     </div>
   )
 }
