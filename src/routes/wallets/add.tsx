@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { TopAppBar, GlassCard, ActionListItem } from '../../components/ui'
-import { addWallet } from '../../lib/storage'
+import { addWallet } from '#/lib/storage'
+import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/wallets/add')({
   component: AddWalletPage,
@@ -15,7 +15,7 @@ function AddWalletPage() {
 
   const handleSave = async () => {
     if (!name.trim() || !accountNumber.trim()) return
-    
+
     setSaving(true)
     await addWallet({
       name: name.trim(),
@@ -27,17 +27,15 @@ function AddWalletPage() {
 
   return (
     <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar 
-        title="Add Wallet"
-        showBack
-        onBack={() => navigate({ to: '/wallets' })}
-      />
-      
+      <TopAppBar title="Add Wallet" showBack backTo={'/wallets'} />
+
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
         <section className="flex flex-col gap-6">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-slate-400 mb-2">Wallet Name</label>
+              <label className="block text-sm text-slate-400 mb-2">
+                Wallet Name
+              </label>
               <input
                 type="text"
                 value={name}
@@ -47,7 +45,9 @@ function AddWalletPage() {
               />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-2">Account Number</label>
+              <label className="block text-sm text-slate-400 mb-2">
+                Account Number
+              </label>
               <input
                 type="text"
                 value={accountNumber}

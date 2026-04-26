@@ -1,24 +1,15 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import {
-  TopAppBar,
-  BottomNavBar,
-  GlassCard,
-  ActionListItem,
-  ToggleSwitch,
-} from '../../components/ui'
-import { useCurrency } from '../../lib/currency-context'
+import { useCurrency } from '#/lib/currency-context'
+import { TopAppBar } from '#/components/TopAppBar'
+import { GlassCard } from '#/components/GlassCard'
+import { ToggleSwitch } from '#/components/ToggleSwitch'
+import { ActionListItem } from '#/components/ActionListItem'
+import { BottomNavBar } from '#/components/BottomNavBar'
 
 export const Route = createFileRoute('/settings/')({
   component: SettingsPage,
 })
-
-const navItems = [
-  { icon: 'dashboard', label: 'Overview', to: '/' },
-  { icon: 'analytics', label: 'Reports', to: '/reports' },
-  { icon: 'account_circle', label: 'Profile', to: '/profile' },
-  { icon: 'settings', label: 'Settings', to: '/settings', active: true },
-]
 
 function SettingsPage() {
   const [darkTheme, setDarkTheme] = useState(true)
@@ -42,61 +33,6 @@ function SettingsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Account Section */}
-          <section className="md:col-span-12">
-            <h3 className="text-sm font-semibold text-violet-400 uppercase tracking-widest mb-4">
-              Account Settings
-            </h3>
-            <GlassCard className="p-2 flex flex-col gap-2">
-              <Link
-                to="/payment-method"
-                className="glass-card flex items-center justify-between p-6 rounded-xl hover:bg-white/5 transition-all group w-full text-left"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-secondary/10 text-secondary">
-                    <span className="material-symbols-outlined">
-                      credit_card
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">
-                      Payment Methods
-                    </p>
-                    <p className="text-xs text-on-surface-variant">
-                      Manage payment methods
-                    </p>
-                  </div>
-                </div>
-                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
-                  chevron_right
-                </span>
-              </Link>
-              <Link
-                to="/wallets"
-                className="glass-card flex items-center justify-between p-6 rounded-xl hover:bg-white/5 transition-all group w-full text-left"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-violet-500/10 text-violet-400">
-                    <span className="material-symbols-outlined">
-                      account_balance
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">
-                      My Wallets
-                    </p>
-                    <p className="text-xs text-on-surface-variant">
-                      Manage bank accounts
-                    </p>
-                  </div>
-                </div>
-                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
-                  chevron_right
-                </span>
-              </Link>
-            </GlassCard>
-          </section>
-
           {/* Preferences Section */}
           <section className="md:col-span-12">
             <h3 className="text-sm font-semibold text-violet-400 uppercase tracking-widest mb-4">
@@ -257,7 +193,7 @@ function SettingsPage() {
         </div>
       </main>
 
-      <BottomNavBar items={navItems} />
+      <BottomNavBar />
     </div>
   )
 }

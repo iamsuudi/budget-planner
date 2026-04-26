@@ -1,6 +1,20 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import { createContext, useContext, useState } from 'react'
+import type { ReactNode } from 'react'
 
-export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+export const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
 
 interface MonthState {
   year: number
@@ -24,7 +38,7 @@ export function MonthProvider({ children }: { children: ReactNode }) {
     return {
       year: now.getFullYear(),
       month: now.getMonth() + 1,
-      monthName: MONTHS[now.getMonth()]
+      monthName: MONTHS[now.getMonth()],
     }
   })
 
@@ -32,7 +46,7 @@ export function MonthProvider({ children }: { children: ReactNode }) {
     setCurrentMonthState({
       year,
       month,
-      monthName: MONTHS[month - 1]
+      monthName: MONTHS[month - 1],
     })
   }
 
@@ -62,7 +76,15 @@ export function MonthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <MonthContext.Provider value={{ currentMonth, setCurrentMonth, goToPrevMonth, goToNextMonth, isCurrentMonth }}>
+    <MonthContext.Provider
+      value={{
+        currentMonth,
+        setCurrentMonth,
+        goToPrevMonth,
+        goToNextMonth,
+        isCurrentMonth,
+      }}
+    >
       {children}
     </MonthContext.Provider>
   )

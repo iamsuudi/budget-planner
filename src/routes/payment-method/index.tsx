@@ -1,19 +1,13 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { TopAppBar, BottomNavBar } from '../../components/ui'
-import { getAllPaymentMethods, deletePaymentMethod } from '../../lib/storage'
-import type { PaymentMethod } from '../../types'
+import { getAllPaymentMethods, deletePaymentMethod } from '#/lib/storage'
+import type { PaymentMethod } from '#/types'
+import { BottomNavBar } from '#/components/BottomNavBar'
+import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/payment-method/')({
   component: PaymentMethodPage,
 })
-
-const navItems = [
-  { icon: 'home', label: 'Home', to: '/' },
-  { icon: 'insights', label: 'Reports', to: '/reports' },
-  { icon: 'account_circle', label: 'Profile', to: '/profile' },
-  { icon: 'settings', label: 'Settings', to: '/settings', active: true },
-]
 
 function PaymentMethodPage() {
   const [methods, setMethods] = useState<PaymentMethod[]>([])
@@ -126,7 +120,7 @@ function PaymentMethodPage() {
         )}
       </main>
 
-      <BottomNavBar items={navItems} />
+      <BottomNavBar />
     </div>
   )
 }

@@ -1,25 +1,14 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { TopAppBar, BottomNavBar } from '../../components/ui'
-import { getAllCategories, deleteCategory } from '../../lib/storage'
-import { getIconStyle } from '../../lib/icons'
-import type { ExpenseCategory } from '../../types'
+import { getAllCategories, deleteCategory } from '#/lib/storage'
+import { getIconStyle } from '#/lib/icons'
+import type { ExpenseCategory } from '#/types'
+import { BottomNavBar } from '#/components/BottomNavBar'
+import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/expense-category/')({
   component: ExpenseCategoryPage,
 })
-
-const navItems = [
-  { icon: 'home', label: 'Home', to: '/' },
-  { icon: 'insights', label: 'Reports', to: '/reports' },
-  {
-    icon: 'category',
-    label: 'Categories',
-    to: '/expense-category',
-    active: true,
-  },
-  { icon: 'person', label: 'Profile', to: '/profile' },
-]
 
 function ExpenseCategoryPage() {
   const [categories, setCategories] = useState<ExpenseCategory[]>([])
@@ -146,7 +135,7 @@ function ExpenseCategoryPage() {
         )}
       </main>
 
-      <BottomNavBar items={navItems} />
+      <BottomNavBar />
     </div>
   )
 }

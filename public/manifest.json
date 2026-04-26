@@ -1,6 +1,6 @@
 {
   "short_name": "Budget Planner",
-  "name": "Budget Planner Application - Fully Offline",
+  "name": "Budget Planner App",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,12 +8,17 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "pwa-64x64.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    },
+    {
+      "src": "pwa-192x192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "pwa-512x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

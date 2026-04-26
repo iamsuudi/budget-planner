@@ -1,24 +1,13 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { TopAppBar, BottomNavBar } from '../../components/ui'
-import { getCategoryById, updateCategory } from '../../lib/storage'
-import { AVAILABLE_ICONS, getIconStyle } from '../../lib/icons'
+import { getCategoryById, updateCategory } from '#/lib/storage'
+import { AVAILABLE_ICONS, getIconStyle } from '#/lib/icons'
+import { BottomNavBar } from '#/components/BottomNavBar'
+import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/expense-category/edit/$id')({
   component: EditCategoryPage,
 })
-
-const navItems = [
-  { icon: 'home', label: 'Home', to: '/' },
-  { icon: 'insights', label: 'Reports', to: '/reports' },
-  {
-    icon: 'category',
-    label: 'Categories',
-    to: '/expense-category',
-    active: true,
-  },
-  { icon: 'person', label: 'Profile', to: '/profile' },
-]
 
 function EditCategoryPage() {
   const { id } = Route.useParams()
@@ -83,7 +72,7 @@ function EditCategoryPage() {
             Back to Categories
           </Link>
         </main>
-        <BottomNavBar items={navItems} />
+        <BottomNavBar />
       </div>
     )
   }
@@ -173,7 +162,7 @@ function EditCategoryPage() {
         <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
       </main>
 
-      <BottomNavBar items={navItems} />
+      <BottomNavBar />
     </div>
   )
 }

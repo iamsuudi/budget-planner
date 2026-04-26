@@ -1,24 +1,18 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect, useMemo } from 'react'
-import { TopAppBar, BottomNavBar } from '../../components/ui'
 import {
   getAllCategories,
   getAllPaymentMethods,
   addInvoice,
-} from '../../lib/storage'
-import { useCurrency } from '../../lib/currency-context'
-import type { ExpenseCategory, PaymentMethod } from '../../types'
+} from '#/lib/storage'
+import { useCurrency } from '#/lib/currency-context'
+import type { ExpenseCategory, PaymentMethod } from '#/types'
+import { BottomNavBar } from '#/components/BottomNavBar'
+import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/expense/add')({
   component: AddExpensePage,
 })
-
-const navItems = [
-  { icon: 'home', label: 'Home', to: '/', active: true },
-  { icon: 'insights', label: 'Reports', to: '/reports' },
-  { icon: 'account_circle', label: 'Profile', to: '/profile' },
-  { icon: 'settings', label: 'Settings', to: '/settings' },
-]
 
 function AddExpensePage() {
   const navigate = useNavigate()
@@ -147,7 +141,6 @@ function AddExpensePage() {
             </div>
           )}
         </main>
-        <BottomNavBar items={navItems} />
       </div>
     )
   }
@@ -270,7 +263,7 @@ function AddExpensePage() {
         <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
       </main>
 
-      <BottomNavBar items={navItems} />
+      <BottomNavBar />
     </div>
   )
 }

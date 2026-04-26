@@ -1,6 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { TopAppBar, BottomNavBar, GlassCard, CategoryCard, IconButton } from '../../components/ui'
-import { useCurrency } from '../../lib/currency-context'
+import { useCurrency } from '#/lib/currency-context'
+import { BottomNavBar } from '#/components/BottomNavBar'
+import { CategoryCard } from '#/components/CategoryCard'
+import { GlassCard } from '#/components/GlassCard'
+import { IconButton } from '#/components/IconButton'
+import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/reports/')({
   component: ReportsPage,
@@ -49,20 +53,13 @@ const mockCategories = [
   },
 ]
 
-const navItems = [
-  { icon: 'dashboard', label: 'Overview', to: '/' },
-  { icon: 'analytics', label: 'Reports', to: '/reports', active: true },
-  { icon: 'account_circle', label: 'Profile', to: '/profile' },
-  { icon: 'settings', label: 'Settings', to: '/settings' },
-]
-
 function ReportsPage() {
   const { formatAmount } = useCurrency()
-  
+
   return (
     <div className="min-h-screen bg-background text-on-background">
       <TopAppBar showProfile={false} />
-      
+
       <main className="pt-24 pb-32 px-6 max-w-5xl mx-auto">
         {/* Month Navigation Card */}
         <section className="mb-10">
@@ -93,14 +90,10 @@ function ReportsPage() {
                 <p className="text-xs text-primary uppercase tracking-widest">
                   Total Performance
                 </p>
-                <h4 className="text-3xl font-bold text-on-surface">
-                  On Track
-                </h4>
+                <h4 className="text-3xl font-bold text-on-surface">On Track</h4>
               </div>
               <div className="text-right">
-                <p className="text-xs text-outline">
-                  Monthly Balance
-                </p>
+                <p className="text-xs text-outline">Monthly Balance</p>
                 <p className="text-2xl font-bold text-tertiary">
                   +{formatAmount(1450)}
                 </p>
@@ -125,28 +118,62 @@ function ReportsPage() {
                 Budget Health Strategy
               </h3>
               <p className="text-slate-400 mb-4">
-                Your categorized spending is currently <span className="text-tertiary font-bold">12% lower</span> than last month. We recommend allocating the surplus to your "Education" category to maximize your potential.
+                Your categorized spending is currently{' '}
+                <span className="text-tertiary font-bold">12% lower</span> than
+                last month. We recommend allocating the surplus to your
+                "Education" category to maximize your potential.
               </p>
               <div className="flex gap-8">
                 <div className="flex flex-col">
-                  <span className="text-[10px] uppercase tracking-widest text-slate-500">Total Budgeted</span>
-                  <span className="text-xl font-bold text-white">{formatAmount(2020)}</span>
+                  <span className="text-[10px] uppercase tracking-widest text-slate-500">
+                    Total Budgeted
+                  </span>
+                  <span className="text-xl font-bold text-white">
+                    {formatAmount(2020)}
+                  </span>
                 </div>
                 <div className="flex flex-col border-l border-white/10 pl-8">
-                  <span className="text-[10px] uppercase tracking-widest text-slate-500">Unallocated</span>
-                  <span className="text-xl font-bold text-secondary">{formatAmount(480)}</span>
+                  <span className="text-[10px] uppercase tracking-widest text-slate-500">
+                    Unallocated
+                  </span>
+                  <span className="text-xl font-bold text-secondary">
+                    {formatAmount(480)}
+                  </span>
                 </div>
               </div>
             </div>
             <div className="w-full md:w-1/2 flex justify-center">
               <div className="relative w-48 h-48">
                 <svg className="w-full h-full transform -rotate-90">
-                  <circle className="text-slate-800" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" strokeWidth="12" />
-                  <circle className="text-violet-500" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" strokeDasharray="552.92" strokeDashoffset="138.23" strokeWidth="12" style={{ filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.5))' }} />
+                  <circle
+                    className="text-slate-800"
+                    cx="96"
+                    cy="96"
+                    fill="transparent"
+                    r="88"
+                    stroke="currentColor"
+                    strokeWidth="12"
+                  />
+                  <circle
+                    className="text-violet-500"
+                    cx="96"
+                    cy="96"
+                    fill="transparent"
+                    r="88"
+                    stroke="currentColor"
+                    strokeDasharray="552.92"
+                    strokeDashoffset="138.23"
+                    strokeWidth="12"
+                    style={{
+                      filter: 'drop-shadow(0 0 8px rgba(139, 92, 246, 0.5))',
+                    }}
+                  />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-5xl font-extrabold text-white">75</span>
-                  <span className="text-[10px] uppercase tracking-widest text-violet-400 font-bold">Score</span>
+                  <span className="text-[10px] uppercase tracking-widest text-violet-400 font-bold">
+                    Score
+                  </span>
                 </div>
               </div>
             </div>
@@ -154,7 +181,7 @@ function ReportsPage() {
         </section>
       </main>
 
-      <BottomNavBar items={navItems} />
+      <BottomNavBar />
     </div>
   )
 }

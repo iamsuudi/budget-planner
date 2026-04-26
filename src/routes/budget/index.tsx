@@ -1,27 +1,21 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect, useMemo } from 'react'
-import { TopAppBar, BottomNavBar } from '../../components/ui'
 import {
   getMonthBudget,
   setMonthBudget,
   getAllCategories,
   getInvoicesByMonth,
-} from '../../lib/storage'
-import { getIconStyle } from '../../lib/icons'
-import { useMonth } from '../../lib/month-context'
-import { useCurrency } from '../../lib/currency-context'
-import type { ExpenseCategory, MonthBudget, Invoice } from '../../types'
+} from '#/lib/storage'
+import { getIconStyle } from '#/lib/icons'
+import { useMonth } from '#/lib/month-context'
+import { useCurrency } from '#/lib/currency-context'
+import type { ExpenseCategory, MonthBudget, Invoice } from '#/types'
+import { BottomNavBar } from '#/components/BottomNavBar'
+import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/budget/')({
   component: BudgetPage,
 })
-
-const navItems = [
-  { icon: 'home', label: 'Home', to: '/', active: true },
-  { icon: 'insights', label: 'Reports', to: '/reports' },
-  { icon: 'account_circle', label: 'Profile', to: '/profile' },
-  { icon: 'settings', label: 'Settings', to: '/settings' },
-]
 
 function BudgetPage() {
   const navigate = useNavigate()
@@ -209,7 +203,9 @@ function BudgetPage() {
                           )}
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-slate-500 text-sm">{getSymbol()}</span>
+                          <span className="text-slate-500 text-sm">
+                            {getSymbol()}
+                          </span>
                           <input
                             className="bg-transparent border-b border-slate-700 focus:border-secondary text-white w-full pb-1"
                             placeholder="0.00"
@@ -259,7 +255,7 @@ function BudgetPage() {
         <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
       </main>
 
-      <BottomNavBar items={navItems} />
+      <BottomNavBar />
     </div>
   )
 }

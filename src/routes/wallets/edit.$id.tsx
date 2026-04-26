@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { TopAppBar, GlassCard, ActionListItem } from '../../components/ui'
-import { getWalletById, updateWallet, deleteWallet } from '../../lib/storage'
-import type { Wallet } from '../../types/wallet'
+import { getWalletById, updateWallet, deleteWallet } from '#/lib/storage'
+import type { Wallet } from '#/types/wallet'
+import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/wallets/edit/$id')({
   component: EditWalletPage,
@@ -17,7 +17,7 @@ function EditWalletPage() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    getWalletById(id).then(w => {
+    getWalletById(id).then((w) => {
       if (w) {
         setWallet(w)
         setName(w.name)
@@ -28,7 +28,7 @@ function EditWalletPage() {
 
   const handleSave = async () => {
     if (!name.trim() || !accountNumber.trim()) return
-    
+
     setSaving(true)
     await updateWallet(id, {
       name: name.trim(),
@@ -46,7 +46,7 @@ function EditWalletPage() {
   if (!wallet) {
     return (
       <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-        <TopAppBar title="Edit Wallet" showBack onBack={() => navigate({ to: '/wallets' })} />
+        <TopAppBar title="Edit Wallet" showBack backTo={'/wallets'} />
         <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
           <p className="text-slate-400">Loading...</p>
         </main>
@@ -56,17 +56,15 @@ function EditWalletPage() {
 
   return (
     <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar 
-        title="Edit Wallet"
-        showBack
-        onBack={() => navigate({ to: '/wallets' })}
-      />
-      
+      <TopAppBar title="Edit Wallet" showBack backTo={'/wallets'} />
+
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
         <section className="flex flex-col gap-6">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-slate-400 mb-2">Wallet Name</label>
+              <label className="block text-sm text-slate-400 mb-2">
+                Wallet Name
+              </label>
               <input
                 type="text"
                 value={name}
@@ -76,7 +74,9 @@ function EditWalletPage() {
               />
             </div>
             <div>
-              <label className="block text-sm text-slate-400 mb-2">Account Number</label>
+              <label className="block text-sm text-slate-400 mb-2">
+                Account Number
+              </label>
               <input
                 type="text"
                 value={accountNumber}

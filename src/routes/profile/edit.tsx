@@ -1,14 +1,14 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect, useRef } from 'react'
-import { TopAppBar, GlassCard, IconButton, ActionListItem } from '../../components/ui'
-import { getUser, saveUser } from '../../lib/storage'
-import type { User } from '../../types/user'
+import { getUser, saveUser } from '#/lib/storage'
+import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/profile/edit')({
   component: ProfileEditPage,
 })
 
-const defaultAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23d0bcff' width='100' height='100'/%3E%3Ctext x='50' y='55' dominant-baseline='middle' text-anchor='middle' fill='%230b1326' font-size='40' font-family='sans-serif'%3E%3F%3C/text%3E%3C/svg%3E"
+const defaultAvatar =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23d0bcff' width='100' height='100'/%3E%3Ctext x='50' y='55' dominant-baseline='middle' text-anchor='middle' fill='%230b1326' font-size='40' font-family='sans-serif'%3E%3F%3C/text%3E%3C/svg%3E"
 
 function ProfileEditPage() {
   const navigate = useNavigate()
@@ -19,7 +19,7 @@ function ProfileEditPage() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    getUser().then(user => {
+    getUser().then((user) => {
       if (user) {
         setName(user.name)
         setEmail(user.email)
@@ -40,7 +40,7 @@ function ProfileEditPage() {
         const maxSize = 200
         let width = img.width
         let height = img.height
-        
+
         if (width > height) {
           if (width > maxSize) {
             height = (height * maxSize) / width
@@ -52,7 +52,7 @@ function ProfileEditPage() {
             height = maxSize
           }
         }
-        
+
         canvas.width = width
         canvas.height = height
         const ctx = canvas.getContext('2d')
@@ -82,13 +82,8 @@ function ProfileEditPage() {
 
   return (
     <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar 
-        title="Edit Profile"
-        showBack
-        onBack={() => navigate({ to: '/profile' })}
-        profilePicture={profilePicture || defaultAvatar}
-      />
-      
+      <TopAppBar title="Edit Profile" showBack backTo={'/profile'} />
+
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
         <section className="flex flex-col gap-6">
           <div className="flex flex-col items-center">
@@ -102,11 +97,13 @@ function ProfileEditPage() {
                   />
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => fileInputRef.current?.click()}
                 className="absolute bottom-2 right-2 bg-primary-container text-on-primary-container p-2 rounded-full shadow-lg border border-white/20 transition-all hover:scale-110 active:scale-95"
               >
-                <span className="material-symbols-outlined text-sm">photo_camera</span>
+                <span className="material-symbols-outlined text-sm">
+                  photo_camera
+                </span>
               </button>
             </div>
             <input
@@ -117,7 +114,7 @@ function ProfileEditPage() {
               className="hidden"
             />
             {profilePicture && (
-              <button 
+              <button
                 onClick={handleRemoveImage}
                 className="text-sm text-error hover:underline"
               >

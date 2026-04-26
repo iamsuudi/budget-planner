@@ -1,11 +1,11 @@
 import { openDB } from 'idb'
 import type { DBSchema, IDBPDatabase } from 'idb'
-import type { ExpenseCategory } from '../types/expense'
-import type { PaymentMethod } from '../types/payment-method'
-import type { Invoice } from '../types/invoice'
-import type { MonthBudget } from '../types/month'
-import type { User } from '../types/user'
-import type { Wallet } from '../types/wallet'
+import type { ExpenseCategory } from '#/types/expense'
+import type { PaymentMethod } from '#/types/payment-method'
+import type { Invoice } from '#/types/invoice'
+import type { MonthBudget } from '#/types/month'
+import type { User } from '#/types/user'
+import type { Wallet } from '#/types/wallet'
 
 interface BudgetManagerDB extends DBSchema {
   user: {
@@ -56,7 +56,9 @@ function getDB() {
           })
           paymentStore.createIndex('by-deleted', 'deletedAt')
 
-          const invoiceStore = db.createObjectStore('invoices', { keyPath: 'id' })
+          const invoiceStore = db.createObjectStore('invoices', {
+            keyPath: 'id',
+          })
           invoiceStore.createIndex('by-date', 'date')
 
           const monthStore = db.createObjectStore('monthBudgets', {
@@ -66,7 +68,7 @@ function getDB() {
         }
         if (oldVersion < 2) {
           db.createObjectStore('user', { keyPath: 'id' })
-          
+
           const walletStore = db.createObjectStore('wallets', { keyPath: 'id' })
           walletStore.createIndex('by-deleted', 'deletedAt')
         }
@@ -256,7 +258,9 @@ export async function getUser(): Promise<User | undefined> {
   return all[0]
 }
 
-export async function saveUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
+export async function saveUser(
+  user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>,
+): Promise<User> {
   const db = await getDB()
   const existing = await getUser()
   const now = Date.now()
@@ -273,7 +277,9 @@ export async function saveUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'
 export async function getAllWallets(): Promise<Wallet[]> {
   const db = await getDB()
   const all = await db.getAll('wallets')
-  return all.filter(w => !w.deletedAt).sort((a, b) => a.createdAt - b.createdAt)
+  return all
+    .filter((w) => !w.deletedAt)
+    .sort((a, b) => a.createdAt - b.createdAt)
 }
 
 export async function getWalletById(id: string): Promise<Wallet | undefined> {
@@ -281,7 +287,9 @@ export async function getWalletById(id: string): Promise<Wallet | undefined> {
   return db.get('wallets', id)
 }
 
-export async function addWallet(wallet: Omit<Wallet, 'id' | 'createdAt'>): Promise<Wallet> {
+export async function addWallet(
+  wallet: Omit<Wallet, 'id' | 'createdAt'>,
+): Promise<Wallet> {
   const db = await getDB()
   const newWallet: Wallet = {
     ...wallet,
@@ -292,7 +300,10 @@ export async function addWallet(wallet: Omit<Wallet, 'id' | 'createdAt'>): Promi
   return newWallet
 }
 
-export async function updateWallet(id: string, updates: Partial<Omit<Wallet, 'id' | 'createdAt'>>): Promise<void> {
+export async function updateWallet(
+  id: string,
+  updates: Partial<Omit<Wallet, 'id' | 'createdAt'>>,
+): Promise<void> {
   const db = await getDB()
   const existing = await db.get('wallets', id)
   if (existing) {
