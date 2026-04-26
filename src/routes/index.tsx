@@ -1,10 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useState, useMemo } from 'react'
-import { getInvoicesByMonth, getMonthBudget } from '#/lib/storage'
+import { useMemo } from 'react'
+import { useGetInvoicesByMonth, useGetMonthBudget } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
 import { useCurrency } from '#/lib/currency-context'
-import type { Invoice, MonthBudget } from '#/types'
-import { BottomNavBar } from '#/components/BottomNavBar'
 import { GlassCard } from '#/components/GlassCard'
 import { ProgressBar } from '#/components/ProgressBar'
 import { TopAppBar } from '#/components/TopAppBar'
@@ -19,29 +17,8 @@ function HomePage() {
   const { formatAmount } = useCurrency()
   const { year, month, monthName } = currentMonth
 
-  const [invoices, setInvoices] = useState<Invoice[]>([])
-  const [monthBudget, setMonthBudgetData] = useState<MonthBudget | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    loadData()
-  }, [year, month])
-
-  async function loadData() {
-    setLoading(true)
-    try {
-      const [invData, budgetData] = await Promise.all([
-        getInvoicesByMonth(year, month),
-        getMonthBudget(year, month),
-      ])
-      setInvoices(invData)
-      setMonthBudgetData(budgetData || null)
-    } catch (error) {
-      console.error('Failed to load data:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data: invoices = [], isLoading } = useGetInvoicesByMonth(year, month)
+  const { data: monthBudget } = useGetMonthBudget(year, month)
 
   const totalExpenses = useMemo(() => {
     return invoices.reduce((sum, inv) => sum + inv.amount, 0)
@@ -59,7 +36,6 @@ function HomePage() {
       <TopAppBar />
 
       <main className="pt-24 pb-32 px-6 max-w-5xl mx-auto space-y-10">
-        {/* Month Navigation */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
@@ -68,7 +44,7 @@ function HomePage() {
             >
               <span className="material-symbols-outlined">chevron_left</span>
             </button>
-            <div className="text-center min-w-[140px]">
+            <div className="text-center min-w-35">
               <h2 className="text-2xl font-bold text-on-surface">
                 {monthName} {year}
               </h2>
@@ -96,7 +72,6 @@ function HomePage() {
           )}
         </div>
 
-        {/* Main Hero Card */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 glass-card rounded-2xl p-6 relative overflow-hidden">
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 blur-[80px] rounded-full" />
@@ -148,7 +123,6 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col gap-6">
             <Link
               to="/expense/add"
@@ -183,7 +157,6 @@ function HomePage() {
           </div>
         </div>
 
-        {/* Budget Progress */}
         {monthBudget && monthBudget.totalBudget > 0 && (
           <GlassCard>
             <div className="flex justify-between items-center mb-2">
@@ -205,14 +178,13 @@ function HomePage() {
           </GlassCard>
         )}
 
-        {/* Transaction List */}
         <section className="space-y-4">
           <div className="flex justify-between items-end px-2">
             <h3 className="text-2xl font-bold text-on-surface">
               Recent Transactions
             </h3>
           </div>
-          {loading ? (
+          {isLoading ? (
             <p className="text-slate-500">Loading...</p>
           ) : invoices.length === 0 ? (
             <p className="text-slate-500">
@@ -256,8 +228,6 @@ function HomePage() {
           )}
         </section>
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

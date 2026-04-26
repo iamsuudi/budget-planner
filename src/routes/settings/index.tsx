@@ -18,10 +18,10 @@ function SettingsPage() {
   const { currency } = useCurrency()
 
   return (
-    <div className="min-h-screen bg-background text-on-background">
+    <div className="">
       <TopAppBar showProfile={true} />
 
-      <main className="pt-20 px-6 max-w-4xl mx-auto">
+      <main className="pt-20 pb-32 px-6 max-w-4xl mx-auto">
         {/* Settings Header */}
         <div className="mb-10">
           <h2 className="text-5xl font-extrabold text-primary leading-tight">
@@ -192,8 +192,6 @@ function SettingsPage() {
           </div>
         </div>
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

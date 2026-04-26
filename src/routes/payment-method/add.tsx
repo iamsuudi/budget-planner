@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { addPaymentMethod } from '#/lib/storage'
-import { BottomNavBar } from '#/components/BottomNavBar'
+import { useCreatePaymentMethod } from '#/hooks/query'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/payment-method/add')({
@@ -10,25 +9,20 @@ export const Route = createFileRoute('/payment-method/add')({
 
 function AddPaymentMethodPage() {
   const navigate = useNavigate()
+  const createPaymentMethod = useCreatePaymentMethod()
   const [name, setName] = useState('')
-  const [saving, setSaving] = useState(false)
 
-  async function handleSave() {
+  const handleSave = () => {
     if (!name.trim()) return
 
-    setSaving(true)
-    try {
-      await addPaymentMethod({ name: name.trim() })
-      navigate({ to: '/payment-method' })
-    } catch (error) {
-      console.error('Failed to save payment method:', error)
-    } finally {
-      setSaving(false)
-    }
+    createPaymentMethod.mutate(
+      { name: name.trim() },
+      { onSuccess: () => navigate({ to: '/payment-method' }) },
+    )
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
+    <div className="">
       <TopAppBar showProfile />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
@@ -70,10 +64,10 @@ function AddPaymentMethodPage() {
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
           <button
             onClick={handleSave}
-            disabled={!name.trim() || saving}
+            disabled={!name.trim() || createPaymentMethod.isPending}
             className="w-full sm:w-auto px-10 py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {createPaymentMethod.isPending ? 'Saving...' : 'Save Changes'}
           </button>
           <Link
             to="/payment-method"
@@ -86,8 +80,6 @@ function AddPaymentMethodPage() {
         <div className="fixed -bottom-32 -left-32 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10" />
         <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

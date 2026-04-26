@@ -10,7 +10,7 @@ const navItems = [
 export function BottomNavBar() {
   const location = useLocation()
   return (
-    <nav className="sticky bottom-0 left-0 w-full bg-slate-950/90 backdrop-blur-xl flex justify-around items-center pb-safe px-4 h-20 z-50 border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.8)]">
+    <nav className="absolute bottom-0 left-0 w-full bg-slate-950/90 backdrop-blur-xl flex justify-around items-center pb-safe px-4 h-20 z-50 border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.8)]">
       {navItems.map((item) => {
         const isActive =
           item.to === '/'

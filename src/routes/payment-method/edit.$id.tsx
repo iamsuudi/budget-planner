@@ -1,61 +1,46 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { getPaymentMethodById, updatePaymentMethod } from '#/lib/storage'
-import { BottomNavBar } from '#/components/BottomNavBar'
+import {
+  useGetPaymentMethodById,
+  useUpdatePaymentMethod,
+  useDeletePaymentMethod,
+} from '#/hooks/query'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/payment-method/edit/$id')({
   component: EditPaymentMethodPage,
 })
 
-const navItems = [
-  { icon: 'home', label: 'Home', to: '/' },
-  { icon: 'insights', label: 'Reports', to: '/reports' },
-  { icon: 'account_circle', label: 'Profile', to: '/profile' },
-  { icon: 'settings', label: 'Settings', to: '/settings', active: true },
-]
-
 function EditPaymentMethodPage() {
   const { id } = Route.useParams()
   const navigate = useNavigate()
-
+  const { data: method, isLoading } = useGetPaymentMethodById(id)
+  const updatePaymentMethod = useUpdatePaymentMethod()
+  const deletePaymentMethod = useDeletePaymentMethod()
   const [name, setName] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    loadPaymentMethod()
-  }, [id])
-
-  async function loadPaymentMethod() {
-    if (!id) return
-    try {
-      const method = await getPaymentMethodById(id)
-      if (method) {
-        setName(method.name)
-      }
-    } catch (error) {
-      console.error('Failed to load payment method:', error)
-    } finally {
-      setLoading(false)
+    if (method) {
+      setName(method.name)
     }
-  }
+  }, [method])
 
-  async function handleSave() {
+  const handleSave = () => {
     if (!name.trim() || !id) return
 
-    setSaving(true)
-    try {
-      await updatePaymentMethod(id, { name: name.trim() })
-      navigate({ to: '/payment-method' })
-    } catch (error) {
-      console.error('Failed to update payment method:', error)
-    } finally {
-      setSaving(false)
-    }
+    updatePaymentMethod.mutate(
+      { id, updates: { name: name.trim() } },
+      { onSuccess: () => navigate({ to: '/payment-method' }) },
+    )
   }
 
-  if (loading) {
+  const handleDelete = () => {
+    deletePaymentMethod.mutate(id, {
+      onSuccess: () => navigate({ to: '/payment-method' }),
+    })
+  }
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-on-surface flex items-center justify-center">
         <p className="text-slate-500">Loading...</p>
@@ -63,10 +48,11 @@ function EditPaymentMethodPage() {
     )
   }
 
-  if (!name) {
+  if (!method) {
     return (
-      <div className="min-h-screen bg-background text-on-surface">
+      <div className="">
         <TopAppBar showProfile />
+
         <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
           <p className="text-slate-500">Payment method not found.</p>
           <Link
@@ -76,13 +62,12 @@ function EditPaymentMethodPage() {
             Back to Payment Methods
           </Link>
         </main>
-        <BottomNavBar />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
+    <div className="">
       <TopAppBar showProfile />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
@@ -124,24 +109,23 @@ function EditPaymentMethodPage() {
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
           <button
             onClick={handleSave}
-            disabled={!name.trim() || saving}
+            disabled={!name.trim() || updatePaymentMethod.isPending}
             className="w-full sm:w-auto px-10 py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {updatePaymentMethod.isPending ? 'Saving...' : 'Save Changes'}
           </button>
-          <Link
-            to="/payment-method"
-            className="w-full sm:w-auto px-10 py-3 border border-secondary text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/5 transition-all active:scale-95 text-center"
+          <button
+            onClick={handleDelete}
+            disabled={deletePaymentMethod.isPending}
+            className="w-full sm:w-auto px-10 py-3 bg-error-container text-error rounded-xl text-sm font-semibold hover:bg-error/10 transition-all active:scale-95 text-center"
           >
-            Cancel
-          </Link>
+            {deletePaymentMethod.isPending ? 'Deleting...' : 'Delete'}
+          </button>
         </div>
 
         <div className="fixed -bottom-32 -left-32 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10" />
         <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

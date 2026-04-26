@@ -1,32 +1,28 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect, useRef } from 'react'
-import { getUser, saveUser } from '#/lib/storage'
+import { useGetUser, useUpdateUser } from '#/hooks/query'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/profile/edit')({
   component: ProfileEditPage,
 })
 
-const defaultAvatar =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23d0bcff' width='100' height='100'/%3E%3Ctext x='50' y='55' dominant-baseline='middle' text-anchor='middle' fill='%230b1326' font-size='40' font-family='sans-serif'%3E%3F%3C/text%3E%3C/svg%3E"
-
 function ProfileEditPage() {
   const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const { data: user } = useGetUser()
+  const updateUser = useUpdateUser()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [profilePicture, setProfilePicture] = useState<string | undefined>()
-  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    getUser().then((user) => {
-      if (user) {
-        setName(user.name)
-        setEmail(user.email)
-        setProfilePicture(user.profilePicture)
-      }
-    })
-  }, [])
+    if (user) {
+      setName(user.name)
+      setEmail(user.email)
+      setProfilePicture(user.profilePicture)
+    }
+  }, [user])
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -69,19 +65,19 @@ function ProfileEditPage() {
     setProfilePicture(undefined)
   }
 
-  const handleSave = async () => {
-    setSaving(true)
-    await saveUser({
-      name: name.trim() || 'Unnamed',
-      email: email.trim(),
-      profilePicture,
-    })
-    setSaving(false)
-    navigate({ to: '/profile' })
+  const handleSave = () => {
+    updateUser.mutate(
+      {
+        name: name.trim() || 'Unnamed',
+        email: email.trim(),
+        profilePicture,
+      },
+      { onSuccess: () => navigate({ to: '/profile' }) },
+    )
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
+    <div className="">
       <TopAppBar title="Edit Profile" showBack backTo={'/profile'} />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
@@ -91,9 +87,9 @@ function ProfileEditPage() {
               <div className="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-violet-500 to-secondary glow-violet">
                 <div className="w-full h-full rounded-full overflow-hidden border-4 border-surface">
                   <img
-                    alt="Profile Avatar"
-                    className="w-full h-full object-cover"
-                    src={profilePicture || defaultAvatar}
+                    alt="P"
+                    className="w-full h-full object-cover bg-primary"
+                    src={profilePicture}
                   />
                 </div>
               </div>
@@ -148,10 +144,10 @@ function ProfileEditPage() {
 
           <button
             onClick={handleSave}
-            disabled={saving}
-            className="w-full bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold py-4 rounded-xl shadow-lg shadow-violet-500/20 transition-all hover:shadow-violet-500/40 active:scale-[0.98]"
+            disabled={updateUser.isPending}
+            className="w-full bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold py-4 rounded-xl shadow-lg shadow-violet-500/20 transition-all hover:shadow-violet-500/40 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {updateUser.isPending ? 'Saving...' : 'Save Changes'}
           </button>
         </section>
       </main>

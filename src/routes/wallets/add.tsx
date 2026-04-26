@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { addWallet } from '#/lib/storage'
+import { useCreateWallet } from '#/hooks/query'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/wallets/add')({
@@ -9,24 +9,23 @@ export const Route = createFileRoute('/wallets/add')({
 
 function AddWalletPage() {
   const navigate = useNavigate()
+  const createWallet = useCreateWallet()
   const [name, setName] = useState('')
   const [accountNumber, setAccountNumber] = useState('')
-  const [saving, setSaving] = useState(false)
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!name.trim() || !accountNumber.trim()) return
 
-    setSaving(true)
-    await addWallet({
-      name: name.trim(),
-      accountNumber: accountNumber.trim(),
-    })
-    setSaving(false)
-    navigate({ to: '/wallets' })
+    createWallet.mutate(
+      { name: name.trim(), accountNumber: accountNumber.trim() },
+      {
+        onSuccess: () => navigate({ to: '/wallets' }),
+      },
+    )
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
+    <div className="">
       <TopAppBar title="Add Wallet" showBack backTo={'/wallets'} />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
@@ -60,10 +59,12 @@ function AddWalletPage() {
 
           <button
             onClick={handleSave}
-            disabled={saving || !name.trim() || !accountNumber.trim()}
+            disabled={
+              createWallet.isPending || !name.trim() || !accountNumber.trim()
+            }
             className="w-full bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold py-4 rounded-xl shadow-lg shadow-violet-500/20 transition-all hover:shadow-violet-500/40 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? 'Adding...' : 'Add Wallet'}
+            {createWallet.isPending ? 'Adding...' : 'Add Wallet'}
           </button>
         </section>
       </main>

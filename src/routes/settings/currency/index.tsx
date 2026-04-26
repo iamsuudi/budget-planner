@@ -24,7 +24,7 @@ function CurrencyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
+    <div className="">
       <TopAppBar title="Select Currency" showBack backTo={'/settings'} />
 
       <main className="pt-20 pb-32 px-6 max-w-2xl mx-auto min-h-screen">

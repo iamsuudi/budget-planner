@@ -1,8 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { addCategory } from '#/lib/storage'
+import { useCreateCategory } from '#/hooks/query'
 import { AVAILABLE_ICONS, getIconStyle } from '#/lib/icons'
-import { BottomNavBar } from '#/components/BottomNavBar'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/expense-category/add')({
@@ -11,26 +10,21 @@ export const Route = createFileRoute('/expense-category/add')({
 
 function AddCategoryPage() {
   const navigate = useNavigate()
+  const createCategory = useCreateCategory()
   const [name, setName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState('restaurant')
-  const [saving, setSaving] = useState(false)
 
-  async function handleSave() {
+  const handleSave = () => {
     if (!name.trim()) return
 
-    setSaving(true)
-    try {
-      await addCategory({ name: name.trim(), icon: selectedIcon })
-      navigate({ to: '/expense-category' })
-    } catch (error) {
-      console.error('Failed to save category:', error)
-    } finally {
-      setSaving(false)
-    }
+    createCategory.mutate(
+      { name: name.trim(), icon: selectedIcon },
+      { onSuccess: () => navigate({ to: '/expense-category' }) },
+    )
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
+    <div className="">
       <TopAppBar showProfile />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
@@ -97,10 +91,10 @@ function AddCategoryPage() {
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
           <button
             onClick={handleSave}
-            disabled={!name.trim() || saving}
+            disabled={!name.trim() || createCategory.isPending}
             className="w-full sm:w-auto px-10 py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {createCategory.isPending ? 'Saving...' : 'Save Changes'}
           </button>
           <Link
             to="/expense-category"
@@ -113,8 +107,6 @@ function AddCategoryPage() {
         <div className="fixed -bottom-32 -left-32 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10" />
         <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

@@ -57,7 +57,7 @@ function ReportsPage() {
   const { formatAmount } = useCurrency()
 
   return (
-    <div className="min-h-screen bg-background text-on-background">
+    <div className="">
       <TopAppBar showProfile={false} />
 
       <main className="pt-24 pb-32 px-6 max-w-5xl mx-auto">
@@ -180,8 +180,6 @@ function ReportsPage() {
           </div>
         </section>
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

@@ -1,9 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { getAllCategories, deleteCategory } from '#/lib/storage'
+import { useGetCategories, useDeleteCategory } from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
-import type { ExpenseCategory } from '#/types'
-import { BottomNavBar } from '#/components/BottomNavBar'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/expense-category/')({
@@ -11,28 +8,12 @@ export const Route = createFileRoute('/expense-category/')({
 })
 
 function ExpenseCategoryPage() {
-  const [categories, setCategories] = useState<ExpenseCategory[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data: categories = [], isLoading } = useGetCategories()
+  const deleteCategory = useDeleteCategory()
 
-  useEffect(() => {
-    loadCategories()
-  }, [])
-
-  async function loadCategories() {
-    try {
-      const data = await getAllCategories()
-      setCategories(data)
-    } catch (error) {
-      console.error('Failed to load categories:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function handleDelete(id: string) {
+  const handleDelete = (id: string) => {
     if (confirm('Are you sure you want to delete this category?')) {
-      await deleteCategory(id)
-      loadCategories()
+      deleteCategory.mutate(id)
     }
   }
 
@@ -40,7 +21,7 @@ function ExpenseCategoryPage() {
     <div className="min-h-screen bg-background text-on-surface">
       <TopAppBar showProfile />
 
-      <main className="pt-24 px-6 max-w-7xl mx-auto pb-32">
+      <main className="pt-24 pb-32 px-6 max-w-7xl mx-auto">
         <section className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <h2 className="text-3xl font-bold text-white mb-1">
@@ -57,7 +38,7 @@ function ExpenseCategoryPage() {
           </Link>
         </section>
 
-        {loading ? (
+        {isLoading ? (
           <div className="text-center py-10 text-slate-500">Loading...</div>
         ) : categories.length === 0 ? (
           <div className="text-center py-10">
@@ -134,8 +115,6 @@ function ExpenseCategoryPage() {
           </div>
         )}
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

@@ -1,7 +1,10 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { getWalletById, updateWallet, deleteWallet } from '#/lib/storage'
-import type { Wallet } from '#/types/wallet'
+import {
+  useGetWalletById,
+  useUpdateWallet,
+  useDeleteWallet,
+} from '#/hooks/query'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/wallets/edit/$id')({
@@ -11,41 +14,38 @@ export const Route = createFileRoute('/wallets/edit/$id')({
 function EditWalletPage() {
   const navigate = useNavigate()
   const { id } = Route.useParams()
-  const [wallet, setWallet] = useState<Wallet | null>(null)
+  const { data: wallet, isLoading } = useGetWalletById(id)
+  const updateWallet = useUpdateWallet()
+  const deleteWallet = useDeleteWallet()
   const [name, setName] = useState('')
   const [accountNumber, setAccountNumber] = useState('')
-  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    getWalletById(id).then((w) => {
-      if (w) {
-        setWallet(w)
-        setName(w.name)
-        setAccountNumber(w.accountNumber)
-      }
-    })
-  }, [id])
+    if (wallet) {
+      setName(wallet.name)
+      setAccountNumber(wallet.accountNumber)
+    }
+  }, [wallet])
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!name.trim() || !accountNumber.trim()) return
 
-    setSaving(true)
-    await updateWallet(id, {
-      name: name.trim(),
-      accountNumber: accountNumber.trim(),
-    })
-    setSaving(false)
-    navigate({ to: '/wallets' })
+    updateWallet.mutate(
+      {
+        id,
+        updates: { name: name.trim(), accountNumber: accountNumber.trim() },
+      },
+      { onSuccess: () => navigate({ to: '/wallets' }) },
+    )
   }
 
-  const handleDelete = async () => {
-    await deleteWallet(id)
-    navigate({ to: '/wallets' })
+  const handleDelete = () => {
+    deleteWallet.mutate(id, { onSuccess: () => navigate({ to: '/wallets' }) })
   }
 
-  if (!wallet) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-surface-dim text-on-background antialiased">
+      <div className="">
         <TopAppBar title="Edit Wallet" showBack backTo={'/wallets'} />
         <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
           <p className="text-slate-400">Loading...</p>
@@ -55,7 +55,7 @@ function EditWalletPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
+    <div className="">
       <TopAppBar title="Edit Wallet" showBack backTo={'/wallets'} />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
@@ -89,10 +89,12 @@ function EditWalletPage() {
 
           <button
             onClick={handleSave}
-            disabled={saving || !name.trim() || !accountNumber.trim()}
+            disabled={
+              updateWallet.isPending || !name.trim() || !accountNumber.trim()
+            }
             className="w-full bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold py-4 rounded-xl shadow-lg shadow-violet-500/20 transition-all hover:shadow-violet-500/40 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {updateWallet.isPending ? 'Saving...' : 'Save Changes'}
           </button>
 
           <button

@@ -1,10 +1,6 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-
-import { getAllWallets, deleteWallet } from '#/lib/storage'
-import type { Wallet } from '#/types/wallet'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { useGetWallets, useDeleteWallet } from '#/hooks/query'
 import { ActionListItem } from '#/components/ActionListItem'
-import { BottomNavBar } from '#/components/BottomNavBar'
 import { GlassCard } from '#/components/GlassCard'
 import { TopAppBar } from '#/components/TopAppBar'
 
@@ -13,20 +9,17 @@ export const Route = createFileRoute('/wallets/')({
 })
 
 function WalletsPage() {
-  const navigate = useNavigate()
-  const [wallets, setWallets] = useState<Wallet[]>([])
+  const { data: wallets = [], isLoading } = useGetWallets()
+  const deleteWallet = useDeleteWallet()
 
-  useEffect(() => {
-    getAllWallets().then(setWallets)
-  }, [])
-
-  const handleDelete = async (id: string) => {
-    await deleteWallet(id)
-    setWallets(wallets.filter((w) => w.id !== id))
+  const handleDelete = (id: string) => {
+    if (confirm('Are you sure you want to delete this wallet?')) {
+      deleteWallet.mutate(id)
+    }
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
+    <div className="">
       <TopAppBar title="My Wallets" showBack backTo={'/profile'} />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto min-h-screen">
@@ -43,7 +36,9 @@ function WalletsPage() {
             </Link>
           </div>
 
-          {wallets.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-10 text-slate-500">Loading...</div>
+          ) : wallets.length === 0 ? (
             <GlassCard className="p-8 text-center">
               <span className="material-symbols-outlined text-4xl text-slate-500 mb-2">
                 {' '}
@@ -59,25 +54,34 @@ function WalletsPage() {
             </GlassCard>
           ) : (
             wallets.map((wallet) => (
-              <Link
-                key={wallet.id}
-                to={`/wallets/edit/$id`}
-                params={{ id: wallet.id.toString() }}
-              >
-                <ActionListItem
-                  icon="account_balance"
-                  iconBg="bg-violet-500/20"
-                  iconColor="text-violet-400"
-                  title={wallet.name}
-                  description={`****${wallet.accountNumber.slice(-4)}`}
-                />
-              </Link>
+              <div key={wallet.id} className="relative group">
+                <Link
+                  to={`/wallets/edit/$id`}
+                  params={{ id: wallet.id.toString() }}
+                  className="block"
+                >
+                  <ActionListItem
+                    icon="account_balance"
+                    iconBg="bg-violet-500/20"
+                    iconColor="text-violet-400"
+                    title={wallet.name}
+                    description={`****${wallet.accountNumber.slice(-4)}`}
+                  />
+                </Link>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    handleDelete(wallet.id)
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-500 hover:text-error transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <span className="material-symbols-outlined">delete</span>
+                </button>
+              </div>
             ))
           )}
         </section>
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

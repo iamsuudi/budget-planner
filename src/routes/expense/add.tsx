@@ -1,13 +1,11 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import {
-  getAllCategories,
-  getAllPaymentMethods,
-  addInvoice,
-} from '#/lib/storage'
+  useGetCategories,
+  useGetPaymentMethods,
+  useCreateInvoice,
+} from '#/hooks/query'
 import { useCurrency } from '#/lib/currency-context'
-import type { ExpenseCategory, PaymentMethod } from '#/types'
-import { BottomNavBar } from '#/components/BottomNavBar'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/expense/add')({
@@ -17,38 +15,18 @@ export const Route = createFileRoute('/expense/add')({
 function AddExpensePage() {
   const navigate = useNavigate()
   const { getSymbol } = useCurrency()
-  const [categories, setCategories] = useState<ExpenseCategory[]>([])
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([])
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const { data: categories = [] } = useGetCategories()
+  const { data: paymentMethods = [] } = useGetPaymentMethods()
+  const createInvoice = useCreateInvoice()
 
   const [amount, setAmount] = useState('')
   const [selectedCategoryId, setSelectedCategoryId] = useState('')
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('')
   const [note, setNote] = useState('')
 
-  useEffect(() => {
-    loadData()
-  }, [])
+  const isLoading = categories.length === 0 || paymentMethods.length === 0
 
-  async function loadData() {
-    try {
-      const [cats, pms] = await Promise.all([
-        getAllCategories(),
-        getAllPaymentMethods(),
-      ])
-      setCategories(cats)
-      setPaymentMethods(pms)
-      if (cats.length > 0) setSelectedCategoryId(cats[0].id)
-      if (pms.length > 0) setSelectedPaymentMethodId(pms[0].id)
-    } catch (error) {
-      console.error('Failed to load data:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function handleSave() {
+  const handleSave = () => {
     if (!amount || !selectedCategoryId || !selectedPaymentMethodId) return
 
     const category = categories.find((c) => c.id === selectedCategoryId)
@@ -57,9 +35,8 @@ function AddExpensePage() {
     )
     if (!category || !paymentMethod) return
 
-    setSaving(true)
-    try {
-      await addInvoice({
+    createInvoice.mutate(
+      {
         amount: parseFloat(amount),
         date: new Date().toISOString(),
         categoryId: selectedCategoryId,
@@ -67,13 +44,9 @@ function AddExpensePage() {
         paymentMethodId: selectedPaymentMethodId,
         paymentMethodName: paymentMethod.name,
         note: note.trim() || undefined,
-      })
-      navigate({ to: '/' })
-    } catch (error) {
-      console.error('Failed to save expense:', error)
-    } finally {
-      setSaving(false)
-    }
+      },
+      { onSuccess: () => navigate({ to: '/' }) },
+    )
   }
 
   const isValid = useMemo(() => {
@@ -85,7 +58,7 @@ function AddExpensePage() {
     )
   }, [amount, selectedCategoryId, selectedPaymentMethodId])
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-on-surface flex items-center justify-center">
         <p className="text-slate-500">Loading...</p>
@@ -95,7 +68,7 @@ function AddExpensePage() {
 
   if (categories.length === 0 || paymentMethods.length === 0) {
     return (
-      <div className="min-h-screen bg-background text-on-surface">
+      <div className="">
         <TopAppBar />
         <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
           <header className="mb-8">
@@ -146,7 +119,7 @@ function AddExpensePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
+    <div className="">
       <TopAppBar />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
@@ -246,10 +219,10 @@ function AddExpensePage() {
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
           <button
             onClick={handleSave}
-            disabled={!isValid || saving}
+            disabled={!isValid || createInvoice.isPending}
             className="w-full sm:w-auto px-10 py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? 'Saving...' : 'Save Expense'}
+            {createInvoice.isPending ? 'Saving...' : 'Save Expense'}
           </button>
           <Link
             to="/"
@@ -262,8 +235,6 @@ function AddExpensePage() {
         <div className="fixed -bottom-32 -left-32 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10" />
         <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

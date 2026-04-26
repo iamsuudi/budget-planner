@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { getAllPaymentMethods, deletePaymentMethod } from '#/lib/storage'
-import type { PaymentMethod } from '#/types'
+import { useGetPaymentMethods, useDeletePaymentMethod } from '#/hooks/query'
 import { BottomNavBar } from '#/components/BottomNavBar'
 import { TopAppBar } from '#/components/TopAppBar'
 
@@ -10,33 +8,17 @@ export const Route = createFileRoute('/payment-method/')({
 })
 
 function PaymentMethodPage() {
-  const [methods, setMethods] = useState<PaymentMethod[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data: methods = [], isLoading } = useGetPaymentMethods()
+  const deletePaymentMethod = useDeletePaymentMethod()
 
-  useEffect(() => {
-    loadMethods()
-  }, [])
-
-  async function loadMethods() {
-    try {
-      const data = await getAllPaymentMethods()
-      setMethods(data)
-    } catch (error) {
-      console.error('Failed to load payment methods:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function handleDelete(id: string) {
+  const handleDelete = (id: string) => {
     if (confirm('Are you sure you want to delete this payment method?')) {
-      await deletePaymentMethod(id)
-      loadMethods()
+      deletePaymentMethod.mutate(id)
     }
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-background">
+    <div className="">
       <TopAppBar showProfile />
 
       <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
@@ -68,7 +50,7 @@ function PaymentMethodPage() {
           </Link>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="text-center py-10 text-slate-500">Loading...</div>
         ) : methods.length === 0 ? (
           <div className="text-center py-10">
@@ -119,8 +101,6 @@ function PaymentMethodPage() {
           </section>
         )}
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }

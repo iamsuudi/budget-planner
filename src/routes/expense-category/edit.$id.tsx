@@ -1,6 +1,10 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { getCategoryById, updateCategory } from '#/lib/storage'
+import {
+  useGetCategoryById,
+  useUpdateCategory,
+  useDeleteCategory,
+} from '#/hooks/query'
 import { AVAILABLE_ICONS, getIconStyle } from '#/lib/icons'
 import { BottomNavBar } from '#/components/BottomNavBar'
 import { TopAppBar } from '#/components/TopAppBar'
@@ -12,46 +16,35 @@ export const Route = createFileRoute('/expense-category/edit/$id')({
 function EditCategoryPage() {
   const { id } = Route.useParams()
   const navigate = useNavigate()
-
+  const { data: category, isLoading } = useGetCategoryById(id)
+  const updateCategory = useUpdateCategory()
+  const deleteCategory = useDeleteCategory()
   const [name, setName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState('restaurant')
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    loadCategory()
-  }, [id])
-
-  async function loadCategory() {
-    if (!id) return
-    try {
-      const category = await getCategoryById(id)
-      if (category) {
-        setName(category.name)
-        setSelectedIcon(category.icon)
-      }
-    } catch (error) {
-      console.error('Failed to load category:', error)
-    } finally {
-      setLoading(false)
+    if (category) {
+      setName(category.name)
+      setSelectedIcon(category.icon)
     }
-  }
+  }, [category])
 
-  async function handleSave() {
+  const handleSave = () => {
     if (!name.trim() || !id) return
 
-    setSaving(true)
-    try {
-      await updateCategory(id, { name: name.trim(), icon: selectedIcon })
-      navigate({ to: '/expense-category' })
-    } catch (error) {
-      console.error('Failed to update category:', error)
-    } finally {
-      setSaving(false)
-    }
+    updateCategory.mutate(
+      { id, updates: { name: name.trim(), icon: selectedIcon } },
+      { onSuccess: () => navigate({ to: '/expense-category' }) },
+    )
   }
 
-  if (loading) {
+  const handleDelete = () => {
+    deleteCategory.mutate(id, {
+      onSuccess: () => navigate({ to: '/expense-category' }),
+    })
+  }
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-on-surface flex items-center justify-center">
         <p className="text-slate-500">Loading...</p>
@@ -59,7 +52,7 @@ function EditCategoryPage() {
     )
   }
 
-  if (!name) {
+  if (!category) {
     return (
       <div className="min-h-screen bg-background text-on-surface">
         <TopAppBar showProfile />
@@ -145,24 +138,23 @@ function EditCategoryPage() {
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
           <button
             onClick={handleSave}
-            disabled={!name.trim() || saving}
+            disabled={!name.trim() || updateCategory.isPending}
             className="w-full sm:w-auto px-10 py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {updateCategory.isPending ? 'Saving...' : 'Save Changes'}
           </button>
-          <Link
-            to="/expense-category"
-            className="w-full sm:w-auto px-10 py-3 border border-secondary text-secondary rounded-xl text-sm font-semibold hover:bg-secondary/5 transition-all active:scale-95 text-center"
+          <button
+            onClick={handleDelete}
+            disabled={deleteCategory.isPending}
+            className="w-full sm:w-auto px-10 py-3 bg-error-container text-error rounded-xl text-sm font-semibold hover:bg-error/10 transition-all active:scale-95 text-center"
           >
-            Cancel
-          </Link>
+            {deleteCategory.isPending ? 'Deleting...' : 'Delete'}
+          </button>
         </div>
 
         <div className="fixed -bottom-32 -left-32 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] -z-10" />
         <div className="fixed -top-32 -right-32 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] -z-10" />
       </main>
-
-      <BottomNavBar />
     </div>
   )
 }
