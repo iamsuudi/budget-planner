@@ -1,6 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useMemo } from 'react'
 import { useCurrency } from '#/lib/currency-context'
+import { useMonth } from '#/lib/month-context'
+import {
+  useGetCategories,
+  useGetInvoicesByMonth,
+  useGetMonthBudget,
+} from '#/hooks/query'
 import { CategoryCard } from '#/components/CategoryCard'
+import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { CalendarNav } from '#/components/CalendarNav'
@@ -9,51 +17,52 @@ export const Route = createFileRoute('/reports/')({
   component: ReportsPage,
 })
 
-const mockCategories = [
-  {
-    id: '1',
-    name: 'Food',
-    description: 'Dining & Groceries',
-    icon: 'restaurant',
-    used: 450,
-    total: 600,
-    percentage: 75,
-    color: 'violet' as const,
-  },
-  {
-    id: '2',
-    name: 'Transport',
-    description: 'Fuel & Commute',
-    icon: 'directions_car',
-    used: 276,
-    total: 300,
-    percentage: 92,
-    color: 'cyan' as const,
-  },
-  {
-    id: '3',
-    name: 'Entertainment',
-    description: 'Leisure & Hobbies',
-    icon: 'movie',
-    used: 150,
-    total: 500,
-    percentage: 30,
-    color: 'emerald' as const,
-  },
-  {
-    id: '4',
-    name: 'Utilities',
-    description: 'Bills & Power',
-    icon: 'wifi',
-    used: 225,
-    total: 450,
-    percentage: 50,
-    color: 'slate' as const,
-  },
-]
-
 function ReportsPage() {
   const { formatAmount } = useCurrency()
+  const { currentMonth } = useMonth()
+  const { year, month } = currentMonth
+
+  const { data: categories = [] } = useGetCategories()
+  const { data: invoices = [] } = useGetInvoicesByMonth(year, month)
+  const { data: monthBudget } = useGetMonthBudget(year, month)
+
+  const totalExpenses = useMemo(() => {
+    return invoices.reduce((sum, inv) => sum + inv.amount, 0)
+  }, [invoices])
+
+  const categorySpending = useMemo(() => {
+    const spending: Record<string, number> = {}
+    invoices.forEach((inv) => {
+      if (!spending[inv.categoryId]) spending[inv.categoryId] = 0
+      spending[inv.categoryId] += inv.amount
+    })
+    return spending
+  }, [invoices])
+
+  const categoryData = useMemo(() => {
+    return categories.map((cat) => {
+      const used = categorySpending[cat.id] || 0
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      const total = monthBudget?.categoryBudgets?.[cat.id] || 0
+      const percentage = total > 0 ? Math.min((used / total) * 100, 100) : 0
+      return {
+        id: cat.id,
+        name: cat.name,
+        description: `${formatAmount(used)} spent`,
+        icon: cat.icon,
+        used,
+        total,
+        percentage,
+      }
+    })
+  }, [categories, categorySpending, monthBudget])
+
+  const budgetPercentage = useMemo(() => {
+    if (!monthBudget?.totalBudget || monthBudget.totalBudget === 0) return 0
+    return Math.min((totalExpenses / monthBudget.totalBudget) * 100, 100)
+  }, [totalExpenses, monthBudget])
+
+  const remaining = (monthBudget?.totalBudget || 0) - totalExpenses
 
   return (
     <div className="">
@@ -65,66 +74,96 @@ function ReportsPage() {
         </section>
 
         <section className="mb-6">
-          <div className="relative h-36 rounded-xl overflow-hidden glass-card p-4 flex items-end">
-            <img
-              alt="Financial Analytics"
-              className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg1IK-7sJ5JjoVX1QXTnWxvTvOQ3QIUvJ0Gu3j0h2vL0bDKuZvRNMxe34xK2WFvsHWRhnZY0Cm3ODOBTyX4SABTmjaGqBrH1yPrv1HoSp1f9isyCZ4XOyVMr2Hk2g82yDpbaZFmQYHU4qIU13YqJUsPO4tDXSow-Bxvj6zGMda_7Ca_83585UgfeHlOPJ1DpejdtpGwQOVaZfN8pzwGfxALbuPc5nEDIixjA7YugRoBlzh2jDSU-t8U8obTipHdQpMNvzYLcVHxPN8"
-            />
+          <GlassCard className="relative h-36 rounded-xl overflow-hidden glass-card p-4 flex items-end">
             <div className="relative z-10 w-full flex justify-between items-center">
               <div>
                 <p className="text-[10px] text-primary uppercase tracking-widest">
                   Total Performance
                 </p>
-                <h4 className="text-2xl font-bold text-on-surface">On Track</h4>
+                <h4 className="text-2xl font-bold text-on-surface">
+                  {budgetPercentage >= 100
+                    ? 'Over Budget'
+                    : budgetPercentage >= 80
+                      ? 'Near Limit'
+                      : 'On Track'}
+                </h4>
               </div>
               <div className="text-right">
                 <p className="text-[10px] text-outline">Balance</p>
-                <p className="text-lg font-bold text-tertiary">
-                  +{formatAmount(1450)}
+                <p
+                  className={`text-lg font-bold ${
+                    remaining >= 0 ? 'text-tertiary' : 'text-error'
+                  }`}
+                >
+                  {remaining >= 0 ? '+' : ''}
+                  {formatAmount(remaining)}
                 </p>
               </div>
             </div>
-          </div>
+          </GlassCard>
         </section>
 
         <div className="flex flex-col gap-3">
-          {mockCategories.map((category) => (
-            <CategoryCard key={category.id} category={category} />
-          ))}
+          {categoryData.length === 0 ? (
+            <p className="text-slate-500 text-sm">No categories yet.</p>
+          ) : categoryData.some((cat) => cat.total > 0) ? (
+            categoryData
+              .filter((cat) => cat.total > 0)
+              .map((category) => (
+                <CategoryCard key={category.id} category={category} />
+              ))
+          ) : (
+            <p className="text-slate-500 text-sm">
+              No category budgets set. Set budgets in the Budget page.
+            </p>
+          )}
         </div>
 
-        <section className="mt-6 bg-surface-container-lowest p-4 rounded-xl border border-white/5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/10 blur-[60px] rounded-full" />
-          <div className="relative z-10">
-            <h3 className="text-base font-bold text-white mb-2">
-              Budget Health Strategy
-            </h3>
-            <p className="text-xs text-slate-400 mb-3">
-              Your categorized spending is currently{' '}
-              <span className="text-tertiary font-bold">12% lower</span> than
-              last month.
-            </p>
-            <div className="flex gap-6">
-              <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-widest text-slate-500">
-                  Budgeted
-                </span>
-                <span className="text-base font-bold text-white">
-                  {formatAmount(2020)}
-                </span>
-              </div>
-              <div className="flex flex-col border-l border-white/10 pl-4">
-                <span className="text-[10px] uppercase tracking-widest text-slate-500">
-                  Unallocated
-                </span>
-                <span className="text-base font-bold text-secondary">
-                  {formatAmount(480)}
-                </span>
+        {monthBudget && monthBudget.totalBudget > 0 && (
+          <section className="mt-6 bg-surface-container-lowest p-4 rounded-xl border border-white/5 relative overflow-hidden">
+            <div className="relative z-10">
+              <h3 className="text-base font-bold text-white mb-2">
+                Budget Overview
+              </h3>
+              <p className="text-xs text-slate-400 mb-3">
+                {totalExpenses > monthBudget.totalBudget ? (
+                  <>
+                    You&apos;ve exceeded your total budget by{' '}
+                    <span className="text-error font-bold">
+                      {formatAmount(totalExpenses - monthBudget.totalBudget)}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    You have{' '}
+                    <span className="text-tertiary font-bold">
+                      {formatAmount(remaining)}
+                    </span>{' '}
+                    remaining this month.
+                  </>
+                )}
+              </p>
+              <div className="flex gap-6">
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-widest text-slate-500">
+                    Budgeted
+                  </span>
+                  <span className="text-base font-bold text-green-500">
+                    {formatAmount(monthBudget.totalBudget)}
+                  </span>
+                </div>
+                <div className="flex flex-col border-l border-white/10 pl-4">
+                  <span className="text-[10px] uppercase tracking-widest text-slate-500">
+                    Spent
+                  </span>
+                  <span className="text-base font-bold text-red-500">
+                    {formatAmount(totalExpenses)}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </Page>
     </div>
   )

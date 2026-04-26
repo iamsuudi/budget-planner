@@ -1,3 +1,4 @@
+import { useCurrency } from '#/lib/currency-context'
 import { getIcon } from '#/lib/icons'
 import { ProgressBar } from './ProgressBar'
 
@@ -9,7 +10,7 @@ interface CategoryBudget {
   used: number
   total: number
   percentage: number
-  color: 'violet' | 'cyan' | 'emerald' | 'slate'
+  color?: 'violet' | 'cyan' | 'emerald' | 'slate'
 }
 
 interface CategoryCardProps {
@@ -17,43 +18,72 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
+  const { formatAmount } = useCurrency()
   const remaining = category.total - category.used
-  const remainingColor = remaining < 50 ? 'text-error' : 'text-tertiary'
 
-  const colorConfig = {
-    violet: {
+  const getColorConfig = (percentage: number) => {
+    if (percentage >= 100) {
+      return {
+        bg: 'bg-error/20',
+        text: 'text-error',
+        border: 'border-error/30',
+        bar: 'red' as const,
+      }
+    }
+    if (percentage >= 80) {
+      return {
+        bg: 'bg-tertiary/20',
+        text: 'text-tertiary',
+        border: 'border-tertiary/30',
+        bar: 'emerald' as const,
+      }
+    }
+    return {
       bg: 'bg-primary-container/20',
       text: 'text-primary-container',
       border: 'border-primary-container/30',
       bar: 'violet' as const,
-    },
-    cyan: {
-      bg: 'bg-secondary-container/20',
-      text: 'text-secondary-container',
-      border: 'border-secondary-container/30',
-      bar: 'cyan' as const,
-    },
-    emerald: {
-      bg: 'bg-tertiary-container/20',
-      text: 'text-tertiary-container',
-      border: 'border-tertiary-container/30',
-      bar: 'emerald' as const,
-    },
-    slate: {
-      bg: 'bg-outline-variant/20',
-      text: 'text-on-surface-variant',
-      border: 'border-outline-variant/30',
-      bar: 'slate' as const,
-    },
+    }
   }
 
-  const config = colorConfig[category.color]
+  const config = category.color
+    ? {
+        violet: {
+          bg: 'bg-primary-container/20',
+          text: 'text-primary-container',
+          border: 'border-primary-container/30',
+          bar: 'violet' as const,
+        },
+        cyan: {
+          bg: 'bg-secondary-container/20',
+          text: 'text-secondary-container',
+          border: 'border-secondary-container/30',
+          bar: 'cyan' as const,
+        },
+        emerald: {
+          bg: 'bg-tertiary-container/20',
+          text: 'text-tertiary-container',
+          border: 'border-tertiary-container/30',
+          bar: 'emerald' as const,
+        },
+        slate: {
+          bg: 'bg-outline-variant/20',
+          text: 'text-on-surface-variant',
+          border: 'border-outline-variant/30',
+          bar: 'slate' as const,
+        },
+      }[category.color]
+    : getColorConfig(category.percentage)
+
+  const remainingColor = remaining < 0 ? 'text-error' : 'text-tertiary'
 
   return (
     <div className="glass-card rounded-xl p-6 rim-light flex flex-col gap-4">
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-4">
-          <div className={`w-12 h-12 rounded-xl ${config.bg} flex items-center justify-center ${config.text} border ${config.border}`}>
+          <div
+            className={`w-12 h-12 rounded-xl ${config.bg} flex items-center justify-center ${config.text} border ${config.border}`}
+          >
             {(() => {
               const IconComponent = getIcon(category.icon)
               return <IconComponent className="w-6 h-6" />
@@ -65,18 +95,33 @@ export function CategoryCard({ category }: CategoryCardProps) {
           </div>
         </div>
         <div className="text-right">
-          <span className={`text-sm font-semibold ${config.text}`}>{category.percentage}%</span>
+          <span className={`text-sm font-semibold ${config.text}`}>
+            {category.percentage.toFixed(0)}%
+          </span>
           <p className="text-xs text-outline-variant">used</p>
         </div>
       </div>
       <div className="space-y-2 mt-2">
-        <div className="flex justify-between text-xs">
-          <span className="text-on-surface-variant">
-            ${category.used.toLocaleString()} <span className="text-outline">/ ${category.total.toLocaleString()}</span>
-          </span>
-          <span className={`font-bold ${remainingColor}`}>${remaining > 0 ? '$' + remaining.toLocaleString() : '$0.00'} left</span>
-        </div>
-        <ProgressBar percentage={category.percentage} color={config.bar} showGlow />
+          <div className="flex justify-between text-xs">
+            <span className="text-on-surface-variant">
+              {formatAmount(category.used)}{' '}
+              <span className="text-outline">
+                / {category.total > 0 ? formatAmount(category.total) : '$0.00'}
+              </span>
+            </span>
+            <span className={`font-bold ${remainingColor}`}>
+              {remaining > 0
+                ? `${formatAmount(remaining)} left`
+                : remaining === 0
+                  ? '$0.00 left'
+                  : `${formatAmount(Math.abs(remaining))} over`}
+            </span>
+          </div>
+        <ProgressBar
+          percentage={category.percentage}
+          color={config.bar}
+          showGlow={category.percentage >= 80}
+        />
       </div>
     </div>
   )

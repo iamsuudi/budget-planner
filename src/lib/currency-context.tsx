@@ -37,7 +37,7 @@ export function CurrencyProvider({ children }: { children: react.ReactNode }) {
   }
 
   const formatAmount = (amount: number) => {
-    return `${currency.symbol}${amount.toFixed(2)}`
+    return `${amount.toFixed(2)} ${currency.symbol}`
   }
 
   const getSymbol = () => currency.symbol
