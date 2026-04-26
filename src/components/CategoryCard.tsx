@@ -1,3 +1,4 @@
+import { getIcon } from '#/lib/icons'
 import { ProgressBar } from './ProgressBar'
 
 interface CategoryBudget {
@@ -53,7 +54,10 @@ export function CategoryCard({ category }: CategoryCardProps) {
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-4">
           <div className={`w-12 h-12 rounded-xl ${config.bg} flex items-center justify-center ${config.text} border ${config.border}`}>
-            <span className="material-symbols-outlined">{category.icon}</span>
+            {(() => {
+              const IconComponent = getIcon(category.icon)
+              return <IconComponent className="w-6 h-6" />
+            })()}
           </div>
           <div>
             <h3 className="text-sm font-semibold text-on-surface">{category.name}</h3>

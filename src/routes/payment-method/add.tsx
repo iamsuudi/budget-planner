@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { useCreatePaymentMethod } from '#/hooks/query'
 import { Page } from '#/components/Page'
@@ -31,9 +32,9 @@ function AddPaymentMethodPage() {
           <div className="flex items-center gap-2 mb-2">
             <Link
               to="/payment-method"
-              className="text-secondary material-symbols-outlined hover:text-cyan-400 transition-colors"
+              className="text-secondary hover:text-cyan-400 transition-colors"
             >
-              arrow_back
+              <ArrowLeft className="w-4 h-4" />
             </Link>
             <span className="text-secondary text-sm uppercase tracking-widest">
               Settings

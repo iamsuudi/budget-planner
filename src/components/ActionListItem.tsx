@@ -1,3 +1,6 @@
+import { ChevronRight } from 'lucide-react'
+import { Icon } from '#/components/Icon'
+
 interface ActionListItemProps {
   icon: string
   iconBg: string
@@ -25,8 +28,8 @@ export function ActionListItem({
       className="glass-card flex items-center justify-between p-6 rounded-xl hover:bg-white/5 transition-all group w-full text-left"
     >
       <div className="flex items-center gap-4">
-        <div className={`w-10 h-10 flex items-center justify-center rounded-lg ${iconBg} ${iconColor}`}>
-          <span className="material-symbols-outlined">{icon}</span>
+        <div className={`w-10 h-10 flex items-center justify-center rounded-lg ${iconBg}`}>
+          <Icon name={icon} className={iconColor} size={20} />
         </div>
         <div>
           <p className={`text-sm font-semibold ${danger ? 'text-error' : 'text-on-background'}`}>
@@ -38,9 +41,7 @@ export function ActionListItem({
         </div>
       </div>
       {showChevron && (
-        <span className="material-symbols-outlined text-slate-600 group-hover:text-on-background transition-colors">
-          chevron_right
-        </span>
+        <ChevronRight className="text-slate-600 group-hover:text-on-background transition-colors w-5 h-5" />
       )}
     </button>
   )

@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { PlusCircle, Edit2, Trash2, Plus } from 'lucide-react'
 import { useGetCategories, useDeleteCategory } from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
 import { BottomNavBar } from '#/components/BottomNavBar'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { Icon } from '#/components/Icon'
 
 export const Route = createFileRoute('/expense-category/')({
   component: ExpenseCategoryPage,
@@ -33,7 +35,7 @@ function ExpenseCategoryPage() {
             to="/expense-category/add"
             className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
           >
-            <span className="material-symbols-outlined text-lg">add_circle</span>
+            <PlusCircle className="w-4 h-4" />
             Add
           </Link>
         </section>
@@ -63,11 +65,7 @@ function ExpenseCategoryPage() {
                     <div
                       className={`${styles.bg} p-2 rounded-lg border ${styles.border}`}
                     >
-                      <span
-                        className={`material-symbols-outlined text-xl ${styles.color}`}
-                      >
-                        {category.icon}
-                      </span>
+                      <Icon name={category.icon} className={styles.color} size={20} />
                     </div>
                     <div className="flex gap-1">
                       <Link
@@ -75,17 +73,13 @@ function ExpenseCategoryPage() {
                         params={{ id: category.id }}
                         className="p-1 text-slate-500 hover:text-secondary transition-colors"
                       >
-                        <span className="material-symbols-outlined text-lg">
-                          edit
-                        </span>
+                        <Edit2 className="w-4 h-4" />
                       </Link>
                       <button
                         onClick={() => handleDelete(category.id)}
                         className="p-1 text-slate-500 hover:text-error transition-colors"
                       >
-                        <span className="material-symbols-outlined text-lg">
-                          delete
-                        </span>
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -101,9 +95,7 @@ function ExpenseCategoryPage() {
               to="/expense-category/add"
               className="border-2 border-dashed border-slate-800 p-4 rounded-lg flex flex-col items-center justify-center gap-2 group hover:border-violet-500/30 hover:bg-violet-500/5 transition-all cursor-pointer min-h-[100px]"
             >
-              <span className="material-symbols-outlined text-slate-600 group-hover:text-violet-400 text-2xl">
-                add
-              </span>
+              <Plus className="w-6 h-6 text-slate-600 group-hover:text-violet-400" />
               <span className="text-xs text-slate-500">Add</span>
             </Link>
           </div>

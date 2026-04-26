@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { ArrowLeft, PlusCircle, CreditCard, Edit2, Trash2 } from 'lucide-react'
 import { useGetPaymentMethods, useDeletePaymentMethod } from '#/hooks/query'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
@@ -26,9 +27,9 @@ function PaymentMethodPage() {
           <div className="flex items-center gap-2 mb-2">
             <Link
               to="/settings"
-              className="text-secondary material-symbols-outlined hover:text-cyan-400 transition-colors"
+              className="text-secondary hover:text-cyan-400 transition-colors"
             >
-              arrow_back
+              <ArrowLeft className="w-4 h-4" />
             </Link>
             <span className="text-secondary text-sm uppercase tracking-widest">
               Settings
@@ -45,9 +46,7 @@ function PaymentMethodPage() {
             to="/payment-method/add"
             className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center justify-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
           >
-            <span className="material-symbols-outlined text-lg">
-              add_circle
-            </span>
+            <PlusCircle className="w-4 h-4" />
             Add Method
           </Link>
         </div>
@@ -73,9 +72,7 @@ function PaymentMethodPage() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-secondary/10 text-secondary">
-                    <span className="material-symbols-outlined text-lg">
-                      credit_card
-                    </span>
+                    <CreditCard className="w-5 h-5" />
                   </div>
                   <p className="text-sm font-semibold text-on-surface">
                     {method.name}
@@ -87,17 +84,13 @@ function PaymentMethodPage() {
                     params={{ id: method.id }}
                     className="p-1 text-slate-500 hover:text-secondary transition-colors"
                   >
-                    <span className="material-symbols-outlined text-lg">
-                      edit
-                    </span>
+                    <Edit2 className="w-4 h-4" />
                   </Link>
                   <button
                     onClick={() => handleDelete(method.id)}
                     className="p-1 text-slate-500 hover:text-error transition-colors"
                   >
-                    <span className="material-symbols-outlined text-lg">
-                      delete
-                    </span>
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>

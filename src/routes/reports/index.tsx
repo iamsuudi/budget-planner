@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useCurrency } from '#/lib/currency-context'
-import { BottomNavBar } from '#/components/BottomNavBar'
 import { CategoryCard } from '#/components/CategoryCard'
 import { GlassCard } from '#/components/GlassCard'
 import { IconButton } from '#/components/IconButton'
@@ -46,7 +45,7 @@ const mockCategories = [
     id: '4',
     name: 'Utilities',
     description: 'Bills & Power',
-    icon: 'bolt',
+    icon: 'wifi',
     used: 225,
     total: 450,
     percentage: 50,

@@ -1,3 +1,141 @@
+import type { LucideIcon } from 'lucide-react'
+import {
+  Utensils,
+  ShoppingBag,
+  Plane,
+  Home,
+  Dumbbell,
+  Car,
+  Stethoscope,
+  GraduationCap,
+  PawPrint,
+  Sparkles,
+  Film,
+  Theater,
+  Gamepad2,
+  Music,
+  Coffee,
+  Store,
+  Droplets,
+  Wifi,
+  Bus,
+  DollarSign,
+  PiggyBank,
+  CreditCard,
+  Wallet,
+  ArrowUpRight,
+  ArrowDownRight,
+  Receipt,
+  PlusCircle,
+  ChevronRight,
+  ChevronLeft,
+  Settings,
+  User,
+  LogOut,
+  Bell,
+  Flag,
+  FolderOpen,
+  CircleDollarSign,
+  Moon,
+  Fingerprint,
+  Lock,
+  HelpCircle,
+  FileText,
+  Trash2,
+  Edit,
+  Check,
+  X,
+  ArrowLeft,
+  Banknote,
+  Target,
+  LockKeyhole,
+  Baby,
+  Gift,
+  Bike,
+  Shirt,
+  Landmark,
+  Loader2,
+  MoreVertical,
+  Plus,
+} from 'lucide-react'
+
+export type IconName = keyof typeof ICONS
+
+const ICONS = {
+  restaurant: Utensils,
+  shopping_cart: ShoppingBag,
+  flight: Plane,
+  home: Home,
+  fitness_center: Dumbbell,
+  directions_car: Car,
+  medical_services: Stethoscope,
+  school: GraduationCap,
+  pets: PawPrint,
+  spa: Sparkles,
+  movie: Film,
+  theater_comedy: Theater,
+  sports_esports: Gamepad2,
+  music_note: Music,
+  local_cafe: Coffee,
+  local_grocery_store: Store,
+  checkroom: Shirt,
+  dry_cleaning: Droplets,
+  wifi: Wifi,
+  commute: Bus,
+  attach_money: DollarSign,
+  savings: PiggyBank,
+  account_balance: Landmark,
+  credit_card: CreditCard,
+  wallet: Wallet,
+  payments: Banknote,
+  receipt: Receipt,
+  trending_up: ArrowUpRight,
+  trending_down: ArrowDownRight,
+  add_circle: PlusCircle,
+  chevron_right: ChevronRight,
+  chevron_left: ChevronLeft,
+  settings: Settings,
+  person: User,
+  logout: LogOut,
+  notifications: Bell,
+  flag: Flag,
+  savings_alt: PiggyBank,
+  category: FolderOpen,
+  payments_alt: CircleDollarSign,
+  dark_mode: Moon,
+  fingerprint: Fingerprint,
+  lock: Lock,
+  lock_reset: LockKeyhole,
+  help_center: HelpCircle,
+  policy: FileText,
+  delete: Trash2,
+  edit: Edit,
+  check: Check,
+  close: X,
+  add: Plus,
+  back: ArrowLeft,
+  more_vert: MoreVertical,
+  account_balance_wallet: Wallet,
+  account_circle: User,
+  analytics: Target,
+  expand_more: ChevronRight,
+  notifications_active: Bell,
+  account_balance_wallet_alt: Banknote,
+  error: X,
+  category_alt: FolderOpen,
+  payments_alt_alt: CircleDollarSign,
+  electric_bolt: Loader2,
+  phone: Wifi,
+  baby: Baby,
+  gift: Gift,
+  bike: Bike,
+} as Record<string, LucideIcon>
+
+export function getIcon(name: string): LucideIcon {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  return ICONS[name] || Utensils
+}
+
 export const AVAILABLE_ICONS = [
   'restaurant',
   'shopping_cart',
@@ -9,7 +147,6 @@ export const AVAILABLE_ICONS = [
   'school',
   'pets',
   'spa',
-  'celebration',
   'movie',
   'theater_comedy',
   'sports_esports',
@@ -29,162 +166,179 @@ export const AVAILABLE_ICONS = [
   'receipt',
   'trending_up',
   'trending_down',
+  'baby',
+  'gift',
+  'bike',
 ]
 
-export interface IconStyle {
+export function getIconStyle(icon: string): {
   bg: string
   border: string
   color: string
-}
-
-export function getIconStyle(icon: string): IconStyle {
-  const styles: Record<string, IconStyle> = {
-    restaurant: {
-      bg: 'bg-violet-500/10',
-      border: 'border-violet-500/20',
-      color: 'text-violet-400',
-    },
-    directions_car: {
-      bg: 'bg-secondary-container/10',
-      border: 'border-secondary-container/20',
-      color: 'text-secondary',
-    },
-    theater_comedy: {
-      bg: 'bg-tertiary-container/10',
-      border: 'border-tertiary-container/20',
-      color: 'text-tertiary',
-    },
-    health_and_safety: {
-      bg: 'bg-primary/10',
-      border: 'border-primary/20',
-      color: 'text-primary',
-    },
-    school: {
-      bg: 'bg-secondary-fixed-dim/10',
-      border: 'border-secondary-fixed-dim/20',
-      color: 'text-secondary-fixed-dim',
-    },
-    shopping_cart: {
-      bg: 'bg-violet-500/10',
-      border: 'border-violet-500/20',
-      color: 'text-violet-400',
-    },
-    flight: {
-      bg: 'bg-secondary-container/10',
-      border: 'border-secondary-container/20',
-      color: 'text-secondary',
-    },
-    fitness_center: {
-      bg: 'bg-tertiary-container/10',
-      border: 'border-tertiary-container/20',
-      color: 'text-tertiary',
-    },
-    medical_services: {
-      bg: 'bg-primary/10',
-      border: 'border-primary/20',
-      color: 'text-primary',
-    },
-    pets: {
-      bg: 'bg-secondary-fixed-dim/10',
-      border: 'border-secondary-fixed-dim/20',
-      color: 'text-secondary-fixed-dim',
-    },
-    spa: {
-      bg: 'bg-violet-500/10',
-      border: 'border-violet-500/20',
-      color: 'text-violet-400',
-    },
-    movie: {
-      bg: 'bg-secondary-container/10',
-      border: 'border-secondary-container/20',
-      color: 'text-secondary',
-    },
-    sports_esports: {
-      bg: 'bg-tertiary-container/10',
-      border: 'border-tertiary-container/20',
-      color: 'text-tertiary',
-    },
-    music_note: {
-      bg: 'bg-primary/10',
-      border: 'border-primary/20',
-      color: 'text-primary',
-    },
-    local_cafe: {
-      bg: 'bg-secondary-fixed-dim/10',
-      border: 'border-secondary-fixed-dim/20',
-      color: 'text-secondary-fixed-dim',
-    },
-    local_grocery_store: {
-      bg: 'bg-violet-500/10',
-      border: 'border-violet-500/20',
-      color: 'text-violet-400',
-    },
-    checkroom: {
-      bg: 'bg-secondary-container/10',
-      border: 'border-secondary-container/20',
-      color: 'text-secondary',
-    },
-    dry_cleaning: {
-      bg: 'bg-tertiary-container/10',
-      border: 'border-tertiary-container/20',
-      color: 'text-tertiary',
-    },
-    wifi: {
-      bg: 'bg-primary/10',
-      border: 'border-primary/20',
-      color: 'text-primary',
-    },
-    commute: {
-      bg: 'bg-secondary-fixed-dim/10',
-      border: 'border-secondary-fixed-dim/20',
-      color: 'text-secondary-fixed-dim',
-    },
-    attach_money: {
-      bg: 'bg-violet-500/10',
-      border: 'border-violet-500/20',
-      color: 'text-violet-400',
-    },
-    savings: {
-      bg: 'bg-tertiary/10',
-      border: 'border-tertiary/20',
-      color: 'text-tertiary',
-    },
-    account_balance: {
-      bg: 'bg-secondary/10',
-      border: 'border-secondary/20',
-      color: 'text-secondary',
-    },
-    credit_card: {
-      bg: 'bg-primary/10',
-      border: 'border-primary/20',
-      color: 'text-primary',
-    },
-    wallet: {
-      bg: 'bg-violet-500/10',
-      border: 'border-violet-500/20',
-      color: 'text-violet-400',
-    },
-    payments: {
-      bg: 'bg-secondary-container/10',
-      border: 'border-secondary-container/20',
-      color: 'text-secondary',
-    },
-    receipt: {
-      bg: 'bg-tertiary-container/10',
-      border: 'border-tertiary-container/20',
-      color: 'text-tertiary',
-    },
-    trending_up: {
-      bg: 'bg-tertiary/10',
-      border: 'border-tertiary/20',
-      color: 'text-tertiary',
-    },
-    trending_down: {
-      bg: 'bg-error/10',
-      border: 'border-error/20',
-      color: 'text-error',
-    },
-  }
+} {
+  const styles: Record<string, { bg: string; border: string; color: string }> =
+    {
+      restaurant: {
+        bg: 'bg-violet-500/10',
+        border: 'border-violet-500/20',
+        color: 'text-violet-400',
+      },
+      directions_car: {
+        bg: 'bg-secondary/10',
+        border: 'border-secondary/20',
+        color: 'text-secondary',
+      },
+      theater_comedy: {
+        bg: 'bg-tertiary/10',
+        border: 'border-tertiary/20',
+        color: 'text-tertiary',
+      },
+      health_and_safety: {
+        bg: 'bg-primary/10',
+        border: 'border-primary/20',
+        color: 'text-primary',
+      },
+      school: {
+        bg: 'bg-slate-500/10',
+        border: 'border-slate-500/20',
+        color: 'text-slate-400',
+      },
+      shopping_cart: {
+        bg: 'bg-violet-500/10',
+        border: 'border-violet-500/20',
+        color: 'text-violet-400',
+      },
+      flight: {
+        bg: 'bg-secondary/10',
+        border: 'border-secondary/20',
+        color: 'text-secondary',
+      },
+      fitness_center: {
+        bg: 'bg-tertiary/10',
+        border: 'border-tertiary/20',
+        color: 'text-tertiary',
+      },
+      medical_services: {
+        bg: 'bg-primary/10',
+        border: 'border-primary/20',
+        color: 'text-primary',
+      },
+      pets: {
+        bg: 'bg-slate-500/10',
+        border: 'border-slate-500/20',
+        color: 'text-slate-400',
+      },
+      spa: {
+        bg: 'bg-violet-500/10',
+        border: 'border-violet-500/20',
+        color: 'text-violet-400',
+      },
+      movie: {
+        bg: 'bg-secondary/10',
+        border: 'border-secondary/20',
+        color: 'text-secondary',
+      },
+      sports_esports: {
+        bg: 'bg-tertiary/10',
+        border: 'border-tertiary/20',
+        color: 'text-tertiary',
+      },
+      music_note: {
+        bg: 'bg-primary/10',
+        border: 'border-primary/20',
+        color: 'text-primary',
+      },
+      local_cafe: {
+        bg: 'bg-slate-500/10',
+        border: 'border-slate-500/20',
+        color: 'text-slate-400',
+      },
+      local_grocery_store: {
+        bg: 'bg-violet-500/10',
+        border: 'border-violet-500/20',
+        color: 'text-violet-400',
+      },
+      checkroom: {
+        bg: 'bg-secondary/10',
+        border: 'border-secondary/20',
+        color: 'text-secondary',
+      },
+      dry_cleaning: {
+        bg: 'bg-tertiary/10',
+        border: 'border-tertiary/20',
+        color: 'text-tertiary',
+      },
+      wifi: {
+        bg: 'bg-primary/10',
+        border: 'border-primary/20',
+        color: 'text-primary',
+      },
+      commute: {
+        bg: 'bg-slate-500/10',
+        border: 'border-slate-500/20',
+        color: 'text-slate-400',
+      },
+      attach_money: {
+        bg: 'bg-violet-500/10',
+        border: 'border-violet-500/20',
+        color: 'text-violet-400',
+      },
+      savings: {
+        bg: 'bg-tertiary/10',
+        border: 'border-tertiary/20',
+        color: 'text-tertiary',
+      },
+      account_balance: {
+        bg: 'bg-secondary/10',
+        border: 'border-secondary/20',
+        color: 'text-secondary',
+      },
+      credit_card: {
+        bg: 'bg-primary/10',
+        border: 'border-primary/20',
+        color: 'text-primary',
+      },
+      wallet: {
+        bg: 'bg-violet-500/10',
+        border: 'border-violet-500/20',
+        color: 'text-violet-400',
+      },
+      payments: {
+        bg: 'bg-secondary/10',
+        border: 'border-secondary/20',
+        color: 'text-secondary',
+      },
+      receipt: {
+        bg: 'bg-tertiary/10',
+        border: 'border-tertiary/20',
+        color: 'text-tertiary',
+      },
+      trending_up: {
+        bg: 'bg-tertiary/10',
+        border: 'border-tertiary/20',
+        color: 'text-tertiary',
+      },
+      trending_down: {
+        bg: 'bg-error/10',
+        border: 'border-error/20',
+        color: 'text-error',
+      },
+      baby: {
+        bg: 'bg-primary/10',
+        border: 'border-primary/20',
+        color: 'text-primary',
+      },
+      gift: {
+        bg: 'bg-violet-500/10',
+        border: 'border-violet-500/20',
+        color: 'text-violet-400',
+      },
+      bike: {
+        bg: 'bg-secondary/10',
+        border: 'border-secondary/20',
+        color: 'text-secondary',
+      },
+    }
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   return styles[icon] || styles.restaurant

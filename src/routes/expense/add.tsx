@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { ArrowLeft, CreditCard } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import {
   useGetCategories,
@@ -10,6 +11,7 @@ import { useCurrency } from '#/lib/currency-context'
 import { useMonth } from '#/lib/month-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { Icon } from '#/components/Icon'
 
 export const Route = createFileRoute('/expense/add')({
   component: AddExpensePage,
@@ -67,9 +69,7 @@ function AddExpensePage() {
   }, [amount, selectedCategoryId, selectedPaymentMethodId])
 
   const recentAmount =
-    invoices.length > 0
-      ? invoices.reduce((sum, inv) => sum + inv.amount, 0)
-      : 0
+    invoices.length > 0 ? invoices.reduce((sum, inv) => sum + inv.amount, 0) : 0
 
   if (isLoading) {
     return (
@@ -83,14 +83,14 @@ function AddExpensePage() {
     return (
       <div className="">
         <TopAppBar />
-        <Page pt="pt-6">
+        <Page className="space-y-6">
           <header className="mb-8">
             <div className="flex items-center gap-2 mb-2">
               <Link
                 to="/"
-                className="text-secondary material-symbols-outlined hover:text-cyan-400 transition-colors"
+                className="text-secondary hover:text-cyan-400 transition-colors"
               >
-                arrow_back
+                <ArrowLeft className="w-4 h-4" />
               </Link>
               <span className="text-secondary text-sm uppercase tracking-widest">
                 Expense
@@ -135,14 +135,14 @@ function AddExpensePage() {
     <div className="">
       <TopAppBar />
 
-      <Page pt="pt-6">
+      <Page className="space-y-6">
         <header className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <Link
               to="/"
-              className="text-secondary material-symbols-outlined hover:text-cyan-400 transition-colors"
+              className="text-secondary hover:text-cyan-400 transition-colors"
             >
-              arrow_back
+              <ArrowLeft className="w-4 h-4" />
             </Link>
             <span className="text-secondary text-sm uppercase tracking-widest">
               Expense
@@ -191,9 +191,11 @@ function AddExpensePage() {
                   }`}
                   onClick={() => setSelectedCategoryId(cat.id)}
                 >
-                  <span className="material-symbols-outlined block mb-1 text-lg">
-                    {cat.icon}
-                  </span>
+                  <Icon
+                    name={cat.icon}
+                    className="w-5 h-5 mb-1 block"
+                    size={20}
+                  />
                   <span className="text-xs">{cat.name}</span>
                 </button>
               ))}
@@ -213,9 +215,7 @@ function AddExpensePage() {
                   }`}
                   onClick={() => setSelectedPaymentMethodId(pm.id)}
                 >
-                  <span className="material-symbols-outlined text-lg">
-                    credit_card
-                  </span>
+                  <CreditCard className="w-4 h-4" />
                   <span>{pm.name}</span>
                 </button>
               ))}

@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { useCreateCategory } from '#/hooks/query'
 import { AVAILABLE_ICONS, getIconStyle } from '#/lib/icons'
 import { BottomNavBar } from '#/components/BottomNavBar'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { Icon } from '#/components/Icon'
 
 export const Route = createFileRoute('/expense-category/add')({
   component: AddCategoryPage,
@@ -34,9 +36,9 @@ function AddCategoryPage() {
           <div className="flex items-center gap-2 mb-2">
             <Link
               to="/expense-category"
-              className="text-secondary material-symbols-outlined hover:text-cyan-400 transition-colors"
+              className="text-secondary hover:text-cyan-400 transition-colors"
             >
-              arrow_back
+              <ArrowLeft className="w-4 h-4" />
             </Link>
             <span className="text-secondary text-sm uppercase tracking-widest">
               Budgeting
@@ -82,7 +84,7 @@ function AddCategoryPage() {
                     }`}
                     onClick={() => setSelectedIcon(icon)}
                   >
-                    <span className="material-symbols-outlined">{icon}</span>
+                    <Icon name={icon} className="w-5 h-5" size={20} />
                   </button>
                 )
               })}

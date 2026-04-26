@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Camera } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useGetUser, useUpdateUser } from '#/hooks/query'
 import { Page } from '#/components/Page'
@@ -101,9 +102,7 @@ function ProfileEditPage() {
                 onClick={() => fileInputRef.current?.click()}
                 className="absolute bottom-0 right-0 bg-primary-container text-on-primary-container p-1.5 rounded-full shadow-lg border border-white/20 transition-all hover:scale-110 active:scale-95"
               >
-                <span className="material-symbols-outlined text-sm">
-                  photo_camera
-                </span>
+                <Camera className="w-4 h-4" />
               </button>
             </div>
             <input

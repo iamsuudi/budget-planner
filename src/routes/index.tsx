@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { ChevronLeft, ChevronRight, Flag, PiggyBank, PlusCircle, Wallet, Receipt } from 'lucide-react'
 import { useMemo } from 'react'
 import { useGetInvoicesByMonth, useGetMonthBudget } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
@@ -43,7 +44,7 @@ function HomePage() {
               onClick={goToPrevMonth}
               className="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-container border border-white/5 text-secondary hover:text-secondary-fixed transition-all"
             >
-              <span className="material-symbols-outlined">chevron_left</span>
+              <ChevronLeft className="w-5 h-5" />
             </button>
             <div className="text-center">
               <h2 className="text-xl font-bold text-on-surface">
@@ -55,7 +56,7 @@ function HomePage() {
               disabled={!canGoNext}
               className="w-9 h-9 flex items-center justify-center rounded-lg bg-surface-container border border-white/5 text-secondary hover:text-secondary-fixed transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="material-symbols-outlined">chevron_right</span>
+              <ChevronRight className="w-5 h-5" />
             </button>
           </div>
           {monthBudget && monthBudget.totalBudget > 0 && (
@@ -87,9 +88,7 @@ function HomePage() {
                   Budget
                 </p>
                 <div className="flex items-center gap-1">
-                  <span className="material-symbols-outlined text-cyan-400 text-sm">
-                    flag
-                  </span>
+                  <Flag className="w-4 h-4 text-cyan-400" />
                   <p className="text-lg font-bold text-secondary">
                     {formatAmount(monthBudget?.totalBudget || 0)}
                   </p>
@@ -100,9 +99,7 @@ function HomePage() {
                   Remaining
                 </p>
                 <div className="flex items-center gap-1">
-                  <span className="material-symbols-outlined text-tertiary text-sm">
-                    savings
-                  </span>
+                  <PiggyBank className="w-4 h-4 text-tertiary" />
                   <p
                     className={`text-lg font-bold ${(monthBudget?.totalBudget || 0) - totalExpenses >= 0 ? 'text-tertiary' : 'text-error'}`}
                   >
@@ -124,21 +121,19 @@ function HomePage() {
             to="/expense/add"
             className="bg-primary-container text-on-primary-fixed-variant rounded-xl p-4 flex items-center justify-between shadow-lg glow-violet hover:brightness-110 active:scale-98 transition-all"
           >
-            <span className="material-symbols-outlined text-2xl">
-              add_circle
-            </span>
+            <PlusCircle className="w-6 h-6" />
             <span className="text-lg font-bold">Add Expense</span>
-            <span className="material-symbols-outlined">chevron_right</span>
+            <ChevronRight className="w-5 h-5" />
           </Link>
           <Link
             to="/budget"
             className="border border-secondary text-secondary rounded-xl p-4 flex items-center justify-between hover:bg-secondary/10 active:scale-98 transition-all"
           >
-            <span className="material-symbols-outlined text-2xl">payments</span>
+            <Wallet className="w-6 h-6" />
             <span className="text-lg font-bold text-on-surface">
               Set Budget
             </span>
-            <span className="material-symbols-outlined">chevron_right</span>
+            <ChevronRight className="w-5 h-5" />
           </Link>
         </div>
 
@@ -177,9 +172,7 @@ function HomePage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
-                      <span className="material-symbols-outlined text-lg">
-                        receipt
-                      </span>
+                      <Receipt className="w-5 h-5" />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-on-surface">

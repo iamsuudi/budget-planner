@@ -1,3 +1,5 @@
+import { getIcon } from '#/lib/icons'
+
 interface Transaction {
   id: string
   name: string
@@ -18,7 +20,10 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
     <div className="glass-card flex items-center justify-between p-4 rounded-xl hover:bg-surface-container-high transition-colors group cursor-pointer">
       <div className="flex items-center gap-4">
         <div className={`w-12 h-12 rounded-full flex items-center justify-center ${transaction.iconColor}`}>
-          <span className="material-symbols-outlined">{transaction.icon}</span>
+          {(() => {
+            const IconComponent = getIcon(transaction.icon)
+            return <IconComponent className="w-6 h-6" />
+          })()}
         </div>
         <div>
           <p className="text-sm font-semibold text-on-surface">{transaction.name}</p>

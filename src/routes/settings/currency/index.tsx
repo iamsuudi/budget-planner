@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { CheckCircle } from 'lucide-react'
 import { useState } from 'react'
 import { CURRENCIES, useCurrency } from '#/lib/currency-context'
 import { Page } from '#/components/Page'
@@ -58,9 +59,7 @@ function CurrencyPage() {
                 </div>
               </div>
               {currentCurrency.cc === c.cc && (
-                <span className="material-symbols-outlined text-tertiary text-lg">
-                  check_circle
-                </span>
+                <CheckCircle className="w-5 h-5 text-tertiary" />
               )}
             </button>
           ))}

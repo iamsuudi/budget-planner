@@ -2,6 +2,17 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useCurrency } from '#/lib/currency-context'
 import { useGetWallets, useGetPaymentMethods } from '#/hooks/query'
+import {
+  Building2,
+  CreditCard,
+  ChevronRight,
+  FolderOpen,
+  CircleDollarSign,
+  Moon,
+  Bell,
+  Fingerprint,
+  ArrowDownUp,
+} from 'lucide-react'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
 import { ToggleSwitch } from '#/components/ToggleSwitch'
@@ -46,9 +57,7 @@ function SettingsPage() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
-                    <span className="material-symbols-outlined text-lg">
-                      account_balance
-                    </span>
+                    <Building2 className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">
@@ -59,9 +68,7 @@ function SettingsPage() {
                     </p>
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
-                  chevron_right
-                </span>
+                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
               </Link>
               <Link
                 to="/payment-method"
@@ -69,9 +76,7 @@ function SettingsPage() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
-                    <span className="material-symbols-outlined text-lg">
-                      credit_card
-                    </span>
+                    <CreditCard className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">
@@ -84,9 +89,7 @@ function SettingsPage() {
                     </p>
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
-                  chevron_right
-                </span>
+                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
               </Link>
             </GlassCard>
           </section>
@@ -102,9 +105,7 @@ function SettingsPage() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
-                    <span className="material-symbols-outlined text-lg">
-                      category
-                    </span>
+                    <FolderOpen className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">
@@ -115,16 +116,12 @@ function SettingsPage() {
                     </p>
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-slate-500 group-hover:text-cyan-400 transition-colors">
-                  chevron_right
-                </span>
+                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
               </Link>
               <div className="flex items-center justify-between p-3 rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
-                    <span className="material-symbols-outlined text-lg">
-                      payments
-                    </span>
+                    <CircleDollarSign className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">
@@ -138,18 +135,14 @@ function SettingsPage() {
                 <Link to="/settings/currency">
                   <div className="flex items-center gap-1 px-2 py-1 bg-surface-container rounded-lg border border-white/5">
                     <span className="text-xs text-primary">{currency.cc}</span>
-                    <span className="material-symbols-outlined text-slate-400 text-base">
-                      expand_more
-                    </span>
+                    <ArrowDownUp className="w-3 h-3 text-slate-400" />
                   </div>
                 </Link>
               </div>
               <div className="flex items-center justify-between p-3 rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-on-primary-fixed-variant/10 flex items-center justify-center text-on-primary-fixed-variant">
-                    <span className="material-symbols-outlined text-lg">
-                      dark_mode
-                    </span>
+                    <Moon className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">
@@ -162,9 +155,7 @@ function SettingsPage() {
               <div className="flex items-center justify-between p-3 rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
-                    <span className="material-symbols-outlined text-lg">
-                      notifications_active
-                    </span>
+                    <Bell className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">
@@ -188,9 +179,7 @@ function SettingsPage() {
               <div className="flex items-center justify-between p-3 rounded-lg">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-error/10 flex items-center justify-center text-error">
-                    <span className="material-symbols-outlined text-lg">
-                      fingerprint
-                    </span>
+                    <Fingerprint className="w-5 h-5" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">

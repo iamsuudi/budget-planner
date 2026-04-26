@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import {
   useGetMonthBudget,
@@ -11,6 +12,7 @@ import { useMonth } from '#/lib/month-context'
 import { useCurrency } from '#/lib/currency-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { Icon } from '#/components/Icon'
 
 export const Route = createFileRoute('/budget/')({
   component: BudgetPage,
@@ -79,16 +81,16 @@ function BudgetPage() {
           <div className="flex items-center gap-3 mb-3">
             <Link
               to="/"
-              className="text-secondary material-symbols-outlined hover:text-cyan-400 transition-colors"
+              className="text-secondary hover:text-cyan-400 transition-colors"
             >
-              arrow_back
+              <ArrowLeft className="w-5 h-5" />
             </Link>
             <div className="flex items-center gap-2">
               <button
                 onClick={goToPrevMonth}
                 className="p-1 text-slate-500 hover:text-secondary"
               >
-                <span className="material-symbols-outlined">chevron_left</span>
+                <ChevronLeft className="w-5 h-5" />
               </button>
               <span className="text-white font-semibold">
                 {monthName} {year}
@@ -97,7 +99,7 @@ function BudgetPage() {
                 onClick={goToNextMonth}
                 className="p-1 text-slate-500 hover:text-secondary"
               >
-                <span className="material-symbols-outlined">chevron_right</span>
+                <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -151,11 +153,7 @@ function BudgetPage() {
                       <div
                         className={`${style.bg} p-1.5 rounded-lg border ${style.border}`}
                       >
-                        <span
-                          className={`material-symbols-outlined ${style.color} text-lg`}
-                        >
-                          {cat.icon}
-                        </span>
+                        <Icon name={cat.icon} className={style.color} size={18} />
                       </div>
                       <span className="text-white font-semibold text-sm">
                         {cat.name}

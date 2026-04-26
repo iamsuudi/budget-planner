@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Building2, Trash2 } from 'lucide-react'
 import { useGetWallets, useDeleteWallet } from '#/hooks/query'
 import { ActionListItem } from '#/components/ActionListItem'
 import { BottomNavBar } from '#/components/BottomNavBar'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { Icon } from '#/components/Icon'
 
 export const Route = createFileRoute('/wallets/')({
   component: WalletsPage,
@@ -42,9 +44,7 @@ function WalletsPage() {
             <div className="text-center py-8 text-slate-500">Loading...</div>
           ) : wallets.length === 0 ? (
             <GlassCard className="p-6 text-center">
-              <span className="material-symbols-outlined text-3xl text-slate-500 mb-2">
-                account_balance
-              </span>
+              <Building2 className="w-8 h-8 text-slate-500 mx-auto mb-2" />
               <p className="text-slate-400 text-sm">No wallets yet</p>
               <Link
                 to="/wallets/add"
@@ -76,7 +76,7 @@ function WalletsPage() {
                   }}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-slate-500 hover:text-error transition-colors opacity-0 group-hover:opacity-100"
                 >
-                  <span className="material-symbols-outlined">delete</span>
+                  <Trash2 className="w-5 h-5" />
                 </button>
               </div>
             ))

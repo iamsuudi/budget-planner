@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Edit2 } from 'lucide-react'
 import { useGetUser } from '#/hooks/query'
 import { ActionListItem } from '#/components/ActionListItem'
 import { Page } from '#/components/Page'
@@ -35,7 +36,7 @@ function ProfilePage() {
               </div>
             </div>
             <button className="absolute bottom-0 right-0 bg-primary-container text-on-primary-container p-1.5 rounded-full shadow-lg border border-white/20 transition-all hover:scale-110 active:scale-95">
-              <span className="material-symbols-outlined text-sm">edit</span>
+              <Edit2 className="w-4 h-4" />
             </button>
           </Link>
           <h1 className="text-xl font-bold text-on-background">
