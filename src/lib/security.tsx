@@ -43,6 +43,27 @@ function saveSecuritySettings(settings: SecuritySettings): void {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
 }
 
+const PASSKEY_CREDENTIAL_KEY = 'passkey-credential-id'
+
+function savePasskeyCredentialId(rawId: ArrayBuffer): void {
+  localStorage.setItem(PASSKEY_CREDENTIAL_KEY, btoa(String.fromCharCode(...new Uint8Array(rawId))))
+}
+
+function loadPasskeyCredentialId(): Uint8Array | null {
+  const stored = localStorage.getItem(PASSKEY_CREDENTIAL_KEY)
+  if (!stored) return null
+  const binary = atob(stored)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i)
+  }
+  return bytes
+}
+
+function clearPasskeyCredentialId(): void {
+  localStorage.removeItem(PASSKEY_CREDENTIAL_KEY)
+}
+
 export function SecurityProvider({ children }: { children: ReactNode }) {
   const [isLocked, setIsLocked] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -80,10 +101,17 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
   const authenticateWithBiometric = async (): Promise<boolean> => {
     if (!('PublicKeyCredential' in window)) return false
     try {
+      const credentialId = loadPasskeyCredentialId()
+      const publicKey: PublicKeyCredentialRequestOptions = {
+        challenge: new TextEncoder().encode('authenticate'),
+      }
+      if (credentialId) {
+        publicKey.allowCredentials = [
+          { id: credentialId.buffer as ArrayBuffer, type: 'public-key' },
+        ]
+      }
       const credential = await navigator.credentials.get({
-        publicKey: {
-          challenge: new TextEncoder().encode('authenticate'),
-        },
+        publicKey,
       })
       if (credential) {
         setIsLocked(false)
@@ -136,21 +164,31 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     async (enabled: boolean) => {
       if (enabled) {
         try {
-          await navigator.credentials.create({
+          const credential = await navigator.credentials.create({
             publicKey: {
               challenge: new TextEncoder().encode('register'),
               rp: { name: 'Budget Manager' },
               user: {
-                id: new Uint8Array(16),
+                id: new TextEncoder().encode('user'),
                 name: 'user',
                 displayName: 'User',
               },
               pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
+              authenticatorSelection: {
+                residentKey: 'required',
+                authenticatorAttachment: 'platform',
+              },
             },
           })
+          if (credential) {
+            const c = credential as PublicKeyCredential
+            savePasskeyCredentialId(c.rawId)
+          }
         } catch {
           enabled = false
         }
+      } else {
+        clearPasskeyCredentialId()
       }
       const settings: SecuritySettings = {
         pinEnabled,
@@ -164,14 +202,16 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
 
   const removePin = useCallback(async () => {
     localStorage.removeItem('pin-hash')
+    clearPasskeyCredentialId()
     const settings: SecuritySettings = {
       pinEnabled: false,
-      biometricEnabled: biometric,
+      biometricEnabled: false,
     }
     saveSecuritySettings(settings)
     setPinEnabled(false)
+    setBiometric(false)
     unlock()
-  }, [biometric, unlock])
+  }, [unlock])
 
   if (loading) {
     return null
