@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import {
   useGetCategories,
   useGetInvoicesByMonth,
-  useGetPaymentMethods,
+  useGetWallets,
 } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
 import { useCurrency } from '#/lib/currency-context'
@@ -24,23 +24,23 @@ function TransactionsPage() {
 
   const { data: invoices = [], isLoading } = useGetInvoicesByMonth(year, month)
   const { data: categories = [] } = useGetCategories()
-  const { data: paymentMethods = [] } = useGetPaymentMethods()
+  const { data: wallets = [] } = useGetWallets()
 
   const categoryMap = useMemo(() => {
-    const map: Record<string, { name: string; icon: string }> = {}
+    const map: Record<string, { name: string; icon: string; walletId?: string }> = {}
     categories.forEach((cat) => {
-      map[cat.id] = { name: cat.name, icon: cat.icon }
+      map[cat.id] = { name: cat.name, icon: cat.icon, walletId: cat.walletId }
     })
     return map
   }, [categories])
 
-  const paymentMethodMap = useMemo(() => {
-    const map: Record<string, string> = {}
-    paymentMethods.forEach((pm) => {
-      map[pm.id] = pm.name
+  const walletMap = useMemo(() => {
+    const map: Record<string, { name: string; accountNumber: string }> = {}
+    wallets.forEach((w) => {
+      map[w.id] = { name: w.name, accountNumber: w.accountNumber }
     })
     return map
-  }, [paymentMethods])
+  }, [wallets])
 
   const groupedInvoices = useMemo(() => {
     const groups: Record<string, typeof invoices> = {}
@@ -93,7 +93,10 @@ function TransactionsPage() {
                 <div className="space-y-2">
                   {dateInvoices.map((inv) => {
                     const category = categoryMap[inv.categoryId]
-                    const style = getIconStyle(category.icon || 'receipt')
+                    const wallet = category?.walletId
+                      ? walletMap[category.walletId]
+                      : null
+                    const style = getIconStyle(category?.icon || 'receipt')
                     return (
                       <div
                         key={inv.id}
@@ -103,16 +106,15 @@ function TransactionsPage() {
                           <div
                             className={`w-10 h-10 rounded-full ${style.bg} flex items-center justify-center ${style.color}`}
                           >
-                            <Icon name={category.icon || 'receipt'} size={20} />
+                            <Icon name={category?.icon || 'receipt'} size={20} />
                           </div>
                           <div>
                             <p className="text-sm font-semibold text-on-surface">
-                              {inv.note || category.name || inv.categoryName}
+                              {inv.note || category?.name || inv.categoryName}
                             </p>
                             <p className="text-[10px] text-on-surface-variant opacity-60">
-                              {category.name || inv.categoryName} •{' '}
-                              {paymentMethodMap[inv.paymentMethodId] ||
-                                inv.paymentMethodName}
+                              {category?.name || inv.categoryName}
+                              {wallet && ` • ${wallet.name}`}
                             </p>
                           </div>
                         </div>

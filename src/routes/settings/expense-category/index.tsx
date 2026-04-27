@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { PlusCircle, Edit2, Trash2, Plus } from 'lucide-react'
-import { useGetCategories, useDeleteCategory } from '#/hooks/query'
+import { useGetCategories, useDeleteCategory, useGetWallets } from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
@@ -12,7 +12,13 @@ export const Route = createFileRoute('/settings/expense-category/')({
 
 function ExpenseCategoryPage() {
   const { data: categories = [], isLoading } = useGetCategories()
+  const { data: wallets = [] } = useGetWallets()
   const deleteCategory = useDeleteCategory()
+
+  const walletMap = wallets.reduce((acc, w) => {
+    acc[w.id] = w
+    return acc
+  }, {} as Record<string, typeof wallets[0]>)
 
   const handleDelete = (id: string) => {
     if (confirm('Delete this category?')) {
@@ -55,6 +61,7 @@ function ExpenseCategoryPage() {
           <div className="grid grid-cols-2 gap-3">
             {categories.map((category) => {
               const styles = getIconStyle(category.icon)
+              const wallet = category.walletId ? walletMap[category.walletId] : null
               return (
                 <div
                   key={category.id}
@@ -90,6 +97,11 @@ function ExpenseCategoryPage() {
                     <h3 className="text-base font-bold text-white">
                       {category.name}
                     </h3>
+                    {wallet && (
+                      <p className="text-xs text-slate-500 mt-1">
+                        {wallet.name} •••{wallet.accountNumber.slice(-4)}
+                      </p>
+                    )}
                   </div>
                 </div>
               )

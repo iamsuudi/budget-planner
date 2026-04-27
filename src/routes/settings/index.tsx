@@ -4,13 +4,12 @@ import { useCurrency } from '#/lib/currency-context'
 import { useToast } from '#/lib/toast'
 import { useSecurity } from '#/lib/security'
 import { clearAllData } from '#/lib/storage'
-import { useGetWallets, useGetPaymentMethods } from '#/hooks/query'
+import { useGetWallets } from '#/hooks/query'
 import { usePWAInstall } from '#/hooks/usePWAInstall'
 import { usePWAUpdate } from '#/hooks/usePWAUpdate'
 import { useStorageUsage } from '#/hooks/useStorageUsage'
 import {
   Building2,
-  CreditCard,
   ChevronRight,
   CircleDollarSign,
   Moon,
@@ -39,7 +38,6 @@ function SettingsPage() {
   const [notifications, setNotifications] = useState(true)
   const { currency } = useCurrency()
   const { data: wallets = [] } = useGetWallets()
-  const { data: paymentMethods = [] } = useGetPaymentMethods()
   const { installStatus, showInstallPrompt } = usePWAInstall()
   const { showUpdate, applyUpdate } = usePWAUpdate()
   const { usage, quota, loading, formatBytes, percentage } = useStorageUsage()
@@ -52,8 +50,6 @@ function SettingsPage() {
     lock,
   } = useSecurity()
   const isOnline = navigator.onLine
-
-  const firstPaymentMethod = paymentMethods.at(0)
 
   const handleInstall = async () => {
     if (installStatus !== 'installable') return
@@ -103,31 +99,10 @@ function SettingsPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">
-                      My Wallets
+                      Wallets
                     </p>
                     <p className="text-xs text-on-surface-variant">
-                      {wallets.length} Bank accounts
-                    </p>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
-              </Link>
-              <Link
-                to="/settings/payment-method"
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
-                    <CreditCard className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">
-                      Payment Methods
-                    </p>
-                    <p className="text-xs text-on-surface-variant">
-                      {firstPaymentMethod
-                        ? `Default: ${firstPaymentMethod.name}`
-                        : 'Add payment methods'}
+                      {wallets.length} Accounts
                     </p>
                   </div>
                 </div>

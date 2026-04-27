@@ -5,6 +5,7 @@ import {
   useGetInvoicesByMonth,
   useGetMonthBudget,
   useGetCategories,
+  useGetWallets,
 } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
 import { useCurrency } from '#/lib/currency-context'
@@ -28,14 +29,23 @@ function HomePage() {
   const { data: invoices = [], isLoading } = useGetInvoicesByMonth(year, month)
   const { data: monthBudget } = useGetMonthBudget(year, month)
   const { data: categories = [] } = useGetCategories()
+  const { data: wallets = [] } = useGetWallets()
 
   const categoryMap = useMemo(() => {
-    const map: Record<string, { name: string; icon: string }> = {}
+    const map: Record<string, { name: string; icon: string; walletId?: string }> = {}
     categories.forEach((cat) => {
-      map[cat.id] = { name: cat.name, icon: cat.icon }
+      map[cat.id] = { name: cat.name, icon: cat.icon, walletId: cat.walletId }
     })
     return map
   }, [categories])
+
+  const walletMap = useMemo(() => {
+    const map: Record<string, { name: string; accountNumber: string }> = {}
+    wallets.forEach((w) => {
+      map[w.id] = { name: w.name, accountNumber: w.accountNumber }
+    })
+    return map
+  }, [wallets])
 
   const totalExpenses = useMemo(() => {
     return invoices.reduce((sum, inv) => sum + inv.amount, 0)
@@ -181,20 +191,16 @@ function HomePage() {
                           {inv.note || category.name || inv.categoryName}
                         </p>
                         <p className="text-[10px] text-on-surface-variant opacity-60">
-                          {category.name || inv.categoryName} •{' '}
-                          {new Date(inv.date).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                          })}
+                          {category.name || inv.categoryName}
+                          {category.walletId && walletMap[category.walletId]
+                            ? ` • ${walletMap[category.walletId].name}`
+                            : ''}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold text-on-surface">
                         {formatAmount(inv.amount)}
-                      </p>
-                      <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">
-                        {inv.paymentMethodName}
                       </p>
                     </div>
                   </div>

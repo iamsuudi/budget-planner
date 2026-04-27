@@ -1,11 +1,10 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { CreditCard } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import {
   useGetCategories,
-  useGetPaymentMethods,
   useCreateInvoice,
   useGetInvoicesByMonth,
+  useGetWallets,
 } from '#/hooks/query'
 import { useCurrency } from '#/lib/currency-context'
 import { useMonth } from '#/lib/month-context'
@@ -24,8 +23,7 @@ function AddExpensePage() {
   const { currentMonth } = useMonth()
   const { data: categories = [], isLoading: isLoadingCategories } =
     useGetCategories()
-  const { data: paymentMethods = [], isLoading: isLoadingPaymentMethods } =
-    useGetPaymentMethods()
+  const { data: wallets = [], isLoading: isLoadingWallets } = useGetWallets()
   const { data: invoices = [] } = useGetInvoicesByMonth(
     currentMonth.year,
     currentMonth.month,
@@ -34,19 +32,22 @@ function AddExpensePage() {
 
   const [amount, setAmount] = useState('')
   const [selectedCategoryId, setSelectedCategoryId] = useState('')
-  const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('')
   const [note, setNote] = useState('')
 
-  const isLoading = isLoadingCategories || isLoadingPaymentMethods
+  const isLoading = isLoadingCategories || isLoadingWallets
+
+  const selectedCategory = categories.find(
+    (c) => c.id === selectedCategoryId,
+  )
+  const selectedWallet = selectedCategory
+    ? wallets.find((w) => w.id === selectedCategory.walletId)
+    : null
 
   const handleSave = () => {
-    if (!amount || !selectedCategoryId || !selectedPaymentMethodId) return
+    if (!amount || !selectedCategoryId) return
 
     const category = categories.find((c) => c.id === selectedCategoryId)
-    const paymentMethod = paymentMethods.find(
-      (pm) => pm.id === selectedPaymentMethodId,
-    )
-    if (!category || !paymentMethod) return
+    if (!category) return
 
     createInvoice.mutate(
       {
@@ -54,8 +55,6 @@ function AddExpensePage() {
         date: new Date().toISOString(),
         categoryId: selectedCategoryId,
         categoryName: category.name,
-        paymentMethodId: selectedPaymentMethodId,
-        paymentMethodName: paymentMethod.name,
         note: note.trim() || undefined,
       },
       { onSuccess: () => navigate({ to: '/' }) },
@@ -63,13 +62,8 @@ function AddExpensePage() {
   }
 
   const isValid = useMemo(() => {
-    return (
-      !!amount &&
-      parseFloat(amount) > 0 &&
-      selectedCategoryId &&
-      selectedPaymentMethodId
-    )
-  }, [amount, selectedCategoryId, selectedPaymentMethodId])
+    return !!amount && parseFloat(amount) > 0 && selectedCategoryId
+  }, [amount, selectedCategoryId])
 
   const recentAmount =
     invoices.length > 0 ? invoices.reduce((sum, inv) => sum + inv.amount, 0) : 0
@@ -82,7 +76,7 @@ function AddExpensePage() {
     )
   }
 
-  if (categories.length === 0 || paymentMethods.length === 0) {
+  if (categories.length === 0 || wallets.length === 0) {
     return (
       <div className="">
         <TopAppBar title="Add Expense" showBack backTo="/" />
@@ -102,19 +96,44 @@ function AddExpensePage() {
             </div>
           )}
 
-          {paymentMethods.length === 0 && (
+          {wallets.length === 0 && (
             <div className="glass-panel rounded-xl p-6">
               <p className="text-slate-400 mb-4">
-                You need to create at least one payment method first.
+                You need to create at least one wallet first.
               </p>
               <Link
-                to="/settings/payment-method/add"
+                to="/settings/wallets/add"
                 className="text-secondary hover:underline"
               >
-                Create Payment Method
+                Create Wallet
               </Link>
             </div>
           )}
+        </Page>
+      </div>
+    )
+  }
+
+  const categoriesWithoutWallet = categories.filter((c) => !c.walletId)
+
+  if (categoriesWithoutWallet.length > 0) {
+    return (
+      <div className="">
+        <TopAppBar title="Add Expense" showBack backTo="/" />
+
+        <Page className="space-y-6">
+          <div className="glass-panel rounded-xl p-6 mb-4">
+            <p className="text-slate-400 mb-4">
+              Some categories don't have a wallet assigned yet. Please assign a wallet
+              to all categories first.
+            </p>
+            <Link
+              to="/settings/expense-category"
+              className="text-secondary hover:underline"
+            >
+              Manage Categories
+            </Link>
+          </div>
         </Page>
       </div>
     )
@@ -154,46 +173,51 @@ function AddExpensePage() {
           <section className="space-y-2">
             <label className="text-sm text-violet-400">Category</label>
             <div className="grid grid-cols-3 gap-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  className={`p-3 rounded-lg border transition-all active:scale-95 ${
-                    selectedCategoryId === cat.id
-                      ? 'bg-violet-500/20 border-violet-500/50 text-violet-400 electric-glow'
-                      : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
-                  }`}
-                  onClick={() => setSelectedCategoryId(cat.id)}
-                >
-                  <Icon
-                    name={cat.icon}
-                    className="w-5 h-5 mb-1 block"
-                    size={20}
-                  />
-                  <span className="text-xs">{cat.name}</span>
-                </button>
-              ))}
+              {(function () {
+                return categories
+              })()
+                .filter((cat) => cat.walletId)
+                .map((cat) => {
+                  const wallet = wallets.find((w) => w.id === cat.walletId)
+                  const isSelected = selectedCategoryId === cat.id
+                  return (
+                    <button
+                      key={cat.id}
+                      className={`p-3 rounded-lg border transition-all active:scale-95 ${
+                        isSelected
+                          ? 'bg-violet-500/20 border-violet-500/50 text-violet-400 electric-glow'
+                          : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
+                      }`}
+                      onClick={() => setSelectedCategoryId(cat.id)}
+                    >
+                      <Icon
+                        name={cat.icon}
+                        className="w-5 h-5 mb-1 block"
+                        size={20}
+                      />
+                      <span className="text-xs block">{cat.name}</span>
+                      {wallet && isSelected && (
+                        <span className="text-xs text-slate-500 block truncate">
+                          {wallet.name}
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
             </div>
           </section>
 
-          <section className="space-y-2">
-            <label className="text-sm text-violet-400">Payment Method</label>
-            <div className="flex flex-col gap-2">
-              {paymentMethods.map((pm) => (
-                <button
-                  key={pm.id}
-                  className={`p-3 rounded-lg border flex items-center gap-2 transition-all active:scale-95 text-sm ${
-                    selectedPaymentMethodId === pm.id
-                      ? 'bg-violet-500/20 border-violet-500/50 text-violet-400'
-                      : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
-                  }`}
-                  onClick={() => setSelectedPaymentMethodId(pm.id)}
-                >
-                  <CreditCard className="w-4 h-4" />
-                  <span>{pm.name}</span>
-                </button>
-              ))}
-            </div>
-          </section>
+          {selectedCategory && selectedWallet && (
+            <section className="space-y-2">
+              <label className="text-sm text-violet-400">Wallet</label>
+              <div className="p-3 rounded-lg glass-panel text-slate-400 border border-transparent">
+                <span className="text-sm">{selectedWallet.name}</span>
+                <span className="text-xs text-slate-500 ml-2">
+                  •••{selectedWallet.accountNumber.slice(-4)}
+                </span>
+              </div>
+            </section>
+          )}
 
           <section className="space-y-2">
             <div className="space-y-2">

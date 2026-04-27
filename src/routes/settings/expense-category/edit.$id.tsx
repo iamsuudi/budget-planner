@@ -4,6 +4,7 @@ import {
   useGetCategoryById,
   useUpdateCategory,
   useDeleteCategory,
+  useGetWallets,
 } from '#/hooks/query'
 import { AVAILABLE_ICONS, getIconStyle } from '#/lib/icons'
 import { Page } from '#/components/Page'
@@ -19,23 +20,26 @@ function EditCategoryPage() {
   const { id } = Route.useParams()
   const navigate = useNavigate()
   const { data: category, isLoading } = useGetCategoryById(id)
+  const { data: wallets = [] } = useGetWallets()
   const updateCategory = useUpdateCategory()
   const deleteCategory = useDeleteCategory()
   const [name, setName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState('restaurant')
+  const [selectedWalletId, setSelectedWalletId] = useState('')
 
   useEffect(() => {
     if (category) {
       setName(category.name)
       setSelectedIcon(category.icon)
+      setSelectedWalletId(category.walletId || '')
     }
   }, [category])
 
   const handleSave = () => {
-    if (!name.trim() || !id) return
+    if (!name.trim() || !selectedWalletId || !id) return
 
     updateCategory.mutate(
-      { id, updates: { name: name.trim(), icon: selectedIcon } },
+      { id, updates: { name: name.trim(), icon: selectedIcon, walletId: selectedWalletId } },
       { onSuccess: () => navigate({ to: '/settings/expense-category' }) },
     )
   }
@@ -101,6 +105,28 @@ function EditCategoryPage() {
           </section>
 
           <section className="space-y-2">
+            <label className="text-sm text-violet-400">Wallet</label>
+            <div className="flex flex-col gap-2">
+              {wallets.map((wallet) => (
+                <button
+                  key={wallet.id}
+                  className={`p-3 rounded-lg border flex items-center justify-between transition-all active:scale-95 text-sm ${
+                    selectedWalletId === wallet.id
+                      ? 'bg-violet-500/20 border-violet-500/50 text-violet-400'
+                      : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
+                  }`}
+                  onClick={() => setSelectedWalletId(wallet.id)}
+                >
+                  <span>{wallet.name}</span>
+                  <span className="text-xs text-slate-500">
+                    •••{wallet.accountNumber.slice(-4)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="text-sm text-violet-400">Icon</label>
               <span className="text-xs text-slate-500 capitalize">
@@ -131,7 +157,7 @@ function EditCategoryPage() {
         <div className="mt-6 flex flex-col gap-3">
           <button
             onClick={handleSave}
-            disabled={!name.trim() || updateCategory.isPending}
+            disabled={!name.trim() || !selectedWalletId || updateCategory.isPending}
             className="py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {updateCategory.isPending ? 'Saving...' : 'Save Changes'}

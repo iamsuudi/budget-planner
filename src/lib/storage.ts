@@ -1,7 +1,6 @@
 import { openDB } from 'idb'
 import type { DBSchema, IDBPDatabase } from 'idb'
 import type { ExpenseCategory } from '#/types/expense'
-import type { PaymentMethod } from '#/types/payment-method'
 import type { Invoice } from '#/types/invoice'
 import type { MonthBudget } from '#/types/month'
 import type { User } from '#/types/user'
@@ -22,11 +21,6 @@ interface BudgetManagerDB extends DBSchema {
     value: ExpenseCategory
     indexes: { 'by-deleted': number }
   }
-  paymentMethods: {
-    key: string
-    value: PaymentMethod
-    indexes: { 'by-deleted': number }
-  }
   invoices: {
     key: string
     value: Invoice
@@ -43,18 +37,13 @@ let dbPromise: Promise<IDBPDatabase<BudgetManagerDB>> | null = null
 
 function getDB() {
   if (!dbPromise) {
-    dbPromise = openDB<BudgetManagerDB>('budget-manager', 2, {
+    dbPromise = openDB<BudgetManagerDB>('budget-manager', 3, {
       upgrade(db, oldVersion, newVersion, transaction) {
         if (oldVersion < 1) {
           const categoryStore = db.createObjectStore('expenseCategories', {
             keyPath: 'id',
           })
           categoryStore.createIndex('by-deleted', 'deletedAt')
-
-          const paymentStore = db.createObjectStore('paymentMethods', {
-            keyPath: 'id',
-          })
-          paymentStore.createIndex('by-deleted', 'deletedAt')
 
           const invoiceStore = db.createObjectStore('invoices', {
             keyPath: 'id',
@@ -71,6 +60,17 @@ function getDB() {
 
           const walletStore = db.createObjectStore('wallets', { keyPath: 'id' })
           walletStore.createIndex('by-deleted', 'deletedAt')
+        }
+        if (oldVersion < 3) {
+          try {
+            const storeNames = db.objectStoreNames as unknown as string[]
+            if (storeNames.includes('paymentMethods')) {
+              // @ts-expect-error - dynamically deleting legacy store
+              db.deleteObjectStore('paymentMethods')
+            }
+          } catch {
+            // Ignore if method doesn't exist in older IDB versions
+          }
         }
       },
     })
@@ -126,53 +126,6 @@ export async function deleteCategory(id: string): Promise<void> {
   const existing = await db.get('expenseCategories', id)
   if (existing) {
     await db.put('expenseCategories', { ...existing, deletedAt: Date.now() })
-  }
-}
-
-export async function getAllPaymentMethods(): Promise<PaymentMethod[]> {
-  const db = await getDB()
-  const all = await db.getAll('paymentMethods')
-  return all
-    .filter((pm) => !pm.deletedAt)
-    .sort((a, b) => a.createdAt - b.createdAt)
-}
-
-export async function getPaymentMethodById(
-  id: string,
-): Promise<PaymentMethod | undefined> {
-  const db = await getDB()
-  return db.get('paymentMethods', id)
-}
-
-export async function addPaymentMethod(
-  paymentMethod: Omit<PaymentMethod, 'id' | 'createdAt'>,
-): Promise<PaymentMethod> {
-  const db = await getDB()
-  const newPaymentMethod: PaymentMethod = {
-    ...paymentMethod,
-    id: await generateId(),
-    createdAt: Date.now(),
-  }
-  await db.put('paymentMethods', newPaymentMethod)
-  return newPaymentMethod
-}
-
-export async function updatePaymentMethod(
-  id: string,
-  updates: Partial<Omit<PaymentMethod, 'id' | 'createdAt'>>,
-): Promise<void> {
-  const db = await getDB()
-  const existing = await db.get('paymentMethods', id)
-  if (existing) {
-    await db.put('paymentMethods', { ...existing, ...updates })
-  }
-}
-
-export async function deletePaymentMethod(id: string): Promise<void> {
-  const db = await getDB()
-  const existing = await db.get('paymentMethods', id)
-  if (existing) {
-    await db.put('paymentMethods', { ...existing, deletedAt: Date.now() })
   }
 }
 
@@ -347,7 +300,6 @@ export async function clearAllData(): Promise<void> {
   await db.clear('user')
   await db.clear('wallets')
   await db.clear('expenseCategories')
-  await db.clear('paymentMethods')
   await db.clear('invoices')
   await db.clear('monthBudgets')
 }
