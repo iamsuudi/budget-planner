@@ -41,7 +41,7 @@ function SettingsPage() {
   const { currency } = useCurrency()
   const { data: wallets = [] } = useGetWallets()
   const { data: paymentMethods = [] } = useGetPaymentMethods()
-  const { installable, showInstallPrompt } = usePWAInstall()
+  const { installStatus, showInstallPrompt } = usePWAInstall()
   const { showUpdate, applyUpdate } = usePWAUpdate()
   const { usage, quota, loading, formatBytes, percentage } = useStorageUsage()
   const { showToast } = useToast()
@@ -52,7 +52,7 @@ function SettingsPage() {
   const firstPaymentMethod = paymentMethods.at(0)
 
   const handleInstall = async () => {
-    if (!installable) return
+    if (installStatus !== 'installable') return
     const outcome = await showInstallPrompt()
     if (outcome === 'accepted') {
       showToast('App installed successfully!', 'success')
@@ -339,9 +339,19 @@ function SettingsPage() {
                     </p>
                   </div>
                 </div>
-                {!installable && (
+                {installStatus === 'installable' && (
+                  <span className="text-xs text-blue-400 bg-blue-500/20 px-2 py-1 rounded-lg">
+                    Ready
+                  </span>
+                )}
+                {installStatus === 'installed' && (
+                  <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg">
+                    Installed
+                  </span>
+                )}
+                {installStatus === 'not-installable' && (
                   <span className="text-xs text-orange-400 bg-orange-500/20 px-2 py-1 rounded-lg">
-                    Not Installable
+                    Not Available
                   </span>
                 )}
               </div>
@@ -364,7 +374,7 @@ function SettingsPage() {
                 </div>
                 {showUpdate ? (
                   <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg">
-                    Available
+                    Install Update
                   </span>
                 ) : (
                   <span className="text-xs text-gray-400 bg-gray-400/20 px-2 py-1 rounded-lg">

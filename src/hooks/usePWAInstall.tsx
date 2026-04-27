@@ -1,21 +1,43 @@
 import { useState, useEffect, useCallback } from 'react'
 
+declare global {
+  interface Navigator {
+    standalone?: boolean
+  }
+}
+
+export type PWAInstallStatus = 'installable' | 'installed' | 'not-installable'
+
 export const usePWAInstall = () => {
-  // 1. Check if the "Catcher" already found it before this Hook loaded
-  const [installable, setInstallable] = useState(!!window.deferredInstallPrompt)
+  const [status, setStatus] = useState<PWAInstallStatus>(() => {
+    if (window.deferredInstallPrompt) return 'installable'
+    if (navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)) {
+      return 'installed'
+    }
+    return 'not-installable'
+  })
 
   useEffect(() => {
-    const handler = () => setInstallable(true)
+    const standaloneHandler = (e: MediaQueryListEvent) => {
+      if (e.matches) setStatus('installed')
+    }
 
-    // 2. Listen for the "Catcher" to signal it found something
-    window.addEventListener('pwa-prompt-captured', handler)
+    const installableHandler = () => setStatus('installable')
 
-    // 3. Also listen for the raw event (in case it fires late)
-    window.addEventListener('beforeinstallprompt', handler)
+    const mediaQuery = window.matchMedia('(display-mode: standalone)')
+    mediaQuery.addEventListener('change', standaloneHandler)
+
+    window.addEventListener('pwa-prompt-captured', installableHandler)
+    window.addEventListener('beforeinstallprompt', installableHandler)
+
+    if (navigator.standalone) {
+      setStatus('installed')
+    }
 
     return () => {
-      window.removeEventListener('pwa-prompt-captured', handler)
-      window.removeEventListener('beforeinstallprompt', handler)
+      mediaQuery.removeEventListener('change', standaloneHandler)
+      window.removeEventListener('pwa-prompt-captured', installableHandler)
+      window.removeEventListener('beforeinstallprompt', installableHandler)
     }
   }, [])
 
@@ -26,12 +48,11 @@ export const usePWAInstall = () => {
     await promptEvent.prompt()
     const { outcome } = await promptEvent.userChoice
 
-    // Clear it after use as it can only be prompted once
     window.deferredInstallPrompt = null
-    setInstallable(false)
+    setStatus('installed')
 
     return outcome
   }, [])
 
-  return { installable, showInstallPrompt }
+  return { installStatus: status, showInstallPrompt }
 }
