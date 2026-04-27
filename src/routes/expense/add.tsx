@@ -22,8 +22,10 @@ function AddExpensePage() {
   const navigate = useNavigate()
   const { getSymbol } = useCurrency()
   const { currentMonth } = useMonth()
-  const { data: categories = [] } = useGetCategories()
-  const { data: paymentMethods = [] } = useGetPaymentMethods()
+  const { data: categories = [], isLoading: isLoadingCategories } =
+    useGetCategories()
+  const { data: paymentMethods = [], isLoading: isLoadingPaymentMethods } =
+    useGetPaymentMethods()
   const { data: invoices = [] } = useGetInvoicesByMonth(
     currentMonth.year,
     currentMonth.month,
@@ -35,7 +37,7 @@ function AddExpensePage() {
   const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('')
   const [note, setNote] = useState('')
 
-  const isLoading = categories.length === 0 || paymentMethods.length === 0
+  const isLoading = isLoadingCategories || isLoadingPaymentMethods
 
   const handleSave = () => {
     if (!amount || !selectedCategoryId || !selectedPaymentMethodId) return

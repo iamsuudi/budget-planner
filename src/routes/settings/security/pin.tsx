@@ -4,6 +4,8 @@ import { useSecurity } from '#/lib/security'
 import { useToast } from '#/lib/toast'
 import { Lock, ArrowLeft } from 'lucide-react'
 import { PinInput } from '#/components/PinInput'
+import { TopAppBar } from '#/components/TopAppBar'
+import { Page } from '#/components/Page'
 
 export const Route = createFileRoute('/settings/security/pin')({
   component: PinPage,
@@ -51,17 +53,10 @@ function PinPage() {
 
   if (step === 'choice') {
     return (
-      <div className="min-h-screen bg-slate-950">
-        <div className="p-4 border-b border-white/10">
-          <a
-            href="/settings"
-            className="inline-flex items-center gap-2 text-slate-400"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back
-          </a>
-        </div>
-        <div className="p-6">
+      <div className="">
+        <TopAppBar title="Security PIN" showBack backTo="/settings" />
+
+        <Page className="space-y-2">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
               <Lock className="w-6 h-6 text-primary" />
@@ -91,7 +86,7 @@ function PinPage() {
               </button>
             )}
           </div>
-        </div>
+        </Page>
       </div>
     )
   }

@@ -24,14 +24,14 @@ function AddPaymentMethodPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
+    <div className="">
       <TopAppBar
-        title="Add Payment Method"
+        title="Payment Method"
         showBack
         backTo={'/settings/payment-method'}
       />
 
-      <Page>
+      <Page className="space-y-6">
         <div className="glass-panel rounded-xl p-4 space-y-4">
           <section className="space-y-2">
             <div className="space-y-2">
@@ -51,7 +51,7 @@ function AddPaymentMethodPage() {
           </section>
         </div>
 
-        <div className="mt-6 flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
           <button
             onClick={handleSave}
             disabled={!name.trim() || createPaymentMethod.isPending}
@@ -59,7 +59,7 @@ function AddPaymentMethodPage() {
           >
             {createPaymentMethod.isPending ? 'Saving...' : 'Save Changes'}
           </button>
-          <CancelButton to="/payment-method" />
+          <CancelButton to="/settings/payment-method" />
         </div>
 
         <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />

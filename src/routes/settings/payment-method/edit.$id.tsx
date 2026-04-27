@@ -54,7 +54,7 @@ function EditPaymentMethodPage() {
     return (
       <div className="min-h-screen bg-background text-on-surface">
         <TopAppBar
-          title="Edit Payment Method"
+          title="Payment Method"
           showBack
           backTo={'/settings/payment-method'}
         />
@@ -79,7 +79,7 @@ function EditPaymentMethodPage() {
         backTo={'/settings/payment-method'}
       />
 
-      <Page>
+      <Page className="space-y-6">
         <div className="glass-panel rounded-xl p-4 space-y-4">
           <section className="space-y-2">
             <div className="space-y-2">
@@ -99,7 +99,7 @@ function EditPaymentMethodPage() {
           </section>
         </div>
 
-        <div className="mt-6 flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
           <button
             onClick={handleSave}
             disabled={!name.trim() || updatePaymentMethod.isPending}

@@ -83,13 +83,6 @@ function SettingsPage() {
       <TopAppBar showProfile />
 
       <Page>
-        <div className="mb-6">
-          <h2 className="text-3xl font-extrabold text-primary leading-tight">
-            Settings
-          </h2>
-          <p className="text-on-surface-variant text-sm">Customize your app</p>
-        </div>
-
         <div className="flex flex-col gap-6">
           <section>
             <h3 className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">

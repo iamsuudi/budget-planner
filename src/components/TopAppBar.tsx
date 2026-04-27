@@ -42,9 +42,9 @@ export function TopAppBar({
               onClick={() => router.navigate({ to: backTo })}
             />
           )}
-          <span className="text-lg font-black text-secondary tracking-tighter">
+          <p className="text-xl font-bold text-primary tracking-tighter">
             {title ?? path}
-          </span>
+          </p>
         </div>
         <div className="flex items-center gap-4">
           {showProfile ? (

@@ -19,17 +19,10 @@ function PaymentMethodPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-background">
-      <TopAppBar title="Payment Methods" backTo="/settings" />
+    <div className="">
+      <TopAppBar title="Payment Methods" showBack backTo="/settings" />
 
       <Page>
-        <header className="mb-6">
-          <h1 className="text-2xl font-bold text-white">Payment Methods</h1>
-          <p className="text-slate-400 text-sm mt-1">
-            Manage your payment methods.
-          </p>
-        </header>
-
         <div className="mb-4">
           <Link
             to="/settings/payment-method/add"
