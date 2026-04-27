@@ -98,7 +98,7 @@ function PinPage() {
 
   const mode = step === 'setup' ? 'setup' : 'confirm'
   return (
-    <div className="fixed inset-0 bg-slate-950 z-[100]">
+    <div className="fixed inset-0 bg-slate-950 z-100">
       <PinInput key={step} mode={mode} onComplete={handleSetup} error={error} />
     </div>
   )

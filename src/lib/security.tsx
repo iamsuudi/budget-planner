@@ -17,6 +17,7 @@ interface SecurityContextValue {
   isAuthenticated: boolean
   pinEnabled: boolean
   biometricEnabled: boolean
+  biometricAvailable: boolean
   isFirstTime: boolean
   unlock: () => void
   lock: () => void
@@ -47,26 +48,30 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [pinEnabled, setPinEnabled] = useState(false)
   const [biometric, setBiometric] = useState(false)
+  const [biometricAvailable, setBiometricAvailable] = useState(false)
   const [isFirstTime, setIsFirstTime] = useState(true)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    setBiometricAvailable('PublicKeyCredential' in window)
+  }, [])
+
+  useEffect(() => {
     const settings = loadSecuritySettings()
-    console.log('Security settings loaded:', settings)
     setPinEnabled(settings.pinEnabled)
     setBiometric(settings.biometricEnabled)
     setIsFirstTime(!settings.pinEnabled && !settings.biometricEnabled)
 
     if (!settings.pinEnabled && !settings.biometricEnabled) {
-      console.log('No security enabled - unlocking')
+      // No security enabled - unlocking
       setIsLocked(false)
       setIsAuthenticated(true)
-    } else if (!settings.pinEnabled && settings.biometricEnabled) {
-      console.log('Biometric only - authenticating')
+    } else if (settings.biometricEnabled) {
+      // Biometric enabled - trying biometric auth
       setIsLocked(true)
       authenticateWithBiometric()
     } else {
-      console.log('PIN enabled - showing lock screen')
+      // PIN enabled - showing lock screen
       setIsLocked(true)
     }
     setLoading(false)
@@ -179,6 +184,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         isAuthenticated,
         pinEnabled,
         biometricEnabled: biometric,
+        biometricAvailable,
         isFirstTime,
         unlock,
         lock,

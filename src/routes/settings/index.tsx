@@ -16,7 +16,6 @@ import {
   Moon,
   Bell,
   Fingerprint,
-  ArrowDownUp,
   Download,
   RefreshCw,
   HardDrive,
@@ -46,7 +45,8 @@ function SettingsPage() {
   const { showUpdate, applyUpdate } = usePWAUpdate()
   const { usage, quota, loading, formatBytes, percentage } = useStorageUsage()
   const { showToast } = useToast()
-  const { pinEnabled, biometricEnabled, toggleBiometric } = useSecurity()
+  const { pinEnabled, biometricEnabled, biometricAvailable, toggleBiometric } =
+    useSecurity()
   const isOnline = navigator.onLine
 
   const firstPaymentMethod = paymentMethods.at(0)
@@ -230,15 +230,25 @@ function SettingsPage() {
                       Biometric Unlock
                     </p>
                     <p className="text-xs text-on-surface-variant">
-                      {biometricEnabled ? 'Enabled' : 'Disabled'}
+                      {!biometricAvailable
+                        ? 'Not available on this device'
+                        : biometricEnabled
+                          ? 'Enabled'
+                          : 'Disabled'}
                     </p>
                   </div>
                 </div>
-                <ToggleSwitch
-                  checked={biometricEnabled}
-                  onChange={toggleBiometric}
-                  disabled={!pinEnabled}
-                />
+                {!biometricAvailable ? (
+                  <span className="text-xs text-orange-400 bg-orange-500/20 px-2 py-1 rounded-lg">
+                    Not Available
+                  </span>
+                ) : (
+                  <ToggleSwitch
+                    checked={biometricEnabled}
+                    onChange={toggleBiometric}
+                    disabled={!pinEnabled && biometricEnabled}
+                  />
+                )}
               </div>
               <Link
                 to="/settings/security/pin"

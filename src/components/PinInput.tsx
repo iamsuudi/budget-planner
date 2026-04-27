@@ -152,23 +152,32 @@ export function LockScreen() {
     if (!biometricEnabled) return
     setAuthenticating(true)
     try {
-      if ('PublicKeyCredential' in window) {
-        const credential = await navigator.credentials.get({
-          publicKey: {
-            challenge: new TextEncoder().encode('authenticate'),
-          },
-        })
-        if (credential) {
-          if (showForgot) {
-            await removePin()
-            router.navigate({ to: '/settings/security/pin' })
-          } else {
-            unlock()
-          }
+      console.log('Trying biometric auth...')
+      
+      if (!('PublicKeyCredential' in window)) {
+        console.log('WebAuthn not supported')
+        return
+      }
+      
+      const credential = await navigator.credentials.get({
+        publicKey: {
+          challenge: new TextEncoder().encode('authenticate'),
+          timeout: 60000,
+          userVerification: 'required',
+        },
+      })
+      
+      console.log('Credential result:', credential)
+      if (credential) {
+        if (showForgot) {
+          await removePin()
+          router.navigate({ to: '/settings/security/pin' })
+        } else {
+          unlock()
         }
       }
-    } catch {
-      console.log('Biometric failed')
+    } catch (err) {
+      console.log('Biometric failed:', err)
     } finally {
       setAuthenticating(false)
     }
