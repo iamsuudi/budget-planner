@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   useGetSalaryCategories,
   useCreateInvoice,
   useGetWallets,
 } from '#/hooks/query'
-import { useCurrency } from '#/lib/currency-context'
+import { getActiveCurrency } from '#/lib/currency'
 import { useMonth } from '#/lib/month-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
@@ -18,7 +18,7 @@ export const Route = createFileRoute('/salary/add')({
 
 function AddSalaryPage() {
   const navigate = useNavigate()
-  const { getSymbol } = useCurrency()
+  const [currencyCC, setCurrencyCC] = useState('USD')
   const { currentMonth } = useMonth()
   const { data: categories = [], isLoading: isLoadingCategories } =
     useGetSalaryCategories()
@@ -58,6 +58,10 @@ function AddSalaryPage() {
   const isValid = useMemo(() => {
     return !!amount && parseFloat(amount) > 0 && selectedCategoryId
   }, [amount, selectedCategoryId])
+
+  useEffect(() => {
+    getActiveCurrency().then((c) => setCurrencyCC(c.cc))
+  }, [])
 
   if (isLoading) {
     return (
@@ -99,7 +103,7 @@ function AddSalaryPage() {
             <div className="space-y-2">
               <label className="text-sm text-violet-400">Amount</label>
               <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2 flex items-center">
-                <span className="text-slate-500 mr-2">{getSymbol()}</span>
+                <span className="text-slate-500 mr-2">{currencyCC}</span>
                 <input
                   className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
                   placeholder="0.00"

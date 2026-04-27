@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   useGetMonthBudget,
   useSetMonthBudget,
@@ -8,7 +8,7 @@ import {
 } from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
 import { useMonth } from '#/lib/month-context'
-import { useCurrency } from '#/lib/currency-context'
+import { getActiveCurrency, formatCurrency } from '#/lib/currency'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
@@ -21,8 +21,9 @@ export const Route = createFileRoute('/budget/edit/')({
 
 function SetBudgetPage() {
   const navigate = useNavigate()
+  const [currencyCC, setCurrencyCC] = useState('USD')
   const { currentMonth } = useMonth()
-  const { formatAmount, getSymbol } = useCurrency()
+  const { formatAmount, getCC } = useCurrency()
   const { year, month } = currentMonth
 
   const { data: categories = [] } = useGetCategories()
@@ -51,6 +52,10 @@ function SetBudgetPage() {
     })
     return spending
   }, [invoices])
+
+  useEffect(() => {
+    getActiveCurrency().then((c) => setCurrencyCC(c.cc))
+  }, [])
 
   const handleSave = () => {
     const total = parseFloat(totalBudgetInput) || 0
@@ -85,7 +90,7 @@ function SetBudgetPage() {
               Total Monthly Budget
             </label>
             <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2 flex items-center">
-              <span className="text-slate-500 mr-2">{getSymbol()}</span>
+              <span className="text-slate-500 mr-2">{currencyCC}</span>
               <input
                 className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
                 placeholder="0.00"
@@ -136,13 +141,13 @@ function SetBudgetPage() {
                         <span
                           className={`ml-auto text-xs ${remaining >= 0 ? 'text-tertiary' : 'text-error'}`}
                         >
-                          {formatAmount(remaining)}
+                          {formatCurrency(remaining)}
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-slate-500 text-xs">
-                        {getSymbol()}
+                        {currencyCC}
                       </span>
                       <input
                         className="bg-transparent border-b border-slate-700 focus:border-secondary text-white text-sm w-full pb-1"
@@ -161,7 +166,7 @@ function SetBudgetPage() {
                     </div>
                     {spent > 0 && (
                       <p className="text-[10px] text-slate-500 mt-1">
-                        Spent: {formatAmount(spent)}
+                        Spent: {formatCurrency(spent)}
                       </p>
                     )}
                   </div>

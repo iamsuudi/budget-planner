@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useState } from 'react'
-import { useCurrency } from '#/lib/currency-context'
+import { useState, useEffect } from 'react'
+import { getActiveCurrency } from '#/lib/currency'
 import { useToast } from '#/lib/toast'
 import { useSecurity } from '#/lib/security'
 import { clearAllData } from '#/lib/storage'
@@ -36,7 +36,7 @@ export const Route = createFileRoute('/settings/')({
 function SettingsPage() {
   const [darkTheme, setDarkTheme] = useState(true)
   const [notifications, setNotifications] = useState(true)
-  const { currency } = useCurrency()
+  const [currency, setCurrency] = useState<{ cc: string; name: string }>({ cc: 'USD', name: 'United States dollar' })
   const { data: wallets = [] } = useGetWallets()
   const { installStatus, showInstallPrompt } = usePWAInstall()
   const { showUpdate, applyUpdate } = usePWAUpdate()
@@ -50,6 +50,10 @@ function SettingsPage() {
     lock,
   } = useSecurity()
   const isOnline = navigator.onLine
+
+  useEffect(() => {
+    getActiveCurrency().then(setCurrency)
+  }, [])
 
   const handleInstall = async () => {
     if (installStatus !== 'installable') return

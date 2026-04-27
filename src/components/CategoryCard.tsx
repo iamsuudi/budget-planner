@@ -1,4 +1,4 @@
-import { useCurrency } from '#/lib/currency-context'
+import { formatCurrency } from '#/lib/currency'
 import { getIcon } from '#/lib/icons'
 import { ProgressBar } from './ProgressBar'
 
@@ -18,7 +18,6 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
-  const { formatAmount } = useCurrency()
   const remaining = category.total - category.used
 
   const getColorConfig = (percentage: number) => {
@@ -106,17 +105,17 @@ export function CategoryCard({ category }: CategoryCardProps) {
       <div className="space-y-2 mt-2">
         <div className="flex justify-between text-xs">
           <span className="text-on-surface-variant">
-            {formatAmount(category.used)}{' '}
+            {formatCurrency(category.used)}{' '}
             <span className="text-outline">
-              / {category.total > 0 ? formatAmount(category.total) : '$0.00'}
+              / {category.total > 0 ? formatCurrency(category.total) : '$0.00'}
             </span>
           </span>
           <span className={`font-bold ${remainingColor}`}>
             {remaining > 0
-              ? `${formatAmount(remaining)} left`
+              ? `${formatCurrency(remaining)} left`
               : remaining === 0
                 ? '$0.00 left'
-                : `${formatAmount(Math.abs(remaining))} over`}
+                : `${formatCurrency(Math.abs(remaining))} over`}
           </span>
         </div>
         <ProgressBar

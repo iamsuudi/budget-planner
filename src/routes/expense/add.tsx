@@ -1,12 +1,12 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   useGetCategories,
   useCreateInvoice,
   useGetInvoicesByMonth,
   useGetWallets,
 } from '#/hooks/query'
-import { useCurrency } from '#/lib/currency-context'
+import { getCurrencyCode, formatCurrency, getActiveCurrency } from '#/lib/currency'
 import { useMonth } from '#/lib/month-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
@@ -19,7 +19,7 @@ export const Route = createFileRoute('/expense/add')({
 
 function AddExpensePage() {
   const navigate = useNavigate()
-  const { getSymbol } = useCurrency()
+  const [currencyCC, setCurrencyCC] = useState('USD')
   const { currentMonth } = useMonth()
   const { data: categories = [], isLoading: isLoadingCategories } =
     useGetCategories()
@@ -69,6 +69,10 @@ function AddExpensePage() {
 
   const recentAmount =
     invoices.length > 0 ? invoices.reduce((sum, inv) => sum + inv.amount, 0) : 0
+
+  useEffect(() => {
+    getActiveCurrency().then((c) => setCurrencyCC(c.cc))
+  }, [])
 
   if (isLoading) {
     return (
@@ -151,7 +155,7 @@ function AddExpensePage() {
             <div className="space-y-2">
               <label className="text-sm text-violet-400">Amount</label>
               <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2 flex items-center">
-                <span className="text-slate-500 mr-2">{getSymbol()}</span>
+                <span className="text-slate-500 mr-2">{currencyCC}</span>
                 <input
                   className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
                   placeholder="0.00"
@@ -167,7 +171,7 @@ function AddExpensePage() {
 
           {recentAmount > 0 && (
             <p className="text-xs text-slate-500 text-center">
-              This month's spending: {getSymbol()}
+              This month's spending: {currencyCC}
               {recentAmount.toFixed(2)}
             </p>
           )}

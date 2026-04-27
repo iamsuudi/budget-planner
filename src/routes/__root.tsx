@@ -1,7 +1,7 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { MonthProvider } from '#/lib/month-context'
-import { CurrencyProvider } from '#/lib/currency-context'
 import { SecurityProvider } from '#/lib/security'
+import { getActiveCurrency } from '#/lib/currency'
 
 import '#/styles.css'
 import { BottomNavBar } from '#/components/BottomNavBar'
@@ -13,22 +13,22 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
+  getActiveCurrency()
+  
   return (
     <SecurityProvider>
-      <CurrencyProvider>
-        <MonthProvider>
-          <LockScreen />
-          <div className="bg-surface-dim text-on-surface antialiased">
-            <div className="relative max-w-lg mx-auto min-h-screen no-scrollbar overflow-auto">
-              <div className="h-full">
-                <Outlet />
-              </div>
-              <BottomNavBar />
-              <SWProgressBar />
+      <MonthProvider>
+        <LockScreen />
+        <div className="bg-surface-dim text-on-surface antialiased">
+          <div className="relative max-w-lg mx-auto min-h-screen no-scrollbar overflow-auto">
+            <div className="h-full">
+              <Outlet />
             </div>
+            <BottomNavBar />
+            <SWProgressBar />
           </div>
-        </MonthProvider>
-      </CurrencyProvider>
+        </div>
+      </MonthProvider>
     </SecurityProvider>
   )
 }

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Wallet, Flag, TrendingDown, TrendingUp } from 'lucide-react'
 import { useMemo } from 'react'
-import { useCurrency } from '#/lib/currency-context'
+import { formatCurrency } from '#/lib/currency'
 import { useMonth } from '#/lib/month-context'
 import {
   useGetCategories,
@@ -20,7 +20,6 @@ export const Route = createFileRoute('/budget/')({
 })
 
 function BudgetPage() {
-  const { formatAmount } = useCurrency()
   const { currentMonth } = useMonth()
   const { year, month } = currentMonth
 
@@ -84,7 +83,7 @@ function BudgetPage() {
                   Budget
                 </p>
                 <p className="text-lg font-bold text-on-surface">
-                  {formatAmount(monthBudget?.totalBudget || 0)}
+                  {formatCurrency(monthBudget?.totalBudget || 0)}
                 </p>
               </div>
               <div className="text-center">
@@ -95,7 +94,7 @@ function BudgetPage() {
                   Expenses
                 </p>
                 <p className="text-lg font-bold text-on-surface">
-                  {formatAmount(totalExpenses)}
+                  {formatCurrency(totalExpenses)}
                 </p>
               </div>
               <div className="text-center">
@@ -114,7 +113,7 @@ function BudgetPage() {
                 <p
                   className={`text-lg font-bold ${netAmount >= 0 ? 'text-tertiary' : 'text-error'}`}
                 >
-                  {formatAmount(netAmount)}
+                  {formatCurrency(netAmount)}
                 </p>
               </div>
             </div>

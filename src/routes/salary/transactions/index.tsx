@@ -6,7 +6,7 @@ import {
   useGetWallets,
 } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
-import { useCurrency } from '#/lib/currency-context'
+import { formatCurrency } from '#/lib/currency'
 import { getIconStyle } from '#/lib/icons'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
@@ -19,7 +19,6 @@ export const Route = createFileRoute('/salary/transactions/')({
 
 function SalaryTransactionsPage() {
   const { currentMonth } = useMonth()
-  const { formatAmount } = useCurrency()
   const { year, month } = currentMonth
 
   const { data: invoices = [], isLoading } = useGetInvoicesByType(
@@ -82,7 +81,7 @@ function SalaryTransactionsPage() {
             {invoices.length} income{invoices.length !== 1 ? 's' : ''}
           </p>
           <p className="text-sm font-semibold text-on-surface">
-            Total: {formatAmount(totalSalary)}
+            Total: {formatCurrency(totalSalary)}
           </p>
         </div>
 
@@ -130,7 +129,7 @@ function SalaryTransactionsPage() {
                         </div>
                         <div className="text-right">
                           <p className="text-sm font-semibold text-tertiary">
-                            +{formatAmount(inv.amount)}
+                            +{formatCurrency(inv.amount)}
                           </p>
                           <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">
                             {new Date(inv.date).toLocaleTimeString('en-US', {

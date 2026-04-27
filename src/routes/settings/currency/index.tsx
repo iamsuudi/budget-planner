@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { CheckCircle } from 'lucide-react'
-import { useState } from 'react'
-import { CURRENCIES, useCurrency } from '#/lib/currency-context'
+import { useState, useEffect } from 'react'
+import { CURRENCIES, setActiveCurrency, getActiveCurrency } from '#/lib/currency'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
@@ -11,8 +11,12 @@ export const Route = createFileRoute('/settings/currency/')({
 
 function CurrencyPage() {
   const navigate = useNavigate()
-  const { currency: currentCurrency, setCurrency } = useCurrency()
+  const [currentCC, setCurrentCC] = useState('USD')
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    getActiveCurrency().then((c) => setCurrentCC(c.cc))
+  }, [])
 
   const filteredCurrencies = CURRENCIES.filter(
     (c) =>
@@ -21,7 +25,7 @@ function CurrencyPage() {
   )
 
   const handleSelect = async (code: string) => {
-    await setCurrency(code)
+    await setActiveCurrency(code)
     navigate({ to: '/settings' })
   }
 
@@ -48,17 +52,16 @@ function CurrencyPage() {
               className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors text-left"
             >
               <div className="flex items-center gap-3">
-                <span className="text-lg font-semibold text-violet-400 w-8">
-                  {c.symbol}
+                <span className="text-lg font-semibold text-violet-400 w-12">
+                  {c.cc}
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-on-surface">
                     {c.name}
                   </p>
-                  <p className="text-xs text-slate-500">{c.cc}</p>
                 </div>
               </div>
-              {currentCurrency.cc === c.cc && (
+              {currentCC === c.cc && (
                 <CheckCircle className="w-5 h-5 text-tertiary" />
               )}
             </button>

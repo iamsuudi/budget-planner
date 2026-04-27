@@ -3,7 +3,7 @@ import { PlusCircle, FolderPlus } from 'lucide-react'
 import { useMemo } from 'react'
 import { useGetInvoicesByMonth, useGetCategories, useGetWallets } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
-import { useCurrency } from '#/lib/currency-context'
+import { formatCurrency } from '#/lib/currency'
 import { getIconStyle } from '#/lib/icons'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
@@ -16,7 +16,6 @@ export const Route = createFileRoute('/')({
 })
 
 function ExpensePage() {
-  const { formatAmount } = useCurrency()
   const { currentMonth } = useMonth()
   const { year, month } = currentMonth
 
@@ -58,7 +57,7 @@ function ExpensePage() {
               Total Expenses
             </p>
             <h1 className="text-4xl font-extrabold text-on-surface tracking-tight">
-              {formatAmount(totalExpenses)}
+              {formatCurrency(totalExpenses)}
             </h1>
           </div>
         </GlassCard>
@@ -124,7 +123,7 @@ function ExpensePage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold text-on-surface">
-                        {formatAmount(inv.amount)}
+                        {formatCurrency(inv.amount)}
                       </p>
                     </div>
                   </div>

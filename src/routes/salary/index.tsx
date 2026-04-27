@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { FolderPlus, PlusCircle } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   useGetSalaryCategories,
   useCreateInvoice,
@@ -8,7 +8,7 @@ import {
   useGetWallets,
 } from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
-import { useCurrency } from '#/lib/currency-context'
+import { getActiveCurrency } from '#/lib/currency'
 import { useMonth } from '#/lib/month-context'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
@@ -22,7 +22,7 @@ export const Route = createFileRoute('/salary/')({
 
 function SalaryPage() {
   const navigate = useNavigate()
-  const { getSymbol } = useCurrency()
+  const [currencyCC, setCurrencyCC] = useState('USD')
   const { currentMonth, isCurrentMonth } = useMonth()
   const { year, month } = currentMonth
   const { data: categories = [], isLoading: isLoadingCategories } =
@@ -67,6 +67,10 @@ function SalaryPage() {
 
   const totalSalary =
     invoices.length > 0 ? invoices.reduce((sum, inv) => sum + inv.amount, 0) : 0
+
+  useEffect(() => {
+    getActiveCurrency().then((c) => setCurrencyCC(c.cc))
+  }, [])
 
   if (isLoading) {
     return (
@@ -153,7 +157,7 @@ function SalaryPage() {
               Total Salary
             </p>
             <h1 className="text-4xl font-extrabold text-on-surface tracking-tight">
-              {getSymbol()}
+              {currencyCC}
               {totalSalary.toFixed(2)}
             </h1>
           </div>
@@ -221,7 +225,7 @@ function SalaryPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold text-tertiary">
-                        +{getSymbol()}
+                        +{currencyCC}
                         {inv.amount.toFixed(2)}
                       </p>
                     </div>
