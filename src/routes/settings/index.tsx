@@ -28,7 +28,6 @@ import {
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
 import { ToggleSwitch } from '#/components/ToggleSwitch'
-import { ActionListItem } from '#/components/ActionListItem'
 import { TopAppBar } from '#/components/TopAppBar'
 
 export const Route = createFileRoute('/settings/')({
@@ -45,8 +44,13 @@ function SettingsPage() {
   const { showUpdate, applyUpdate } = usePWAUpdate()
   const { usage, quota, loading, formatBytes, percentage } = useStorageUsage()
   const { showToast } = useToast()
-  const { pinEnabled, biometricEnabled, biometricAvailable, toggleBiometric } =
-    useSecurity()
+  const {
+    pinEnabled,
+    biometricEnabled,
+    biometricAvailable,
+    toggleBiometric,
+    lock,
+  } = useSecurity()
   const isOnline = navigator.onLine
 
   const firstPaymentMethod = paymentMethods.at(0)
@@ -396,7 +400,7 @@ function SettingsPage() {
             </GlassCard>
           </section>
 
-          <section>
+          {/* <section>
             <h3 className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">
               Support & Legal
             </h3>
@@ -418,11 +422,17 @@ function SettingsPage() {
               />
             </GlassCard>
           </section>
+          */}
 
           <div className="py-6 text-center">
-            <p className="text-xs text-slate-500 mb-3">Vivid Ledger v2.4.0</p>
-            <button className="px-5 py-2 rounded-full border border-error/30 text-error text-xs font-semibold hover:bg-error/10 transition-colors">
-              Logout
+            <p className="text-xs text-slate-500 mb-3">
+              Budget Planner v2.44.6
+            </p>
+            <button
+              className="px-5 py-2 rounded-full border border-error/30 text-error text-xs font-semibold hover:bg-error/10 transition-colors"
+              onClick={() => lock()}
+            >
+              Log Out
             </button>
           </div>
         </div>

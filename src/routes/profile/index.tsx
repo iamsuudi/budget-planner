@@ -3,6 +3,7 @@ import { useGetUser } from '#/hooks/query'
 import { ActionListItem } from '#/components/ActionListItem'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
+import { useSecurity } from '#/lib/security'
 
 export const Route = createFileRoute('/profile/')({
   component: ProfilePage,
@@ -10,6 +11,7 @@ export const Route = createFileRoute('/profile/')({
 
 function ProfilePage() {
   const { data: user } = useGetUser()
+  const { lock } = useSecurity()
 
   const profileImage = user?.profilePicture
 
@@ -26,8 +28,7 @@ function ProfilePage() {
             <div className="w-20 h-20 rounded-full p-0.5 bg-linear-to-tr from-violet-500 to-secondary glow-violet">
               <div className="w-full h-full rounded-full overflow-hidden border-2 border-surface">
                 <img
-                  alt="Profile Avatar"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover bg-secondary"
                   src={profileImage}
                 />
               </div>
@@ -48,7 +49,8 @@ function ProfilePage() {
           <Link to="/profile/edit">
             <ActionListItem
               icon="person"
-              iconBg="bg-surface-container"
+              iconBg="bg-tertiary/10"
+              iconColor="text-tertiary"
               title="Personal Info"
               description={
                 user?.name ? 'Edit your profile' : 'Set up your profile'
@@ -58,21 +60,37 @@ function ProfilePage() {
           <Link to="/settings">
             <ActionListItem
               icon="settings"
-              iconBg="bg-surface-container"
+              iconBg="bg-blue-500/10"
+              iconColor="text-blue-400"
               title="Settings"
               description="App preferences and security"
             />
           </Link>
           <ActionListItem
-            icon="logout"
-            iconBg="bg-error-container/20"
-            iconColor="text-error"
-            title="Logout"
-            description="Securely end session"
-            showChevron={false}
-            danger
+            icon="help_center"
+            iconBg="bg-yellow-500/10"
+            iconColor="text-yellow-400"
+            title="Help Center"
+            description=""
+          />
+          <ActionListItem
+            icon="policy"
+            iconBg="bg-red-500/10"
+            iconColor="text-red-400"
+            title="Privacy Policy"
+            description=""
           />
         </section>
+
+        <div className="py-6 text-center">
+          <p className="text-xs text-slate-500 mb-3">Budget Planner v2.44.6</p>
+          <button
+            className="px-5 py-2 rounded-full border border-error/30 text-error text-xs font-semibold hover:bg-error/10 transition-colors"
+            onClick={() => lock()}
+          >
+            Log Out
+          </button>
+        </div>
       </Page>
     </div>
   )

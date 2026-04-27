@@ -1,4 +1,4 @@
-import { ArrowLeft, Wifi, WifiOff } from 'lucide-react'
+import { ArrowLeft, ArrowLeftCircle, Wifi, WifiOff } from 'lucide-react'
 import { getUser } from '#/lib/storage'
 import type { User as UserType } from '#/types'
 import { useLocation, useRouter } from '@tanstack/react-router'
@@ -37,12 +37,14 @@ export function TopAppBar({
       <div className="max-w-lg w-full bg-slate-950/80 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 h-16">
         <div className="flex items-center gap-2">
           {showBack && (
-            <ArrowLeft
-              className="w-5 h-5 text-secondary cursor-pointer"
+            <ArrowLeftCircle
+              className="size-5 text-primary cursor-pointer"
               onClick={() => router.navigate({ to: backTo })}
             />
           )}
-          <p className="text-xl font-bold text-primary tracking-tighter">
+          <p
+            className={`${showBack ? 'text-md' : 'text-xl'} font-bold text-primary tracking-tighter`}
+          >
             {title ?? path}
           </p>
         </div>
@@ -68,7 +70,6 @@ export function TopAppBar({
                 onClick={() => router.navigate({ to: '/profile' })}
               >
                 <img
-                  alt="User Profile"
                   className="w-full h-full object-cover"
                   src={user?.profilePicture}
                 />

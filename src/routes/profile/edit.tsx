@@ -83,16 +83,15 @@ function ProfileEditPage() {
 
   return (
     <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar title="Edit Profile" showBack backTo={'/profile'} />
+      <TopAppBar title="Profile" showBack backTo={'/profile'} />
 
-      <Page className="min-h-screen">
+      <Page className="">
         <section className="flex flex-col gap-4">
           <div className="flex flex-col items-center">
             <div className="relative group mb-3">
-              <div className="w-20 h-20 rounded-full p-0.5 bg-gradient-to-tr from-violet-500 to-secondary glow-violet">
+              <div className="w-20 h-20 rounded-full p-0.5 bg-linear-to-tr from-violet-500 to-secondary glow-violet">
                 <div className="w-full h-full rounded-full overflow-hidden border-2 border-surface">
                   <img
-                    alt="Profile Avatar"
                     className="w-full h-full object-cover"
                     src={profilePicture || defaultAvatar}
                   />
@@ -148,7 +147,7 @@ function ProfileEditPage() {
           <button
             onClick={handleSave}
             disabled={updateUser.isPending}
-            className="w-full bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold py-3 rounded-xl shadow-md transition-all hover:shadow-lg active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            className="w-full bg-linear-to-r from-violet-600 to-violet-500 text-white font-semibold py-3 rounded-xl shadow-md transition-all hover:shadow-lg active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {updateUser.isPending ? 'Saving...' : 'Save Changes'}
           </button>
