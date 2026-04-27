@@ -36,7 +36,10 @@ export const Route = createFileRoute('/settings/')({
 function SettingsPage() {
   const [darkTheme, setDarkTheme] = useState(true)
   const [notifications, setNotifications] = useState(true)
-  const [currency, setCurrency] = useState<{ cc: string; name: string }>({ cc: 'USD', name: 'United States dollar' })
+  const [currency, setCurrency] = useState<{ cc: string; name: string }>({
+    cc: 'USD',
+    name: 'United States dollar',
+  })
   const { data: wallets = [] } = useGetWallets()
   const { installStatus, showInstallPrompt } = usePWAInstall()
   const { showUpdate, applyUpdate } = usePWAUpdate()
@@ -121,7 +124,7 @@ function SettingsPage() {
             </h3>
             <GlassCard className="p-1 flex flex-col gap-1">
               <Link
-                to="/settings/expense-category"
+                to="/expense/categories"
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-3">

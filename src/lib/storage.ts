@@ -81,7 +81,9 @@ function getDB() {
         if (oldVersion < 5) {
           // Create salaryCategories store if it doesn't exist
           if (!db.objectStoreNames.contains('salaryCategories')) {
-            db.createObjectStore('salaryCategories', { keyPath: 'id' }).createIndex('by-deleted', 'deletedAt')
+            db.createObjectStore('salaryCategories', {
+              keyPath: 'id',
+            }).createIndex('by-deleted', 'deletedAt')
           }
         }
       },
@@ -198,7 +200,8 @@ export async function getInvoicesByMonth(
   return all
     .filter((inv) => {
       const date = new Date(inv.date)
-      const matchesDate = date.getFullYear() === year && date.getMonth() + 1 === month
+      const matchesDate =
+        date.getFullYear() === year && date.getMonth() + 1 === month
       const invoiceType = inv.type || 'expense'
       const matchesType = type ? invoiceType === type : true
       return matchesDate && matchesType
@@ -228,7 +231,9 @@ export async function getInvoicesByType(
       return date.getFullYear() === year && date.getMonth() + 1 === month
     })
   }
-  return all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  return all.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  )
 }
 
 export async function addInvoice(

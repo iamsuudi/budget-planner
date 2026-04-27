@@ -12,7 +12,7 @@ import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
 import { CancelButton } from '#/components/CancelButton'
 
-export const Route = createFileRoute('/settings/expense-category/edit/$id')({
+export const Route = createFileRoute('/expense/categories/edit/$id')({
   component: EditCategoryPage,
 })
 
@@ -39,14 +39,21 @@ function EditCategoryPage() {
     if (!name.trim() || !selectedWalletId || !id) return
 
     updateCategory.mutate(
-      { id, updates: { name: name.trim(), icon: selectedIcon, walletId: selectedWalletId } },
-      { onSuccess: () => navigate({ to: '/settings/expense-category' }) },
+      {
+        id,
+        updates: {
+          name: name.trim(),
+          icon: selectedIcon,
+          walletId: selectedWalletId,
+        },
+      },
+      { onSuccess: () => navigate({ to: '/expense/categories' }) },
     )
   }
 
   const handleDelete = () => {
     deleteCategory.mutate(id, {
-      onSuccess: () => navigate({ to: '/settings/expense-category' }),
+      onSuccess: () => navigate({ to: '/expense/categories' }),
     })
   }
 
@@ -64,12 +71,12 @@ function EditCategoryPage() {
         <TopAppBar
           title="Edit Category"
           showBack
-          backTo="/settings/expense-category"
+          backTo="/expense/categories"
         />
         <Page>
           <p className="text-slate-500">Category not found.</p>
           <Link
-            to="/settings/expense-category"
+            to="/expense/categories"
             className="text-secondary hover:underline mt-4 block text-sm"
           >
             Back to Categories
@@ -81,11 +88,7 @@ function EditCategoryPage() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar
-        title="Edit Category"
-        showBack
-        backTo="/settings/expense-category"
-      />
+      <TopAppBar title="Edit Category" showBack backTo="/expense/categories" />
 
       <Page>
         <div className="glass-panel rounded-xl p-4 space-y-4">
@@ -157,12 +160,14 @@ function EditCategoryPage() {
         <div className="mt-6 flex flex-col gap-3">
           <button
             onClick={handleSave}
-            disabled={!name.trim() || !selectedWalletId || updateCategory.isPending}
+            disabled={
+              !name.trim() || !selectedWalletId || updateCategory.isPending
+            }
             className="py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {updateCategory.isPending ? 'Saving...' : 'Save Changes'}
           </button>
-          <CancelButton to="/settings/expense-category" />
+          <CancelButton to="/expense/categories" />
           <button
             onClick={handleDelete}
             disabled={deleteCategory.isPending}

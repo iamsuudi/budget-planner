@@ -57,15 +57,6 @@ function ProfilePage() {
               }
             />
           </Link>
-          <Link to="/settings">
-            <ActionListItem
-              icon="settings"
-              iconBg="bg-blue-500/10"
-              iconColor="text-blue-400"
-              title="Settings"
-              description="App preferences and security"
-            />
-          </Link>
           <ActionListItem
             icon="help_center"
             iconBg="bg-yellow-500/10"
@@ -75,8 +66,8 @@ function ProfilePage() {
           />
           <ActionListItem
             icon="policy"
-            iconBg="bg-red-500/10"
-            iconColor="text-red-400"
+            iconBg="bg-blue-500/10"
+            iconColor="text-blue-400"
             title="Privacy Policy"
             description=""
           />

@@ -7,7 +7,7 @@ import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
 import { CancelButton } from '#/components/CancelButton'
 
-export const Route = createFileRoute('/settings/expense-category/add')({
+export const Route = createFileRoute('/expense/categories/add')({
   component: AddCategoryPage,
 })
 
@@ -24,7 +24,7 @@ function AddCategoryPage() {
 
     createCategory.mutate(
       { name: name.trim(), icon: selectedIcon, walletId: selectedWalletId },
-      { onSuccess: () => navigate({ to: '/settings/expense-category' }) },
+      { onSuccess: () => navigate({ to: '/expense/categories' }) },
     )
   }
 
@@ -32,11 +32,7 @@ function AddCategoryPage() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar
-        title="Add Category"
-        showBack
-        backTo="/settings/expense-category"
-      />
+      <TopAppBar title="Add Category" showBack backTo="/expense/categories" />
 
       <Page>
         {isLoadingWallets ? (
@@ -58,7 +54,9 @@ function AddCategoryPage() {
             <div className="glass-panel rounded-xl p-4 space-y-4">
               <section className="space-y-2">
                 <div className="space-y-2">
-                  <label className="text-sm text-violet-400">Category Name</label>
+                  <label className="text-sm text-violet-400">
+                    Category Name
+                  </label>
                   <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2">
                     <input
                       className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"

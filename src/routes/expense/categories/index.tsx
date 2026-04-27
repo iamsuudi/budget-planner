@@ -1,12 +1,16 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { PlusCircle, Edit2, Trash2, Plus } from 'lucide-react'
-import { useGetCategories, useDeleteCategory, useGetWallets } from '#/hooks/query'
+import {
+  useGetCategories,
+  useDeleteCategory,
+  useGetWallets,
+} from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
 
-export const Route = createFileRoute('/settings/expense-category/')({
+export const Route = createFileRoute('/expense/categories/')({
   component: ExpenseCategoryPage,
 })
 
@@ -15,10 +19,13 @@ function ExpenseCategoryPage() {
   const { data: wallets = [] } = useGetWallets()
   const deleteCategory = useDeleteCategory()
 
-  const walletMap = wallets.reduce((acc, w) => {
-    acc[w.id] = w
-    return acc
-  }, {} as Record<string, typeof wallets[0]>)
+  const walletMap = wallets.reduce(
+    (acc, w) => {
+      acc[w.id] = w
+      return acc
+    },
+    {} as Record<string, (typeof wallets)[0]>,
+  )
 
   const handleDelete = (id: string) => {
     if (confirm('Delete this category?')) {
@@ -28,7 +35,11 @@ function ExpenseCategoryPage() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar title="Expense Categories" showBack backTo="/settings" />
+      <TopAppBar
+        title="Expense Categories"
+        showBack
+        backTo="/expense/categories"
+      />
 
       <Page>
         <section className="flex justify-between items-center mb-6 gap-3">
@@ -37,7 +48,7 @@ function ExpenseCategoryPage() {
             <p className="text-slate-400 text-sm">Organize spending.</p>
           </div>
           <Link
-            to="/settings/expense-category/add"
+            to="/expense/categories/add"
             className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
           >
             <PlusCircle className="w-4 h-4" />
@@ -51,7 +62,7 @@ function ExpenseCategoryPage() {
           <div className="text-center py-8">
             <p className="text-slate-500 mb-4">No categories yet.</p>
             <Link
-              to="/settings/expense-category/add"
+              to="/expense/categories/add"
               className="text-secondary hover:underline text-sm"
             >
               Add Category
@@ -61,7 +72,9 @@ function ExpenseCategoryPage() {
           <div className="grid grid-cols-2 gap-3">
             {categories.map((category) => {
               const styles = getIconStyle(category.icon)
-              const wallet = category.walletId ? walletMap[category.walletId] : null
+              const wallet = category.walletId
+                ? walletMap[category.walletId]
+                : null
               return (
                 <div
                   key={category.id}
@@ -79,7 +92,7 @@ function ExpenseCategoryPage() {
                     </div>
                     <div className="flex gap-1">
                       <Link
-                        to={`/settings/expense-category/edit/$id`}
+                        to={`/expense/categories/edit/$id`}
                         params={{ id: category.id }}
                         className="p-1 text-slate-500 hover:text-secondary transition-colors"
                       >
@@ -107,7 +120,7 @@ function ExpenseCategoryPage() {
               )
             })}
             <Link
-              to="/settings/expense-category/add"
+              to="/expense/categories/add"
               className="border-2 border-dashed border-slate-800 p-4 rounded-lg flex flex-col items-center justify-center gap-2 group hover:border-violet-500/30 hover:bg-violet-500/5 transition-all cursor-pointer min-h-[100px]"
             >
               <Plus className="w-6 h-6 text-slate-600 group-hover:text-violet-400" />

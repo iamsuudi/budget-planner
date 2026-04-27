@@ -13,7 +13,7 @@ import { TopAppBar } from '#/components/TopAppBar'
 import { CalendarNav } from '#/components/CalendarNav'
 import { Icon } from '#/components/Icon'
 
-export const Route = createFileRoute('/transactions/')({
+export const Route = createFileRoute('/expense/transactions/')({
   component: TransactionsPage,
 })
 
@@ -67,7 +67,7 @@ function TransactionsPage() {
 
   return (
     <div className="">
-      <TopAppBar showBack backTo="/" />
+      <TopAppBar showBack backTo="/expense" />
 
       <Page className="space-y-4">
         <CalendarNav locked />

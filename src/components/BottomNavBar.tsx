@@ -1,15 +1,8 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import {
-  Receipt,
-  Wallet,
-  Banknote,
-  User,
-  Settings,
-  BarChart3,
-} from 'lucide-react'
+import { Receipt, Wallet, User, Settings, BarChart3 } from 'lucide-react'
 
 const navItems = [
-  { icon: Receipt, label: 'Expense', to: '/' },
+  { icon: Receipt, label: 'Expense', to: '/expense' },
   { icon: BarChart3, label: 'Budget', to: '/budget' },
   { icon: Wallet, label: 'Salary', to: '/salary' },
   { icon: User, label: 'Profile', to: '/profile' },
@@ -22,10 +15,7 @@ export function BottomNavBar() {
     <nav className="fixed bottom-0 left-0 w-full z-50">
       <div className="max-w-lg flex justify-around items-center pb-safe px-4 h-20 mx-auto bg-slate-950/90 backdrop-blur-xl border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.2)]">
         {navItems.map((item) => {
-          const isActive =
-            item.to === '/'
-              ? location.pathname === item.to
-              : location.pathname.startsWith(item.to)
+          const isActive = location.pathname.startsWith(item.to)
           return (
             <Link
               key={item.to}
