@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 
+type SWStatus = 'idle' | 'installing' | 'ready' | 'error'
+
 interface SWProgress {
   progress: number
-  status: 'idle' | 'installing' | 'ready' | 'error'
+  status: SWStatus
 }
 
 declare global {
@@ -24,6 +26,16 @@ export function useSWProgress(): SWProgress {
       return
     }
 
+    if (window.swError) {
+      setProgress({ progress: 0, status: 'error' })
+      return
+    }
+
+    if (window.swReady || navigator.serviceWorker.controller) {
+      setProgress({ progress: 100, status: 'ready' })
+      return
+    }
+
     const handleReady = () => {
       setProgress({ progress: 100, status: 'ready' })
     }
@@ -41,11 +53,7 @@ export function useSWProgress(): SWProgress {
     window.addEventListener('sw-error', handleError)
     window.addEventListener('sw-progress', handleProgress)
 
-    if (window.swReady || navigator.serviceWorker.controller) {
-      setProgress({ progress: 100, status: 'ready' })
-    } else {
-      setProgress((prev) => ({ ...prev, status: 'installing' }))
-    }
+    setProgress((prev) => ({ ...prev, status: 'installing' }))
 
     return () => {
       window.removeEventListener('sw-ready', handleReady)
