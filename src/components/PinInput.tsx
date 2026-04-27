@@ -129,12 +129,18 @@ export function PinInput({ mode, onComplete, onCancel, error }: PinInputProps) {
 }
 
 export function LockScreen() {
-  const { isLocked, verifyPin, isFirstTime, setupPin, biometricEnabled, unlock, pinEnabled, removePin } = useSecurity()
+  const { isLocked, verifyPin, isFirstTime, setupPin, biometricEnabled, unlock, pinEnabled, removePin, resetPinWithBiometric } = useSecurity()
   const [error, setError] = useState('')
   const [pinKey, setPinKey] = useState(0)
   const [authenticating, setAuthenticating] = useState(false)
   const [showForgot, setShowForgot] = useState(false)
   const router = useRouter()
+
+  useEffect(() => {
+    if (showForgot && biometricEnabled) {
+      handleBiometric()
+    }
+  }, [showForgot, biometricEnabled])
 
   const handleVerify = async (pin: string) => {
     const valid = await verifyPin(pin)
@@ -170,7 +176,7 @@ export function LockScreen() {
       console.log('Credential result:', credential)
       if (credential) {
         if (showForgot) {
-          await removePin()
+          await resetPinWithBiometric()
           router.navigate({ to: '/settings/security/pin' })
         } else {
           unlock()

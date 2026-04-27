@@ -25,6 +25,7 @@ interface SecurityContextValue {
   verifyPin: (pin: string) => Promise<boolean>
   toggleBiometric: (enabled: boolean) => Promise<void>
   removePin: () => Promise<void>
+  resetPinWithBiometric: () => Promise<void>
 }
 
 const SecurityContext = createContext<SecurityContextValue | null>(null)
@@ -202,6 +203,17 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
 
   const removePin = useCallback(async () => {
     localStorage.removeItem('pin-hash')
+    const settings: SecuritySettings = {
+      pinEnabled: false,
+      biometricEnabled: biometric,
+    }
+    saveSecuritySettings(settings)
+    setPinEnabled(false)
+    unlock()
+  }, [biometric, unlock])
+
+  const resetPinWithBiometric = useCallback(async () => {
+    localStorage.removeItem('pin-hash')
     clearPasskeyCredentialId()
     const settings: SecuritySettings = {
       pinEnabled: false,
@@ -232,6 +244,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         verifyPin,
         toggleBiometric,
         removePin,
+        resetPinWithBiometric,
       }}
     >
       {children}
