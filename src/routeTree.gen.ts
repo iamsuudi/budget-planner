@@ -10,11 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TodoIndexRouteImport } from './routes/todo/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as SalaryIndexRouteImport } from './routes/salary/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as ExpenseIndexRouteImport } from './routes/expense/index'
 import { Route as BudgetIndexRouteImport } from './routes/budget/index'
+import { Route as TodoCategoriesRouteImport } from './routes/todo/categories'
+import { Route as TodoAddRouteImport } from './routes/todo/add'
 import { Route as SalaryAddRouteImport } from './routes/salary/add'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
 import { Route as ExpenseAddRouteImport } from './routes/expense/add'
@@ -36,6 +39,11 @@ import { Route as ExpenseCategoriesEditIdRouteImport } from './routes/expense/ca
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TodoIndexRoute = TodoIndexRouteImport.update({
+  id: '/todo/',
+  path: '/todo/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
@@ -61,6 +69,16 @@ const ExpenseIndexRoute = ExpenseIndexRouteImport.update({
 const BudgetIndexRoute = BudgetIndexRouteImport.update({
   id: '/budget/',
   path: '/budget/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TodoCategoriesRoute = TodoCategoriesRouteImport.update({
+  id: '/todo/categories',
+  path: '/todo/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TodoAddRoute = TodoAddRouteImport.update({
+  id: '/todo/add',
+  path: '/todo/add',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SalaryAddRoute = SalaryAddRouteImport.update({
@@ -155,11 +173,14 @@ export interface FileRoutesByFullPath {
   '/expense/add': typeof ExpenseAddRoute
   '/profile/edit': typeof ProfileEditRoute
   '/salary/add': typeof SalaryAddRoute
+  '/todo/add': typeof TodoAddRoute
+  '/todo/categories': typeof TodoCategoriesRoute
   '/budget/': typeof BudgetIndexRoute
   '/expense/': typeof ExpenseIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/salary/': typeof SalaryIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/todo/': typeof TodoIndexRoute
   '/expense/categories/add': typeof ExpenseCategoriesAddRoute
   '/salary/categories/add': typeof SalaryCategoriesAddRoute
   '/settings/security/pin': typeof SettingsSecurityPinRoute
@@ -180,11 +201,14 @@ export interface FileRoutesByTo {
   '/expense/add': typeof ExpenseAddRoute
   '/profile/edit': typeof ProfileEditRoute
   '/salary/add': typeof SalaryAddRoute
+  '/todo/add': typeof TodoAddRoute
+  '/todo/categories': typeof TodoCategoriesRoute
   '/budget': typeof BudgetIndexRoute
   '/expense': typeof ExpenseIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/salary': typeof SalaryIndexRoute
   '/settings': typeof SettingsIndexRoute
+  '/todo': typeof TodoIndexRoute
   '/expense/categories/add': typeof ExpenseCategoriesAddRoute
   '/salary/categories/add': typeof SalaryCategoriesAddRoute
   '/settings/security/pin': typeof SettingsSecurityPinRoute
@@ -206,11 +230,14 @@ export interface FileRoutesById {
   '/expense/add': typeof ExpenseAddRoute
   '/profile/edit': typeof ProfileEditRoute
   '/salary/add': typeof SalaryAddRoute
+  '/todo/add': typeof TodoAddRoute
+  '/todo/categories': typeof TodoCategoriesRoute
   '/budget/': typeof BudgetIndexRoute
   '/expense/': typeof ExpenseIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/salary/': typeof SalaryIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/todo/': typeof TodoIndexRoute
   '/expense/categories/add': typeof ExpenseCategoriesAddRoute
   '/salary/categories/add': typeof SalaryCategoriesAddRoute
   '/settings/security/pin': typeof SettingsSecurityPinRoute
@@ -233,11 +260,14 @@ export interface FileRouteTypes {
     | '/expense/add'
     | '/profile/edit'
     | '/salary/add'
+    | '/todo/add'
+    | '/todo/categories'
     | '/budget/'
     | '/expense/'
     | '/profile/'
     | '/salary/'
     | '/settings/'
+    | '/todo/'
     | '/expense/categories/add'
     | '/salary/categories/add'
     | '/settings/security/pin'
@@ -258,11 +288,14 @@ export interface FileRouteTypes {
     | '/expense/add'
     | '/profile/edit'
     | '/salary/add'
+    | '/todo/add'
+    | '/todo/categories'
     | '/budget'
     | '/expense'
     | '/profile'
     | '/salary'
     | '/settings'
+    | '/todo'
     | '/expense/categories/add'
     | '/salary/categories/add'
     | '/settings/security/pin'
@@ -283,11 +316,14 @@ export interface FileRouteTypes {
     | '/expense/add'
     | '/profile/edit'
     | '/salary/add'
+    | '/todo/add'
+    | '/todo/categories'
     | '/budget/'
     | '/expense/'
     | '/profile/'
     | '/salary/'
     | '/settings/'
+    | '/todo/'
     | '/expense/categories/add'
     | '/salary/categories/add'
     | '/settings/security/pin'
@@ -309,11 +345,14 @@ export interface RootRouteChildren {
   ExpenseAddRoute: typeof ExpenseAddRoute
   ProfileEditRoute: typeof ProfileEditRoute
   SalaryAddRoute: typeof SalaryAddRoute
+  TodoAddRoute: typeof TodoAddRoute
+  TodoCategoriesRoute: typeof TodoCategoriesRoute
   BudgetIndexRoute: typeof BudgetIndexRoute
   ExpenseIndexRoute: typeof ExpenseIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   SalaryIndexRoute: typeof SalaryIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
+  TodoIndexRoute: typeof TodoIndexRoute
   ExpenseCategoriesAddRoute: typeof ExpenseCategoriesAddRoute
   SalaryCategoriesAddRoute: typeof SalaryCategoriesAddRoute
   SettingsSecurityPinRoute: typeof SettingsSecurityPinRoute
@@ -337,6 +376,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/todo/': {
+      id: '/todo/'
+      path: '/todo'
+      fullPath: '/todo/'
+      preLoaderRoute: typeof TodoIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings/': {
@@ -372,6 +418,20 @@ declare module '@tanstack/react-router' {
       path: '/budget'
       fullPath: '/budget/'
       preLoaderRoute: typeof BudgetIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/todo/categories': {
+      id: '/todo/categories'
+      path: '/todo/categories'
+      fullPath: '/todo/categories'
+      preLoaderRoute: typeof TodoCategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/todo/add': {
+      id: '/todo/add'
+      path: '/todo/add'
+      fullPath: '/todo/add'
+      preLoaderRoute: typeof TodoAddRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/salary/add': {
@@ -501,11 +561,14 @@ const rootRouteChildren: RootRouteChildren = {
   ExpenseAddRoute: ExpenseAddRoute,
   ProfileEditRoute: ProfileEditRoute,
   SalaryAddRoute: SalaryAddRoute,
+  TodoAddRoute: TodoAddRoute,
+  TodoCategoriesRoute: TodoCategoriesRoute,
   BudgetIndexRoute: BudgetIndexRoute,
   ExpenseIndexRoute: ExpenseIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   SalaryIndexRoute: SalaryIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
+  TodoIndexRoute: TodoIndexRoute,
   ExpenseCategoriesAddRoute: ExpenseCategoriesAddRoute,
   SalaryCategoriesAddRoute: SalaryCategoriesAddRoute,
   SettingsSecurityPinRoute: SettingsSecurityPinRoute,

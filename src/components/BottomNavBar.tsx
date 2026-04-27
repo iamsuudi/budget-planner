@@ -1,11 +1,11 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Receipt, Wallet, User, Settings, BarChart3 } from 'lucide-react'
+import { Receipt, Wallet, Settings, BarChart3, CheckSquare } from 'lucide-react'
 
 const navItems = [
   { icon: Receipt, label: 'Expense', to: '/expense' },
   { icon: BarChart3, label: 'Budget', to: '/budget' },
   { icon: Wallet, label: 'Salary', to: '/salary' },
-  { icon: User, label: 'Profile', to: '/profile' },
+  { icon: CheckSquare, label: 'Todo', to: '/todo' },
   { icon: Settings, label: 'Settings', to: '/settings' },
 ]
 

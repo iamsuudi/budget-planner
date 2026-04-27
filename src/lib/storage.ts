@@ -6,6 +6,7 @@ import type { MonthBudget } from '#/types/month'
 import type { SalaryCategory } from '#/types/salary-category'
 import type { User } from '#/types/user'
 import type { Wallet } from '#/types/wallet'
+import type { TodoCategory, TodoTask } from '#/types/todo'
 
 interface BudgetManagerDB extends DBSchema {
   user: {
@@ -37,13 +38,23 @@ interface BudgetManagerDB extends DBSchema {
     value: MonthBudget
     indexes: { 'by-month': string }
   }
+  todoCategories: {
+    key: string
+    value: TodoCategory
+    indexes: { 'by-deleted': number }
+  }
+  todoTasks: {
+    key: string
+    value: TodoTask
+    indexes: { 'by-category': string; 'by-date': string }
+  }
 }
 
 let dbPromise: Promise<IDBPDatabase<BudgetManagerDB>> | null = null
 
 function getDB() {
   if (!dbPromise) {
-    dbPromise = openDB<BudgetManagerDB>('budget-manager', 5, {
+    dbPromise = openDB<BudgetManagerDB>('budget-manager', 6, {
       upgrade(db, oldVersion, newVersion, transaction) {
         if (oldVersion < 1) {
           const categoryStore = db.createObjectStore('expenseCategories', {
@@ -84,6 +95,20 @@ function getDB() {
             db.createObjectStore('salaryCategories', {
               keyPath: 'id',
             }).createIndex('by-deleted', 'deletedAt')
+          }
+        }
+        if (oldVersion < 6) {
+          if (!db.objectStoreNames.contains('todoCategories')) {
+            db.createObjectStore('todoCategories', {
+              keyPath: 'id',
+            }).createIndex('by-deleted', 'deletedAt')
+          }
+          if (!db.objectStoreNames.contains('todoTasks')) {
+            const taskStore = db.createObjectStore('todoTasks', {
+              keyPath: 'id',
+            })
+            taskStore.createIndex('by-category', 'categoryId')
+            taskStore.createIndex('by-date', 'date')
           }
         }
       },
@@ -390,4 +415,122 @@ export async function clearAllData(): Promise<void> {
   await db.clear('expenseCategories')
   await db.clear('invoices')
   await db.clear('monthBudgets')
+}
+
+// Todo Categories
+export async function getAllTodoCategories(): Promise<TodoCategory[]> {
+  const db = await getDB()
+  const all = await db.getAll('todoCategories')
+  return all
+    .filter((c) => !c.deletedAt)
+    .sort((a, b) => a.createdAt - b.createdAt)
+}
+
+export async function getTodoCategoryById(
+  id: string,
+): Promise<TodoCategory | undefined> {
+  const db = await getDB()
+  return db.get('todoCategories', id)
+}
+
+export async function addTodoCategory(
+  name: string,
+): Promise<TodoCategory> {
+  const db = await getDB()
+  const newCategory: TodoCategory = {
+    id: await generateId(),
+    name,
+    createdAt: Date.now(),
+  }
+  await db.put('todoCategories', newCategory)
+  return newCategory
+}
+
+export async function updateTodoCategory(
+  id: string,
+  name: string,
+): Promise<void> {
+  const db = await getDB()
+  const existing = await db.get('todoCategories', id)
+  if (existing) {
+    await db.put('todoCategories', { ...existing, name })
+  }
+}
+
+export async function deleteTodoCategory(id: string): Promise<void> {
+  const db = await getDB()
+  const existing = await db.get('todoCategories', id)
+  if (existing) {
+    await db.put('todoCategories', { ...existing, deletedAt: Date.now() })
+  }
+}
+
+// Todo Tasks
+export async function getTasksByCategoryAndDate(
+  categoryId: string,
+  date: string,
+): Promise<TodoTask[]> {
+  const db = await getDB()
+  const all = await db.getAllFromIndex('todoTasks', 'by-category', categoryId)
+  return all
+    .filter((t) => t.date === date)
+    .sort((a, b) => a.priority - b.priority)
+}
+
+export async function getTasksByDate(date: string): Promise<TodoTask[]> {
+  const db = await getDB()
+  const all = await db.getAllFromIndex('todoTasks', 'by-date', date)
+  return all.sort((a, b) => a.priority - b.priority)
+}
+
+export async function addTodoTask(
+  categoryId: string,
+  name: string,
+  date: string,
+): Promise<TodoTask> {
+  const db = await getDB()
+  const existingTasks = await getTasksByCategoryAndDate(categoryId, date)
+  const newTask: TodoTask = {
+    id: await generateId(),
+    categoryId,
+    name,
+    date,
+    priority: existingTasks.length,
+    done: false,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  }
+  await db.put('todoTasks', newTask)
+  return newTask
+}
+
+export async function updateTodoTask(
+  id: string,
+  updates: Partial<Omit<TodoTask, 'id' | 'createdAt'>>,
+): Promise<void> {
+  const db = await getDB()
+  const existing = await db.get('todoTasks', id)
+  if (existing) {
+    await db.put('todoTasks', { ...existing, ...updates, updatedAt: Date.now() })
+  }
+}
+
+export async function deleteTodoTask(id: string): Promise<void> {
+  const db = await getDB()
+  await db.delete('todoTasks', id)
+}
+
+export async function reorderTodoTasks(
+  categoryId: string,
+  date: string,
+  taskIds: string[],
+): Promise<void> {
+  const db = await getDB()
+  const updates = taskIds.map((id, index) => ({ id, priority: index }))
+  for (const update of updates) {
+    const existing = await db.get('todoTasks', update.id)
+    if (existing && existing.categoryId === categoryId && existing.date === date) {
+      await db.put('todoTasks', { ...existing, priority: update.priority, updatedAt: Date.now() })
+    }
+  }
 }
