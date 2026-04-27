@@ -1,33 +1,26 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ChevronRight, Flag, PiggyBank, PlusCircle, Wallet } from 'lucide-react'
+import { PlusCircle, FolderPlus } from 'lucide-react'
 import { useMemo } from 'react'
-import {
-  useGetInvoicesByMonth,
-  useGetMonthBudget,
-  useGetCategories,
-  useGetWallets,
-} from '#/hooks/query'
+import { useGetInvoicesByMonth, useGetCategories, useGetWallets } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
 import { useCurrency } from '#/lib/currency-context'
 import { getIconStyle } from '#/lib/icons'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
-import { ProgressBar } from '#/components/ProgressBar'
 import { TopAppBar } from '#/components/TopAppBar'
 import { CalendarNav } from '#/components/CalendarNav'
 import { Icon } from '#/components/Icon'
 
 export const Route = createFileRoute('/')({
-  component: HomePage,
+  component: ExpensePage,
 })
 
-function HomePage() {
-  const { currentMonth, isCurrentMonth } = useMonth()
+function ExpensePage() {
   const { formatAmount } = useCurrency()
+  const { currentMonth } = useMonth()
   const { year, month } = currentMonth
 
   const { data: invoices = [], isLoading } = useGetInvoicesByMonth(year, month)
-  const { data: monthBudget } = useGetMonthBudget(year, month)
   const { data: categories = [] } = useGetCategories()
   const { data: wallets = [] } = useGetWallets()
 
@@ -51,11 +44,6 @@ function HomePage() {
     return invoices.reduce((sum, inv) => sum + inv.amount, 0)
   }, [invoices])
 
-  const budgetPercentage = useMemo(() => {
-    if (!monthBudget?.totalBudget || monthBudget.totalBudget === 0) return 0
-    return Math.min((totalExpenses / monthBudget.totalBudget) * 100, 100)
-  }, [totalExpenses, monthBudget])
-
   return (
     <div className="">
       <TopAppBar showProfile />
@@ -63,98 +51,34 @@ function HomePage() {
       <Page className="space-y-6">
         <CalendarNav />
 
-        <GlassCard className="p-4 relative overflow-hidden">
+        <GlassCard className="p-6 relative overflow-hidden">
           <div className="absolute -top-16 -right-16 w-32 h-32 bg-primary/20 blur-[60px] rounded-full" />
-          <div className="absolute -bottom-16 -left-16 w-32 h-32 bg-secondary/10 blur-[60px] rounded-full" />
-          <div className="relative z-10">
-            <p className="text-xs font-semibold text-on-surface-variant opacity-70 mb-1">
+          <div className="relative z-10 text-center">
+            <p className="text-xs font-semibold text-on-surface-variant opacity-70 mb-2">
               Total Expenses
             </p>
             <h1 className="text-4xl font-extrabold text-on-surface tracking-tight">
               {formatAmount(totalExpenses)}
             </h1>
-            <div className="grid grid-cols-2 gap-4 border-t border-white/10 pt-4 mt-4">
-              <div>
-                <p className="text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">
-                  Budget
-                </p>
-                <div className="flex items-center gap-1">
-                  <Flag className="w-4 h-4 text-cyan-400" />
-                  <p className="text-lg font-bold text-secondary">
-                    {formatAmount(monthBudget?.totalBudget || 0)}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <p className="text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">
-                  Remaining
-                </p>
-                <div className="flex items-center gap-1">
-                  <PiggyBank className="w-4 h-4 text-tertiary" />
-                  <p
-                    className={`text-lg font-bold ${(monthBudget?.totalBudget || 0) - totalExpenses >= 0 ? 'text-tertiary' : 'text-error'}`}
-                  >
-                    {formatAmount(
-                      (monthBudget?.totalBudget || 0) - totalExpenses,
-                    )}
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
-          {monthBudget && monthBudget.totalBudget > 0 && (
-            <span
-              className={`absolute top-5 right-5 px-3 py-1 rounded-full text-xs font-semibold ${budgetPercentage >= 100 ? 'bg-error/10 text-error' : 'bg-tertiary/10 text-tertiary'}`}
-            >
-              {budgetPercentage >= 100
-                ? 'Over'
-                : budgetPercentage >= 80
-                  ? 'Near'
-                  : 'On Track'}
-            </span>
-          )}
         </GlassCard>
 
-        <div className="flex gap-6">
+        <div className="flex gap-3">
           <Link
-            to="/budget"
-            className="flex-1 border border-secondary text-secondary rounded-xl py-3 px-5 flex gap-2 items-center hover:bg-secondary/10 active:scale-98 transition-all"
+            to="/settings/expense-category/add"
+            className="flex-1 border border-tertiary text-tertiary rounded-xl py-3 px-5 flex gap-2 items-center justify-center hover:bg-tertiary/10 active:scale-98 transition-all"
           >
-            <Wallet className="w-5 h-5" />
-            <span className="text-lg font-bold text-on-surface">
-              Set Budget
-            </span>
-            {/* <ChevronRight className="w-5 h-5" />*/}
+            <FolderPlus className="w-5 h-5" />
+            <span className="font-bold text-on-surface">Add Category</span>
           </Link>
           <Link
             to="/expense/add"
-            className="flex-1 border border-primary text-primary rounded-xl py-3 px-5 flex gap-2 items-center hover:bg-primary/10 active:scale-98 transition-all"
+            className="flex-1 border border-primary text-primary rounded-xl py-3 px-5 flex gap-2 items-center justify-center hover:bg-primary/10 active:scale-98 transition-all"
           >
             <PlusCircle className="w-5 h-5" />
             <span className="font-bold text-on-surface">Add Expense</span>
-            {/* <ChevronRight className="w-5 h-5" />*/}
           </Link>
         </div>
-
-        {monthBudget && monthBudget.totalBudget > 0 && (
-          <GlassCard className="p-3">
-            <div className="flex justify-between items-center mb-2">
-              <p className="text-xs font-semibold text-on-surface">
-                Budget Progress
-              </p>
-              <p
-                className={`text-xs font-semibold ${budgetPercentage >= 100 ? 'text-error' : 'text-tertiary'}`}
-              >
-                {budgetPercentage.toFixed(0)}% used
-              </p>
-            </div>
-            <ProgressBar
-              percentage={budgetPercentage}
-              color="gradient"
-              showGlow={budgetPercentage >= 80}
-            />
-          </GlassCard>
-        )}
 
         <section className="space-y-3">
           <div className="flex items-center justify-between">
@@ -174,7 +98,7 @@ function HomePage() {
             <div className="space-y-2">
               {invoices.slice(0, 8).map((inv) => {
                 const category = categoryMap[inv.categoryId]
-                const style = getIconStyle(category.icon || 'receipt')
+                const style = getIconStyle(category?.icon || 'receipt')
                 return (
                   <div
                     key={inv.id}
@@ -184,15 +108,15 @@ function HomePage() {
                       <div
                         className={`w-9 h-9 rounded-full ${style.bg} flex items-center justify-center ${style.color}`}
                       >
-                        <Icon name={category.icon || 'receipt'} size={18} />
+                        <Icon name={category?.icon || 'receipt'} size={18} />
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-on-surface">
-                          {inv.note || category.name || inv.categoryName}
+                          {inv.note || category?.name || inv.categoryName}
                         </p>
                         <p className="text-[10px] text-on-surface-variant opacity-60">
-                          {category.name || inv.categoryName}
-                          {category.walletId && walletMap[category.walletId]
+                          {category?.name || inv.categoryName}
+                          {category?.walletId && walletMap[category.walletId]
                             ? ` • ${walletMap[category.walletId].name}`
                             : ''}
                         </p>

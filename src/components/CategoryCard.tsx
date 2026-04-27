@@ -5,7 +5,7 @@ import { ProgressBar } from './ProgressBar'
 interface CategoryBudget {
   id: string
   name: string
-  description: string
+  description?: string
   icon: string
   used: number
   total: number
@@ -90,7 +90,9 @@ export function CategoryCard({ category }: CategoryCardProps) {
             })()}
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-on-surface">{category.name}</h3>
+            <h3 className="text-sm font-semibold text-on-surface">
+              {category.name}
+            </h3>
             <p className="text-xs text-outline">{category.description}</p>
           </div>
         </div>
@@ -102,21 +104,21 @@ export function CategoryCard({ category }: CategoryCardProps) {
         </div>
       </div>
       <div className="space-y-2 mt-2">
-          <div className="flex justify-between text-xs">
-            <span className="text-on-surface-variant">
-              {formatAmount(category.used)}{' '}
-              <span className="text-outline">
-                / {category.total > 0 ? formatAmount(category.total) : '$0.00'}
-              </span>
+        <div className="flex justify-between text-xs">
+          <span className="text-on-surface-variant">
+            {formatAmount(category.used)}{' '}
+            <span className="text-outline">
+              / {category.total > 0 ? formatAmount(category.total) : '$0.00'}
             </span>
-            <span className={`font-bold ${remainingColor}`}>
-              {remaining > 0
-                ? `${formatAmount(remaining)} left`
-                : remaining === 0
-                  ? '$0.00 left'
-                  : `${formatAmount(Math.abs(remaining))} over`}
-            </span>
-          </div>
+          </span>
+          <span className={`font-bold ${remainingColor}`}>
+            {remaining > 0
+              ? `${formatAmount(remaining)} left`
+              : remaining === 0
+                ? '$0.00 left'
+                : `${formatAmount(Math.abs(remaining))} over`}
+          </span>
+        </div>
         <ProgressBar
           percentage={category.percentage}
           color={config.bar}

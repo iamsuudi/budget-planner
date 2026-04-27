@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TransactionsIndexRouteImport } from './routes/transactions/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
-import { Route as ReportsIndexRouteImport } from './routes/reports/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as BudgetIndexRouteImport } from './routes/budget/index'
 import { Route as ProfileEditRouteImport } from './routes/profile/edit'
@@ -20,6 +19,7 @@ import { Route as ExpenseAddRouteImport } from './routes/expense/add'
 import { Route as SettingsWalletsIndexRouteImport } from './routes/settings/wallets/index'
 import { Route as SettingsExpenseCategoryIndexRouteImport } from './routes/settings/expense-category/index'
 import { Route as SettingsCurrencyIndexRouteImport } from './routes/settings/currency/index'
+import { Route as BudgetEditIndexRouteImport } from './routes/budget/edit/index'
 import { Route as SettingsWalletsAddRouteImport } from './routes/settings/wallets/add'
 import { Route as SettingsSecurityPinRouteImport } from './routes/settings/security/pin'
 import { Route as SettingsExpenseCategoryAddRouteImport } from './routes/settings/expense-category/add'
@@ -39,11 +39,6 @@ const TransactionsIndexRoute = TransactionsIndexRouteImport.update({
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
   id: '/settings/',
   path: '/settings/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReportsIndexRoute = ReportsIndexRouteImport.update({
-  id: '/reports/',
-  path: '/reports/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileIndexRoute = ProfileIndexRouteImport.update({
@@ -82,6 +77,11 @@ const SettingsCurrencyIndexRoute = SettingsCurrencyIndexRouteImport.update({
   path: '/settings/currency/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BudgetEditIndexRoute = BudgetEditIndexRouteImport.update({
+  id: '/budget/edit/',
+  path: '/budget/edit/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsWalletsAddRoute = SettingsWalletsAddRouteImport.update({
   id: '/settings/wallets/add',
   path: '/settings/wallets/add',
@@ -116,12 +116,12 @@ export interface FileRoutesByFullPath {
   '/profile/edit': typeof ProfileEditRoute
   '/budget/': typeof BudgetIndexRoute
   '/profile/': typeof ProfileIndexRoute
-  '/reports/': typeof ReportsIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/transactions/': typeof TransactionsIndexRoute
   '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
   '/settings/security/pin': typeof SettingsSecurityPinRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
+  '/budget/edit/': typeof BudgetEditIndexRoute
   '/settings/currency/': typeof SettingsCurrencyIndexRoute
   '/settings/expense-category/': typeof SettingsExpenseCategoryIndexRoute
   '/settings/wallets/': typeof SettingsWalletsIndexRoute
@@ -134,12 +134,12 @@ export interface FileRoutesByTo {
   '/profile/edit': typeof ProfileEditRoute
   '/budget': typeof BudgetIndexRoute
   '/profile': typeof ProfileIndexRoute
-  '/reports': typeof ReportsIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/transactions': typeof TransactionsIndexRoute
   '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
   '/settings/security/pin': typeof SettingsSecurityPinRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
+  '/budget/edit': typeof BudgetEditIndexRoute
   '/settings/currency': typeof SettingsCurrencyIndexRoute
   '/settings/expense-category': typeof SettingsExpenseCategoryIndexRoute
   '/settings/wallets': typeof SettingsWalletsIndexRoute
@@ -153,12 +153,12 @@ export interface FileRoutesById {
   '/profile/edit': typeof ProfileEditRoute
   '/budget/': typeof BudgetIndexRoute
   '/profile/': typeof ProfileIndexRoute
-  '/reports/': typeof ReportsIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/transactions/': typeof TransactionsIndexRoute
   '/settings/expense-category/add': typeof SettingsExpenseCategoryAddRoute
   '/settings/security/pin': typeof SettingsSecurityPinRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
+  '/budget/edit/': typeof BudgetEditIndexRoute
   '/settings/currency/': typeof SettingsCurrencyIndexRoute
   '/settings/expense-category/': typeof SettingsExpenseCategoryIndexRoute
   '/settings/wallets/': typeof SettingsWalletsIndexRoute
@@ -173,12 +173,12 @@ export interface FileRouteTypes {
     | '/profile/edit'
     | '/budget/'
     | '/profile/'
-    | '/reports/'
     | '/settings/'
     | '/transactions/'
     | '/settings/expense-category/add'
     | '/settings/security/pin'
     | '/settings/wallets/add'
+    | '/budget/edit/'
     | '/settings/currency/'
     | '/settings/expense-category/'
     | '/settings/wallets/'
@@ -191,12 +191,12 @@ export interface FileRouteTypes {
     | '/profile/edit'
     | '/budget'
     | '/profile'
-    | '/reports'
     | '/settings'
     | '/transactions'
     | '/settings/expense-category/add'
     | '/settings/security/pin'
     | '/settings/wallets/add'
+    | '/budget/edit'
     | '/settings/currency'
     | '/settings/expense-category'
     | '/settings/wallets'
@@ -209,12 +209,12 @@ export interface FileRouteTypes {
     | '/profile/edit'
     | '/budget/'
     | '/profile/'
-    | '/reports/'
     | '/settings/'
     | '/transactions/'
     | '/settings/expense-category/add'
     | '/settings/security/pin'
     | '/settings/wallets/add'
+    | '/budget/edit/'
     | '/settings/currency/'
     | '/settings/expense-category/'
     | '/settings/wallets/'
@@ -228,12 +228,12 @@ export interface RootRouteChildren {
   ProfileEditRoute: typeof ProfileEditRoute
   BudgetIndexRoute: typeof BudgetIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
-  ReportsIndexRoute: typeof ReportsIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
   TransactionsIndexRoute: typeof TransactionsIndexRoute
   SettingsExpenseCategoryAddRoute: typeof SettingsExpenseCategoryAddRoute
   SettingsSecurityPinRoute: typeof SettingsSecurityPinRoute
   SettingsWalletsAddRoute: typeof SettingsWalletsAddRoute
+  BudgetEditIndexRoute: typeof BudgetEditIndexRoute
   SettingsCurrencyIndexRoute: typeof SettingsCurrencyIndexRoute
   SettingsExpenseCategoryIndexRoute: typeof SettingsExpenseCategoryIndexRoute
   SettingsWalletsIndexRoute: typeof SettingsWalletsIndexRoute
@@ -262,13 +262,6 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings/'
       preLoaderRoute: typeof SettingsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reports/': {
-      id: '/reports/'
-      path: '/reports'
-      fullPath: '/reports/'
-      preLoaderRoute: typeof ReportsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile/': {
@@ -320,6 +313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsCurrencyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/budget/edit/': {
+      id: '/budget/edit/'
+      path: '/budget/edit'
+      fullPath: '/budget/edit/'
+      preLoaderRoute: typeof BudgetEditIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/wallets/add': {
       id: '/settings/wallets/add'
       path: '/settings/wallets/add'
@@ -364,12 +364,12 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileEditRoute: ProfileEditRoute,
   BudgetIndexRoute: BudgetIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
-  ReportsIndexRoute: ReportsIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
   TransactionsIndexRoute: TransactionsIndexRoute,
   SettingsExpenseCategoryAddRoute: SettingsExpenseCategoryAddRoute,
   SettingsSecurityPinRoute: SettingsSecurityPinRoute,
   SettingsWalletsAddRoute: SettingsWalletsAddRoute,
+  BudgetEditIndexRoute: BudgetEditIndexRoute,
   SettingsCurrencyIndexRoute: SettingsCurrencyIndexRoute,
   SettingsExpenseCategoryIndexRoute: SettingsExpenseCategoryIndexRoute,
   SettingsWalletsIndexRoute: SettingsWalletsIndexRoute,

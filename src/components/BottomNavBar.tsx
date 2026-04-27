@@ -1,9 +1,9 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Home, BarChart3, User, Settings } from 'lucide-react'
+import { Receipt, BarChart3, User, Settings } from 'lucide-react'
 
 const navItems = [
-  { icon: Home, label: 'Home', to: '/' },
-  { icon: BarChart3, label: 'Reports', to: '/reports' },
+  { icon: Receipt, label: 'Expense', to: '/' },
+  { icon: BarChart3, label: 'Budget', to: '/budget' },
   { icon: User, label: 'Profile', to: '/profile' },
   { icon: Settings, label: 'Settings', to: '/settings' },
 ]
