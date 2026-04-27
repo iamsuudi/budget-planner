@@ -1,9 +1,8 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useMemo } from 'react'
 import {
-  useGetCategories,
+  useGetSalaryCategories,
   useCreateInvoice,
-  useGetInvoicesByMonth,
   useGetWallets,
 } from '#/hooks/query'
 import { useCurrency } from '#/lib/currency-context'
@@ -13,33 +12,26 @@ import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
 import { CancelButton } from '#/components/CancelButton'
 
-export const Route = createFileRoute('/expense/add')({
-  component: AddExpensePage,
+export const Route = createFileRoute('/salary/add')({
+  component: AddSalaryPage,
 })
 
-function AddExpensePage() {
+function AddSalaryPage() {
   const navigate = useNavigate()
   const { getSymbol } = useCurrency()
   const { currentMonth } = useMonth()
   const { data: categories = [], isLoading: isLoadingCategories } =
-    useGetCategories()
-  const { data: wallets = [], isLoading: isLoadingWallets } = useGetWallets()
-  const { data: invoices = [] } = useGetInvoicesByMonth(
-    currentMonth.year,
-    currentMonth.month,
-    'expense',
-  )
+    useGetSalaryCategories()
+  const { data: wallets = [] } = useGetWallets()
   const createInvoice = useCreateInvoice()
 
   const [amount, setAmount] = useState('')
   const [selectedCategoryId, setSelectedCategoryId] = useState('')
   const [note, setNote] = useState('')
 
-  const isLoading = isLoadingCategories || isLoadingWallets
+  const isLoading = isLoadingCategories
 
-  const selectedCategory = categories.find(
-    (c) => c.id === selectedCategoryId,
-  )
+  const selectedCategory = categories.find((c) => c.id === selectedCategoryId)
   const selectedWallet = selectedCategory
     ? wallets.find((w) => w.id === selectedCategory.walletId)
     : null
@@ -56,19 +48,16 @@ function AddExpensePage() {
         date: new Date().toISOString(),
         categoryId: selectedCategoryId,
         categoryName: category.name,
-        type: 'expense',
+        type: 'salary',
         note: note.trim() || undefined,
       },
-      { onSuccess: () => navigate({ to: '/' }) },
+      { onSuccess: () => navigate({ to: '/salary' }) },
     )
   }
 
   const isValid = useMemo(() => {
     return !!amount && parseFloat(amount) > 0 && selectedCategoryId
   }, [amount, selectedCategoryId])
-
-  const recentAmount =
-    invoices.length > 0 ? invoices.reduce((sum, inv) => sum + inv.amount, 0) : 0
 
   if (isLoading) {
     return (
@@ -78,62 +67,21 @@ function AddExpensePage() {
     )
   }
 
-  if (categories.length === 0 || wallets.length === 0) {
+  if (categories.length === 0) {
     return (
       <div className="">
-        <TopAppBar title="Add Expense" showBack backTo="/" />
-
-        <Page className="space-y-6">
-          {categories.length === 0 && (
-            <div className="glass-panel rounded-xl p-6 mb-4">
-              <p className="text-slate-400 mb-4">
-                You need to create at least one expense category first.
-              </p>
-              <Link
-                to="/settings/expense-category/add"
-                className="text-secondary hover:underline"
-              >
-                Create Category
-              </Link>
-            </div>
-          )}
-
-          {wallets.length === 0 && (
-            <div className="glass-panel rounded-xl p-6">
-              <p className="text-slate-400 mb-4">
-                You need to create at least one wallet first.
-              </p>
-              <Link
-                to="/settings/wallets/add"
-                className="text-secondary hover:underline"
-              >
-                Create Wallet
-              </Link>
-            </div>
-          )}
-        </Page>
-      </div>
-    )
-  }
-
-  const categoriesWithoutWallet = categories.filter((c) => !c.walletId)
-
-  if (categoriesWithoutWallet.length > 0) {
-    return (
-      <div className="">
-        <TopAppBar title="Add Expense" showBack backTo="/" />
+        <TopAppBar title="Add Salary" showBack backTo="/salary" />
 
         <Page className="space-y-6">
           <div className="glass-panel rounded-xl p-6 mb-4">
             <p className="text-slate-400 mb-4">
-              Some categories don't have a wallet assigned yet. Please assign a wallet
-              to all categories first.
+              You need to create at least one salary category first.
             </p>
             <Link
-              to="/settings/expense-category"
+              to="/salary/categories/add"
               className="text-secondary hover:underline"
             >
-              Manage Categories
+              Create Salary Category
             </Link>
           </div>
         </Page>
@@ -143,7 +91,7 @@ function AddExpensePage() {
 
   return (
     <div className="">
-      <TopAppBar title="Add Expense" showBack backTo="/" />
+      <TopAppBar title="Add Salary" showBack backTo="/salary" />
 
       <Page className="space-y-6">
         <div className="glass-panel rounded-xl p-4 space-y-4">
@@ -165,47 +113,36 @@ function AddExpensePage() {
             </div>
           </section>
 
-          {recentAmount > 0 && (
-            <p className="text-xs text-slate-500 text-center">
-              This month's spending: {getSymbol()}
-              {recentAmount.toFixed(2)}
-            </p>
-          )}
-
           <section className="space-y-2">
-            <label className="text-sm text-violet-400">Category</label>
+            <label className="text-sm text-violet-400">Salary Category</label>
             <div className="grid grid-cols-3 gap-2">
-              {(function () {
-                return categories
-              })()
-                .filter((cat) => cat.walletId)
-                .map((cat) => {
-                  const wallet = wallets.find((w) => w.id === cat.walletId)
-                  const isSelected = selectedCategoryId === cat.id
-                  return (
-                    <button
-                      key={cat.id}
-                      className={`p-3 rounded-lg border transition-all active:scale-95 ${
-                        isSelected
-                          ? 'bg-violet-500/20 border-violet-500/50 text-violet-400 electric-glow'
-                          : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
-                      }`}
-                      onClick={() => setSelectedCategoryId(cat.id)}
-                    >
-                      <Icon
-                        name={cat.icon}
-                        className="w-5 h-5 mb-1 block"
-                        size={20}
-                      />
-                      <span className="text-xs block">{cat.name}</span>
-                      {wallet && isSelected && (
-                        <span className="text-xs text-slate-500 block truncate">
-                          {wallet.name}
-                        </span>
-                      )}
-                    </button>
-                  )
-                })}
+              {categories.map((cat) => {
+                const wallet = wallets.find((w) => w.id === cat.walletId)
+                const isSelected = selectedCategoryId === cat.id
+                return (
+                  <button
+                    key={cat.id}
+                    className={`p-3 rounded-lg border transition-all active:scale-95 ${
+                      isSelected
+                        ? 'bg-tertiary/20 border-tertiary/50 text-tertiary electric-glow'
+                        : 'glass-panel hover:bg-white/10 text-slate-400 border-transparent'
+                    }`}
+                    onClick={() => setSelectedCategoryId(cat.id)}
+                  >
+                    <Icon
+                      name={cat.icon}
+                      className="w-5 h-5 mb-1 block"
+                      size={20}
+                    />
+                    <span className="text-xs block">{cat.name}</span>
+                    {wallet && isSelected && (
+                      <span className="text-xs text-slate-500 block truncate">
+                        {wallet.name}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
             </div>
           </section>
 
@@ -241,15 +178,15 @@ function AddExpensePage() {
           <button
             onClick={handleSave}
             disabled={!isValid || createInvoice.isPending}
-            className="w-full py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-tertiary rounded-xl text-on-tertiary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {createInvoice.isPending ? 'Saving...' : 'Save Expense'}
+            {createInvoice.isPending ? 'Saving...' : 'Add Salary'}
           </button>
-          <CancelButton to="/" />
+          <CancelButton to="/salary" />
         </div>
 
-        <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />
-        <div className="fixed -top-32 -right-32 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] -z-10" />
+        <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-tertiary/10 rounded-full blur-[100px] -z-10" />
+        <div className="fixed -top-32 -right-32 w-64 h-64 bg-tertiary/10 rounded-full blur-[100px] -z-10" />
       </Page>
     </div>
   )

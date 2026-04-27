@@ -20,7 +20,7 @@ function ExpensePage() {
   const { currentMonth } = useMonth()
   const { year, month } = currentMonth
 
-  const { data: invoices = [], isLoading } = useGetInvoicesByMonth(year, month)
+  const { data: invoices = [], isLoading } = useGetInvoicesByMonth(year, month, 'expense')
   const { data: categories = [] } = useGetCategories()
   const { data: wallets = [] } = useGetWallets()
 

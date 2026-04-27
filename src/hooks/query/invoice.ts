@@ -3,14 +3,30 @@ import {
   addInvoice,
   deleteInvoice,
   getInvoicesByMonth,
+  getInvoicesByType,
   getInvoiceById,
   updateInvoice,
 } from '#/lib/storage'
+import type { Invoice } from '#/types/invoice'
 
-export const useGetInvoicesByMonth = (year: number, month: number) =>
+export const useGetInvoicesByMonth = (
+  year: number,
+  month: number,
+  type?: Invoice['type'],
+) =>
   useQuery({
-    queryKey: ['invoices', year, month],
-    queryFn: () => getInvoicesByMonth(year, month),
+    queryKey: ['invoices', year, month, type],
+    queryFn: () => getInvoicesByMonth(year, month, type),
+  })
+
+export const useGetInvoicesByType = (
+  type: Invoice['type'],
+  year?: number,
+  month?: number,
+) =>
+  useQuery({
+    queryKey: ['invoices', type, year, month],
+    queryFn: () => getInvoicesByType(type, year, month),
   })
 
 export const useGetInvoiceById = (id: string) =>

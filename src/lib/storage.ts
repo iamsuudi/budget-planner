@@ -3,6 +3,7 @@ import type { DBSchema, IDBPDatabase } from 'idb'
 import type { ExpenseCategory } from '#/types/expense'
 import type { Invoice } from '#/types/invoice'
 import type { MonthBudget } from '#/types/month'
+import type { SalaryCategory } from '#/types/salary-category'
 import type { User } from '#/types/user'
 import type { Wallet } from '#/types/wallet'
 
@@ -21,6 +22,11 @@ interface BudgetManagerDB extends DBSchema {
     value: ExpenseCategory
     indexes: { 'by-deleted': number }
   }
+  salaryCategories: {
+    key: string
+    value: SalaryCategory
+    indexes: { 'by-deleted': number }
+  }
   invoices: {
     key: string
     value: Invoice
@@ -37,7 +43,7 @@ let dbPromise: Promise<IDBPDatabase<BudgetManagerDB>> | null = null
 
 function getDB() {
   if (!dbPromise) {
-    dbPromise = openDB<BudgetManagerDB>('budget-manager', 3, {
+    dbPromise = openDB<BudgetManagerDB>('budget-manager', 5, {
       upgrade(db, oldVersion, newVersion, transaction) {
         if (oldVersion < 1) {
           const categoryStore = db.createObjectStore('expenseCategories', {
@@ -70,6 +76,12 @@ function getDB() {
             }
           } catch {
             // Ignore if method doesn't exist in older IDB versions
+          }
+        }
+        if (oldVersion < 5) {
+          // Create salaryCategories store if it doesn't exist
+          if (!db.objectStoreNames.contains('salaryCategories')) {
+            db.createObjectStore('salaryCategories', { keyPath: 'id' }).createIndex('by-deleted', 'deletedAt')
           }
         }
       },
@@ -129,16 +141,67 @@ export async function deleteCategory(id: string): Promise<void> {
   }
 }
 
+export async function getAllSalaryCategories(): Promise<SalaryCategory[]> {
+  const db = await getDB()
+  const all = await db.getAll('salaryCategories')
+  return all
+    .filter((c) => !c.deletedAt)
+    .sort((a, b) => a.createdAt - b.createdAt)
+}
+
+export async function getSalaryCategoryById(
+  id: string,
+): Promise<SalaryCategory | undefined> {
+  const db = await getDB()
+  return db.get('salaryCategories', id)
+}
+
+export async function addSalaryCategory(
+  category: Omit<SalaryCategory, 'id' | 'createdAt'>,
+): Promise<SalaryCategory> {
+  const db = await getDB()
+  const newCategory: SalaryCategory = {
+    ...category,
+    id: await generateId(),
+    createdAt: Date.now(),
+  }
+  await db.put('salaryCategories', newCategory)
+  return newCategory
+}
+
+export async function updateSalaryCategory(
+  id: string,
+  updates: Partial<Omit<SalaryCategory, 'id' | 'createdAt'>>,
+): Promise<void> {
+  const db = await getDB()
+  const existing = await db.get('salaryCategories', id)
+  if (existing) {
+    await db.put('salaryCategories', { ...existing, ...updates })
+  }
+}
+
+export async function deleteSalaryCategory(id: string): Promise<void> {
+  const db = await getDB()
+  const existing = await db.get('salaryCategories', id)
+  if (existing) {
+    await db.put('salaryCategories', { ...existing, deletedAt: Date.now() })
+  }
+}
+
 export async function getInvoicesByMonth(
   year: number,
   month: number,
+  type?: Invoice['type'],
 ): Promise<Invoice[]> {
   const db = await getDB()
-  const all = await db.getAll('invoices')
+  let all = await db.getAll('invoices')
   return all
     .filter((inv) => {
       const date = new Date(inv.date)
-      return date.getFullYear() === year && date.getMonth() + 1 === month
+      const matchesDate = date.getFullYear() === year && date.getMonth() + 1 === month
+      const invoiceType = inv.type || 'expense'
+      const matchesType = type ? invoiceType === type : true
+      return matchesDate && matchesType
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
@@ -146,6 +209,26 @@ export async function getInvoicesByMonth(
 export async function getInvoiceById(id: string): Promise<Invoice | undefined> {
   const db = await getDB()
   return db.get('invoices', id)
+}
+
+export async function getInvoicesByType(
+  type: Invoice['type'],
+  year?: number,
+  month?: number,
+): Promise<Invoice[]> {
+  const db = await getDB()
+  let all = await db.getAll('invoices')
+  all = all.filter((inv) => {
+    const invoiceType = inv.type || 'expense'
+    return invoiceType === type
+  })
+  if (year && month) {
+    all = all.filter((inv) => {
+      const date = new Date(inv.date)
+      return date.getFullYear() === year && date.getMonth() + 1 === month
+    })
+  }
+  return all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
 
 export async function addInvoice(

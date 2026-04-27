@@ -1,5 +1,6 @@
 export * from './expense'
 export * from './invoice'
 export * from './month'
+export * from './salary-category'
 export * from './user'
 export * from './wallet'

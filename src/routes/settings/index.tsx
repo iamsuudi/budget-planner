@@ -136,6 +136,25 @@ function SettingsPage() {
                 <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
               </Link>
               <Link
+                to="/salary/categories"
+                className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+                    <FolderOpen className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Salary Categories
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      Manage income categories
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+              </Link>
+              <Link
                 to="/settings/currency"
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
               >

@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import {
-  useGetCategories,
-  useGetInvoicesByMonth,
+  useGetSalaryCategories,
+  useGetInvoicesByType,
   useGetWallets,
 } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
@@ -13,17 +13,21 @@ import { TopAppBar } from '#/components/TopAppBar'
 import { CalendarNav } from '#/components/CalendarNav'
 import { Icon } from '#/components/Icon'
 
-export const Route = createFileRoute('/transactions/')({
-  component: TransactionsPage,
+export const Route = createFileRoute('/salary/transactions/')({
+  component: SalaryTransactionsPage,
 })
 
-function TransactionsPage() {
+function SalaryTransactionsPage() {
   const { currentMonth } = useMonth()
   const { formatAmount } = useCurrency()
   const { year, month } = currentMonth
 
-  const { data: invoices = [], isLoading } = useGetInvoicesByMonth(year, month)
-  const { data: categories = [] } = useGetCategories()
+  const { data: invoices = [], isLoading } = useGetInvoicesByType(
+    'salary',
+    year,
+    month,
+  )
+  const { data: categories = [] } = useGetSalaryCategories()
   const { data: wallets = [] } = useGetWallets()
 
   const categoryMap = useMemo(() => {
@@ -62,30 +66,30 @@ function TransactionsPage() {
     )
   }, [invoices])
 
-  const totalExpenses = useMemo(() => {
+  const totalSalary = useMemo(() => {
     return invoices.reduce((sum, inv) => sum + inv.amount, 0)
   }, [invoices])
 
   return (
     <div className="">
-      <TopAppBar showBack backTo="/" />
+      <TopAppBar showBack backTo="/salary" />
 
       <Page className="space-y-4">
         <CalendarNav locked />
 
         <div className="flex items-center justify-between">
           <p className="text-sm text-on-surface-variant">
-            {invoices.length} transaction{invoices.length !== 1 ? 's' : ''}
+            {invoices.length} income{invoices.length !== 1 ? 's' : ''}
           </p>
           <p className="text-sm font-semibold text-on-surface">
-            Total: {formatAmount(totalExpenses)}
+            Total: {formatAmount(totalSalary)}
           </p>
         </div>
 
         {isLoading ? (
           <p className="text-slate-500">Loading...</p>
         ) : invoices.length === 0 ? (
-          <p className="text-slate-500 text-sm">No transactions this month.</p>
+          <p className="text-slate-500 text-sm">No income this month.</p>
         ) : (
           <div className="space-y-6">
             {groupedInvoices.map(([dateLabel, dateInvoices]) => (
@@ -96,12 +100,10 @@ function TransactionsPage() {
                 <div className="space-y-2">
                   {dateInvoices.map((inv) => {
                     const category = categoryMap[inv.categoryId]
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    const wallet = category?.walletId
+                    const wallet = category.walletId
                       ? walletMap[category.walletId]
                       : null
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    const style = getIconStyle(category?.icon || 'receipt')
+                    const style = getIconStyle(category.icon || 'briefcase')
                     return (
                       <div
                         key={inv.id}
@@ -111,23 +113,24 @@ function TransactionsPage() {
                           <div
                             className={`w-10 h-10 rounded-full ${style.bg} flex items-center justify-center ${style.color}`}
                           >
-                            <Icon name={category.icon || 'receipt'} size={20} />
+                            <Icon
+                              name={category.icon || 'briefcase'}
+                              size={20}
+                            />
                           </div>
                           <div>
                             <p className="text-sm font-semibold text-on-surface">
-                              {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
-                              {inv.note || category?.name || inv.categoryName}
+                              {inv.note || category.name || inv.categoryName}
                             </p>
                             <p className="text-[10px] text-on-surface-variant opacity-60">
-                              {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
-                              {category?.name || inv.categoryName}
+                              {category.name || inv.categoryName}
                               {wallet && ` • ${wallet.name}`}
                             </p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-semibold text-on-surface">
-                            {formatAmount(inv.amount)}
+                          <p className="text-sm font-semibold text-tertiary">
+                            +{formatAmount(inv.amount)}
                           </p>
                           <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">
                             {new Date(inv.date).toLocaleTimeString('en-US', {

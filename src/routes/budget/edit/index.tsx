@@ -27,7 +27,7 @@ function SetBudgetPage() {
 
   const { data: categories = [] } = useGetCategories()
   const { data: monthBudget } = useGetMonthBudget(year, month)
-  const { data: invoices = [] } = useGetInvoicesByMonth(year, month)
+  const { data: invoices = [] } = useGetInvoicesByMonth(year, month, 'expense')
   const setMonthBudget = useSetMonthBudget()
 
   const [totalBudgetInput, setTotalBudgetInput] = useState(
