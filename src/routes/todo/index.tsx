@@ -96,7 +96,11 @@ function TodoIndex() {
     <div className="">
       <TopAppBar showProfile />
 
-      <Page className="space-y-4 pb-48">
+      <Page
+        className="pb-48"
+        title="Todo"
+        description="Set and track your todo tasks for the current month."
+      >
         <CalendarNav />
 
         <DaySelector />
@@ -151,7 +155,7 @@ function TodoIndex() {
                     </span>
                     <button
                       onClick={() => deleteTask(task.id)}
-                      className="p-1 hover:bg-error-container rounded flex-shrink-0"
+                      className="rounded-full cursor-pointer p-1 hover:bg-error-container shrink-0"
                     >
                       <Icon name="close" size={16} />
                     </button>

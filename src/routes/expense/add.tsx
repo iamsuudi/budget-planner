@@ -6,7 +6,11 @@ import {
   useGetInvoicesByMonth,
   useGetWallets,
 } from '#/hooks/query'
-import { getCurrencyCode, formatCurrency, getActiveCurrency } from '#/lib/currency'
+import {
+  getCurrencyCode,
+  formatCurrency,
+  getActiveCurrency,
+} from '#/lib/currency'
 import { useMonth } from '#/lib/month-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
@@ -37,9 +41,7 @@ function AddExpensePage() {
 
   const isLoading = isLoadingCategories || isLoadingWallets
 
-  const selectedCategory = categories.find(
-    (c) => c.id === selectedCategoryId,
-  )
+  const selectedCategory = categories.find((c) => c.id === selectedCategoryId)
   const selectedWallet = selectedCategory
     ? wallets.find((w) => w.id === selectedCategory.walletId)
     : null
@@ -85,16 +87,19 @@ function AddExpensePage() {
   if (categories.length === 0 || wallets.length === 0) {
     return (
       <div className="">
-        <TopAppBar title="Add Expense" showBack backTo="/" />
+        <TopAppBar showBack backTo="/expense" />
 
-        <Page className="space-y-6">
+        <Page
+          title="Add Expense"
+          description="Add a new expense to your budget."
+        >
           {categories.length === 0 && (
             <div className="glass-panel rounded-xl p-6 mb-4">
               <p className="text-slate-400 mb-4">
                 You need to create at least one expense category first.
               </p>
               <Link
-                to="/settings/expense-category/add"
+                to="/expense/categories/add"
                 className="text-secondary hover:underline"
               >
                 Create Category
@@ -130,11 +135,11 @@ function AddExpensePage() {
         <Page className="space-y-6">
           <div className="glass-panel rounded-xl p-6 mb-4">
             <p className="text-slate-400 mb-4">
-              Some categories don't have a wallet assigned yet. Please assign a wallet
-              to all categories first.
+              Some categories don't have a wallet assigned yet. Please assign a
+              wallet to all categories first.
             </p>
             <Link
-              to="/settings/expense-category"
+              to="/expense/categories"
               className="text-secondary hover:underline"
             >
               Manage Categories

@@ -54,22 +54,13 @@ function PinPage() {
   if (step === 'choice') {
     return (
       <div className="">
-        <TopAppBar title="Security PIN" showBack backTo="/settings" />
+        <TopAppBar showBack backTo="/settings" />
 
-        <Page className="space-y-2">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-              <Lock className="w-6 h-6 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">Security PIN</h1>
-              <p className="text-slate-400 text-sm">
-                {pinEnabled ? 'PIN is enabled' : 'No PIN set'}
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-3">
+        <Page
+          title="Security PIN"
+          description={'Set up, edit or delete your PIN security.'}
+        >
+          <div className="space-y-4">
             <button
               onClick={() => handleChoice('change')}
               className="w-full p-4 bg-slate-800 rounded-xl text-white flex items-center justify-between"

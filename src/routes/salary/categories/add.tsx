@@ -29,7 +29,7 @@ function AddSalaryCategoryPage() {
       {
         onSuccess: () => {
           showToast('Category added successfully')
-          navigate({ to: '/settings/salary-category' })
+          navigate({ to: '/salary/categories' })
         },
         onError: () => {
           console.error(createCategory.error)
@@ -42,14 +42,17 @@ function AddSalaryCategoryPage() {
   const isValid = name.trim() && selectedWalletId
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
+    <div className="">
       <TopAppBar
         title="Add Salary Category"
         showBack
-        backTo="/settings/salary-category"
+        backTo="/salary/categories"
       />
 
-      <Page>
+      <Page
+        title="Add Category"
+        description="Create source of your salary/income"
+      >
         {isLoadingWallets ? (
           <p className="text-slate-500">Loading...</p>
         ) : wallets.length === 0 ? (
@@ -74,7 +77,7 @@ function AddSalaryCategoryPage() {
                   </label>
                   <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2">
                     <input
-                      className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
+                      className="bg-transparent border-none focus:ring-0 focus:outline-0 w-full text-white placeholder-slate-600 text-base"
                       placeholder="e.g., Monthly Salary"
                       type="text"
                       value={name}
@@ -142,7 +145,7 @@ function AddSalaryCategoryPage() {
               >
                 {createCategory.isPending ? 'Saving...' : 'Save Changes'}
               </button>
-              <CancelButton to="/settings/salary-category" />
+              <CancelButton to="/salary/categories" />
             </div>
 
             <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />

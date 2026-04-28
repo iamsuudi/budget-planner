@@ -89,7 +89,7 @@ function SettingsPage() {
     <div className="">
       <TopAppBar showProfile />
 
-      <Page>
+      <Page title="Settings" description="Manage settings of your app here.">
         <div className="flex flex-col gap-6">
           <section>
             <h3 className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">

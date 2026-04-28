@@ -6,7 +6,6 @@ import {
   useGetWallets,
 } from '#/hooks/query'
 import { getActiveCurrency } from '#/lib/currency'
-import { useMonth } from '#/lib/month-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
@@ -19,7 +18,6 @@ export const Route = createFileRoute('/salary/add')({
 function AddSalaryPage() {
   const navigate = useNavigate()
   const [currencyCC, setCurrencyCC] = useState('USD')
-  const { currentMonth } = useMonth()
   const { data: categories = [], isLoading: isLoadingCategories } =
     useGetSalaryCategories()
   const { data: wallets = [] } = useGetWallets()
@@ -76,7 +74,7 @@ function AddSalaryPage() {
       <div className="">
         <TopAppBar title="Add Salary" showBack backTo="/salary" />
 
-        <Page className="space-y-6">
+        <Page title="Add Salary" description="Add a new salary invoice.">
           <div className="glass-panel rounded-xl p-6 mb-4">
             <p className="text-slate-400 mb-4">
               You need to create at least one salary category first.
@@ -95,9 +93,9 @@ function AddSalaryPage() {
 
   return (
     <div className="">
-      <TopAppBar title="Add Salary" showBack backTo="/salary" />
+      <TopAppBar showBack backTo="/salary" />
 
-      <Page className="space-y-6">
+      <Page title="Add Salary" description="Add a new salary invoice.">
         <div className="glass-panel rounded-xl p-4 space-y-4">
           <section className="space-y-2">
             <div className="space-y-2">

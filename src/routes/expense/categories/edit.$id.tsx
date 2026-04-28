@@ -67,13 +67,9 @@ function EditCategoryPage() {
 
   if (!category) {
     return (
-      <div className="min-h-screen bg-background text-on-surface">
-        <TopAppBar
-          title="Edit Category"
-          showBack
-          backTo="/expense/categories"
-        />
-        <Page>
+      <div className="">
+        <TopAppBar showBack backTo="/expense/categories" />
+        <Page title="Edit Category" description="Edit your expense category.">
           <p className="text-slate-500">Category not found.</p>
           <Link
             to="/expense/categories"
@@ -87,10 +83,10 @@ function EditCategoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar title="Edit Category" showBack backTo="/expense/categories" />
+    <div className="">
+      <TopAppBar showBack backTo="/expense/categories" />
 
-      <Page>
+      <Page title="Edit Category" description="Edit your expense category.">
         <div className="glass-panel rounded-xl p-4 space-y-4">
           <section className="space-y-2">
             <div className="space-y-2">

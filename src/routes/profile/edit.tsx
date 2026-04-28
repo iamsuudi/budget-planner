@@ -9,9 +9,6 @@ export const Route = createFileRoute('/profile/edit')({
   component: ProfileEditPage,
 })
 
-const defaultAvatar =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23d0bcff' width='100' height='100'/%3E%3Ctext x='50' y='55' dominant-baseline='middle' text-anchor='middle' fill='%230b1326' font-size='40' font-family='sans-serif'%3E%3F%3C/text%3E%3C/svg%3E"
-
 function ProfileEditPage() {
   const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -82,10 +79,13 @@ function ProfileEditPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar title="Profile" showBack backTo={'/profile'} />
+    <div className="">
+      <TopAppBar showBack backTo={'/profile'} />
 
-      <Page className="">
+      <Page
+        title="Edit Profile"
+        description="Update your information and profile picture."
+      >
         <section className="flex flex-col gap-4">
           <div className="flex flex-col items-center">
             <div className="relative group mb-3">
@@ -93,7 +93,7 @@ function ProfileEditPage() {
                 <div className="w-full h-full rounded-full overflow-hidden border-2 border-surface">
                   <img
                     className="w-full h-full object-cover"
-                    src={profilePicture || defaultAvatar}
+                    src={profilePicture}
                   />
                 </div>
               </div>

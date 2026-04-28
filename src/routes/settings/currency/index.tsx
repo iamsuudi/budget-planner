@@ -1,7 +1,11 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { CheckCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { CURRENCIES, setActiveCurrency, getActiveCurrency } from '#/lib/currency'
+import {
+  CURRENCIES,
+  setActiveCurrency,
+  getActiveCurrency,
+} from '#/lib/currency'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 
@@ -10,7 +14,7 @@ export const Route = createFileRoute('/settings/currency/')({
 })
 
 function CurrencyPage() {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const [currentCC, setCurrentCC] = useState('USD')
   const [search, setSearch] = useState('')
 
@@ -26,15 +30,15 @@ function CurrencyPage() {
 
   const handleSelect = async (code: string) => {
     await setActiveCurrency(code)
-    navigate({ to: '/settings' })
+    // navigate({ to: '/settings' })
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar title="Select Currency" showBack backTo={'/settings'} />
+    <div className="">
+      <TopAppBar showBack backTo={'/settings'} />
 
-      <Page className="">
-        <div className="mb-3">
+      <Page title="Currency" description="Manage your default currency">
+        <div>
           <input
             type="text"
             value={search}
@@ -49,7 +53,7 @@ function CurrencyPage() {
             <button
               key={c.cc}
               onClick={() => handleSelect(c.cc)}
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors text-left"
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors text-left cursor-pointer active:scale-95"
             >
               <div className="flex items-center gap-3">
                 <span className="text-lg font-semibold text-violet-400 w-12">

@@ -41,15 +41,19 @@ function EditSalaryCategoryPage() {
     updateCategory.mutate(
       {
         id,
-        updates: { name: name.trim(), icon: selectedIcon, walletId: selectedWalletId },
+        updates: {
+          name: name.trim(),
+          icon: selectedIcon,
+          walletId: selectedWalletId,
+        },
       },
-      { onSuccess: () => navigate({ to: '/settings/salary-category' }) },
+      { onSuccess: () => navigate({ to: '/salary/categories' }) },
     )
   }
 
   const handleDelete = () => {
     deleteCategory.mutate(id, {
-      onSuccess: () => navigate({ to: '/settings/salary-category' }),
+      onSuccess: () => navigate({ to: '/salary/categories' }),
     })
   }
 
@@ -63,16 +67,12 @@ function EditSalaryCategoryPage() {
 
   if (!category) {
     return (
-      <div className="min-h-screen bg-background text-on-surface">
-        <TopAppBar
-          title="Edit Category"
-          showBack
-          backTo="/settings/salary-category"
-        />
-        <Page>
+      <div className="">
+        <TopAppBar showBack backTo="/salary/categories" />
+        <Page title="Edit Category">
           <p className="text-slate-500">Category not found.</p>
           <Link
-            to="/settings/salary-category"
+            to="/salary/categories"
             className="text-secondary hover:underline mt-4 block text-sm"
           >
             Back to Categories
@@ -83,21 +83,20 @@ function EditSalaryCategoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar
-        title="Edit Salary Category"
-        showBack
-        backTo="/settings/salary-category"
-      />
+    <div className="">
+      <TopAppBar showBack backTo="/salary/categories" />
 
-      <Page>
+      <Page
+        title="Edit Category"
+        description="Update your salary category details"
+      >
         <div className="glass-panel rounded-xl p-4 space-y-4">
           <section className="space-y-2">
             <div className="space-y-2">
               <label className="text-sm text-violet-400">Category Name</label>
               <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2">
                 <input
-                  className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
+                  className="bg-transparent border-none focus:ring-0 focus:outline-0 w-full text-white placeholder-slate-600 text-base"
                   placeholder="e.g., Monthly Salary"
                   type="text"
                   value={name}
@@ -160,12 +159,14 @@ function EditSalaryCategoryPage() {
         <div className="mt-6 flex flex-col gap-3">
           <button
             onClick={handleSave}
-            disabled={!name.trim() || !selectedWalletId || updateCategory.isPending}
+            disabled={
+              !name.trim() || !selectedWalletId || updateCategory.isPending
+            }
             className="py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {updateCategory.isPending ? 'Saving...' : 'Save Changes'}
           </button>
-          <CancelButton to="/settings/salary-category" />
+          <CancelButton to="/salary/categories" />
           <button
             onClick={handleDelete}
             disabled={deleteCategory.isPending}

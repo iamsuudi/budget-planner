@@ -73,7 +73,7 @@ function SalaryTransactionsPage() {
     <div className="">
       <TopAppBar showBack backTo="/salary" />
 
-      <Page className="space-y-4">
+      <Page title="Transactions" description="View your salary transactions.">
         <CalendarNav locked />
 
         <div className="flex items-center justify-between">

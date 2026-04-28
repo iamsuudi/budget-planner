@@ -21,10 +21,10 @@ function WalletsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar title="My Wallets" showBack backTo={'/settings'} />
+    <div className="">
+      <TopAppBar showBack backTo={'/settings'} />
 
-      <Page className="min-h-screen">
+      <Page title="My Wallets" description="Manage your wallets here.">
         <section className="flex flex-col gap-3">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-widest">

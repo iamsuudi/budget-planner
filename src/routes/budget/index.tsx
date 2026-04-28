@@ -68,7 +68,10 @@ function BudgetPage() {
     <div className="">
       <TopAppBar showProfile />
 
-      <Page className="space-y-6">
+      <Page
+        title="Budget"
+        description="Set and track your budget for the current month."
+      >
         <CalendarNav />
 
         <GlassCard className="p-5 relative overflow-hidden">

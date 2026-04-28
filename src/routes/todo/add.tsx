@@ -49,9 +49,7 @@ function TodoAdd() {
     <div className="space-y-4 pb-20">
       <TopAppBar showBack backTo="/todo" />
 
-      <Page className="space-y-6">
-        <h2 className="text-lg font-bold text-on-surface">Add Task</h2>
-
+      <Page title="Add Task" description="Add a new task to your todo list.">
         <GlassCard className="p-4 space-y-4">
           <div>
             <p className="text-sm text-outline mb-1">Date</p>

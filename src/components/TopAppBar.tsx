@@ -68,9 +68,9 @@ export function TopAppBar({
             />
           ) : (
             <div className="flex items-center gap-2">
-              {/* <img src="/pwa-64x64.png" className="size-10 rounded-full" />*/}
-              <p className={`text-2xl font-bold text-primary tracking-tighter`}>
-                {path}
+              <Wallet className="size-5 text-primary" />
+              <p className={`text-xl font-bold text-primary tracking-tighter`}>
+                Budget Planner
               </p>
             </div>
           )}

@@ -24,10 +24,13 @@ function AddWalletPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar title="Add Wallet" showBack backTo={'/settings/wallets'} />
+    <div className="">
+      <TopAppBar showBack backTo={'/settings/wallets'} />
 
-      <Page className="min-h-screen">
+      <Page
+        title="Add Wallet"
+        description="Create a new wallet by entering its name and account number."
+      >
         <section className="flex flex-col gap-4">
           <div className="space-y-3">
             <div>

@@ -50,8 +50,8 @@ function EditWalletPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-        <TopAppBar title="Edit Wallet" showBack backTo={'/settingswallets'} />
-        <Page>
+        <TopAppBar showBack backTo={'/settings/wallets'} />
+        <Page title="Edit Wallet" description="Edit your wallet details here.">
           <p className="text-slate-400">Loading...</p>
         </Page>
       </div>
@@ -59,10 +59,10 @@ function EditWalletPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-dim text-on-background antialiased">
-      <TopAppBar title="Edit Wallet" showBack backTo={'/settings/wallets'} />
+    <div className="">
+      <TopAppBar showBack backTo={'/settings/wallets'} />
 
-      <Page className="min-h-screen">
+      <Page title="Edit Wallet" description="Edit your wallet details here.">
         <section className="flex flex-col gap-4">
           <div className="space-y-3">
             <div>

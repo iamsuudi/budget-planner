@@ -80,9 +80,12 @@ function SetBudgetPage() {
 
   return (
     <div className="">
-      <TopAppBar title="Set Budget" showBack backTo="/budget" />
+      <TopAppBar showBack backTo="/budget" />
 
-      <Page className="space-y-6">
+      <Page
+        title="Set Budget"
+        description="Set your budget for the current month."
+      >
         <CalendarNav locked />
 
         <div className="glass-panel rounded-xl p-4 space-y-4">
@@ -177,15 +180,15 @@ function SetBudgetPage() {
           )}
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex gap-3">
+          <CancelButton to="/budget" />
           <button
             onClick={handleSave}
             disabled={setMonthBudget.isPending}
-            className="py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-98 transition-transform disabled:opacity-50"
+            className="w-full cursor-pointer py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-98 transition-transform disabled:opacity-50"
           >
             {setMonthBudget.isPending ? 'Saving...' : 'Save Budget'}
           </button>
-          <CancelButton to="/budget" />
         </div>
 
         <div className="fixed -bottom-32 -left-32 w-64 h-64 bg-violet-600/10 rounded-full blur-[100px] -z-10" />

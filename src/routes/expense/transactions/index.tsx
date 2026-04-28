@@ -69,7 +69,10 @@ function TransactionsPage() {
     <div className="">
       <TopAppBar showBack backTo="/expense" />
 
-      <Page className="space-y-4">
+      <Page
+        title="Transactions"
+        description="View all your expense transactions."
+      >
         <CalendarNav locked />
 
         <div className="flex items-center justify-between">

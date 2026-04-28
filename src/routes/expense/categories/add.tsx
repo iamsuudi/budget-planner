@@ -32,9 +32,9 @@ function AddCategoryPage() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar title="Add Category" showBack backTo="/expense/categories" />
+      <TopAppBar showBack backTo="/expense/categories" />
 
-      <Page>
+      <Page title="Add Category" description="Create a new expense category.">
         {isLoadingWallets ? (
           <p className="text-slate-500">Loading...</p>
         ) : wallets.length === 0 ? (

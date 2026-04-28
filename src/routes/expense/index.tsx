@@ -58,7 +58,7 @@ function ExpensePage() {
     <div className="">
       <TopAppBar showProfile />
 
-      <Page className="space-y-6">
+      <Page title="Expense" description="View and manage your expenses.">
         <CalendarNav />
 
         <GlassCard className="p-6 relative overflow-hidden">
@@ -73,20 +73,20 @@ function ExpensePage() {
           </div>
         </GlassCard>
 
-        <div className="flex gap-3">
+        <div className="flex items-center justify-start gap-3">
           <Link
             to="/expense/categories"
-            className="flex-1 border border-tertiary text-tertiary rounded-xl py-3 px-5 flex gap-2 items-center justify-center hover:bg-tertiary/10 active:scale-98 transition-all"
+            className="w-fit border border-tertiary text-tertiary rounded-lg py-2 px-4 flex gap-2 items-center justify-center hover:bg-tertiary/10 active:scale-98 transition-all"
           >
             <FolderPlus className="w-5 h-5" />
             <span className="font-bold text-on-surface">Categories</span>
           </Link>
           <Link
             to="/expense/add"
-            className="flex-1 border border-primary text-primary rounded-xl py-3 px-5 flex gap-2 items-center justify-center hover:bg-primary/10 active:scale-98 transition-all"
+            className="w-fit border border-primary text-primary rounded-lg py-2 px-4 flex gap-2 items-center justify-center hover:bg-primary/10 active:scale-98 transition-all"
           >
             <PlusCircle className="w-5 h-5" />
-            <span className="font-bold text-on-surface">Add Expense</span>
+            <span className="font-bold text-on-surface">Expense</span>
           </Link>
         </div>
 

@@ -83,9 +83,12 @@ function SalaryPage() {
   if (categories.length === 0 || wallets.length === 0) {
     return (
       <div className="">
-        <TopAppBar title="Salary" showBack backTo="/" />
+        <TopAppBar />
 
-        <Page className="space-y-6">
+        <Page
+          title="Salary"
+          description="Manage your salary categories and invoices."
+        >
           {categories.length === 0 && (
             <div className="glass-panel rounded-xl p-6 mb-4">
               <p className="text-slate-400 mb-4">

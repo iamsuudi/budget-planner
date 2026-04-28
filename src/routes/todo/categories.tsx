@@ -57,9 +57,10 @@ function TodoCategories() {
     <div className="space-y-4 pb-20">
       <TopAppBar showBack backTo="/todo" />
 
-      <Page className="space-y-6">
-        <h2 className="text-lg font-bold text-on-surface">Categories</h2>
-
+      <Page
+        title="Categories"
+        description="Set and manage your todo categories."
+      >
         <GlassCard className="p-4">
           <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
             <input
