@@ -1,12 +1,19 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { Receipt, Wallet, Settings, BarChart3, CheckSquare } from 'lucide-react'
+import {
+  Receipt,
+  Wallet,
+  BarChart3,
+  CheckSquare,
+  FileText,
+  AlarmCheck,
+} from 'lucide-react'
 
 const navItems = [
   { icon: Receipt, label: 'Expense', to: '/expense' },
   { icon: BarChart3, label: 'Budget', to: '/budget' },
   { icon: Wallet, label: 'Salary', to: '/salary' },
-  { icon: CheckSquare, label: 'Todo', to: '/todo' },
-  { icon: Settings, label: 'Settings', to: '/settings' },
+  { icon: AlarmCheck, label: 'Todo', to: '/todo' },
+  { icon: FileText, label: 'Notes', to: '/note' },
 ]
 
 export function BottomNavBar() {

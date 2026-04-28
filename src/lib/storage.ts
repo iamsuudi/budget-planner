@@ -7,6 +7,7 @@ import type { SalaryCategory } from '#/types/salary-category'
 import type { User } from '#/types/user'
 import type { Wallet } from '#/types/wallet'
 import type { TodoCategory, TodoTask } from '#/types/todo'
+import type { Note } from '#/types/note'
 
 interface BudgetManagerDB extends DBSchema {
   user: {
@@ -48,13 +49,18 @@ interface BudgetManagerDB extends DBSchema {
     value: TodoTask
     indexes: { 'by-category': string; 'by-date': string }
   }
+  notes: {
+    key: string
+    value: Note
+    indexes: { 'by-deleted': number }
+  }
 }
 
 let dbPromise: Promise<IDBPDatabase<BudgetManagerDB>> | null = null
 
 function getDB() {
   if (!dbPromise) {
-    dbPromise = openDB<BudgetManagerDB>('budget-manager', 6, {
+    dbPromise = openDB<BudgetManagerDB>('budget-manager', 7, {
       upgrade(db, oldVersion, newVersion, transaction) {
         if (oldVersion < 1) {
           const categoryStore = db.createObjectStore('expenseCategories', {
@@ -109,6 +115,13 @@ function getDB() {
             })
             taskStore.createIndex('by-category', 'categoryId')
             taskStore.createIndex('by-date', 'date')
+          }
+        }
+        if (oldVersion < 7) {
+          if (!db.objectStoreNames.contains('notes')) {
+            db.createObjectStore('notes', {
+              keyPath: 'id',
+            }).createIndex('by-deleted', 'deletedAt')
           }
         }
       },
@@ -533,4 +546,51 @@ export async function reorderTodoTasks(
       await db.put('todoTasks', { ...existing, priority: update.priority, updatedAt: Date.now() })
     }
   }
+}
+
+// Notes
+export async function getAllNotes(): Promise<Note[]> {
+  const db = await getDB()
+  const all = await db.getAll('notes')
+  return all
+    .filter((n) => !n.deletedAt)
+    .sort((a, b) => b.updatedAt - a.updatedAt)
+}
+
+export async function getNoteById(id: string): Promise<Note | undefined> {
+  const db = await getDB()
+  return db.get('notes', id)
+}
+
+export async function addNote(
+  title: string,
+  content: string,
+): Promise<Note> {
+  const db = await getDB()
+  const now = Date.now()
+  const newNote: Note = {
+    id: await generateId(),
+    title,
+    content,
+    createdAt: now,
+    updatedAt: now,
+  }
+  await db.put('notes', newNote)
+  return newNote
+}
+
+export async function updateNote(
+  id: string,
+  updates: Partial<Omit<Note, 'id' | 'createdAt'>>,
+): Promise<void> {
+  const db = await getDB()
+  const existing = await db.get('notes', id)
+  if (existing) {
+    await db.put('notes', { ...existing, ...updates, updatedAt: Date.now() })
+  }
+}
+
+export async function deleteNote(id: string): Promise<void> {
+  const db = await getDB()
+  await db.delete('notes', id)
 }
