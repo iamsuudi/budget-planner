@@ -95,11 +95,21 @@ export function MonthProvider({ children }: { children: ReactNode }) {
 
   const setSelectedDate = (date: string) => {
     const d = new Date(date + 'T00:00:00')
-    setCurrentMonthState((prev) => ({
-      ...prev,
-      selectedDate: date,
-      selectedDay: d.getDate(),
-    }))
+    const newYear = d.getFullYear()
+    const newMonth = d.getMonth() + 1
+    setCurrentMonthState((prev) => {
+      const next = {
+        ...prev,
+        selectedDate: date,
+        selectedDay: d.getDate(),
+      }
+      if (prev.year !== newYear || prev.month !== newMonth) {
+        next.year = newYear
+        next.month = newMonth
+        next.monthName = MONTHS[newMonth - 1]
+      }
+      return next
+    })
   }
 
   const getDaysInMonth = () => {

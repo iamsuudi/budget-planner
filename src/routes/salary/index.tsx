@@ -8,7 +8,7 @@ import {
   useGetWallets,
 } from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
-import { getActiveCurrency } from '#/lib/currency'
+import { formatCurrency, getActiveCurrency } from '#/lib/currency'
 import { useMonth } from '#/lib/month-context'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
@@ -160,26 +160,25 @@ function SalaryPage() {
               Total Salary
             </p>
             <h1 className="text-4xl font-extrabold text-on-surface tracking-tight">
-              {currencyCC}
-              {totalSalary.toFixed(2)}
+              {formatCurrency(totalSalary)}
             </h1>
           </div>
         </GlassCard>
 
-        <div className="flex gap-3">
-          <Link
-            to="/salary/categories"
-            className="flex-1 border border-tertiary text-tertiary rounded-xl py-3 px-5 flex gap-2 items-center justify-center hover:bg-tertiary/10 active:scale-98 transition-all"
-          >
-            <FolderPlus className="w-5 h-5" />
-            <span className="font-bold text-on-surface">Categories</span>
-          </Link>
+        <div className="flex items-center justify-between gap-3">
           <Link
             to="/salary/add"
-            className="flex-1 border border-tertiary text-tertiary rounded-xl py-3 px-5 flex gap-2 items-center justify-center hover:bg-tertiary/10 active:scale-98 transition-all"
+            className="border border-tertiary rounded-lg py-2 px-4 flex gap-2 items-center justify-center bg-tertiary/10 active:scale-98 transition-all"
           >
-            <PlusCircle className="w-5 h-5" />
-            <span className="font-bold text-on-surface">Add Salary</span>
+            <PlusCircle className="w-5 h-5 text-tertiary" />
+            <span className="font-bold text-tertiary">Catagories</span>
+          </Link>
+          <Link
+            to="/salary/categories"
+            className="border border-primary-container rounded-lg py-2 px-4 flex gap-2 items-center justify-center bg-primary-container/10 active:scale-98 transition-all"
+          >
+            <FolderPlus className="w-5 h-5 text-primary-container" />
+            <span className="font-bold text-primary-container">Add Salary</span>
           </Link>
         </div>
 

@@ -154,13 +154,15 @@ function BudgetPage() {
           )}
         </GlassCard>
 
-        <Link
-          to="/budget/edit"
-          className="w-full border border-secondary text-secondary rounded-xl py-3 px-5 flex gap-2 items-center justify-center hover:bg-secondary/10 active:scale-98 transition-all"
-        >
-          <Wallet className="w-5 h-5" />
-          <span className="text-lg font-bold text-on-surface">Set Budget</span>
-        </Link>
+        <div className="flex justify-center">
+          <Link
+            to="/budget/edit"
+            className="border border-secondary text-secondary rounded-lg py-2 px-4 flex gap-2 items-center justify-center bg-secondary/10 active:scale-98 transition-all"
+          >
+            <Wallet className="w-5 h-5 text-secondary" />
+            <span className="text-lg font-bold text-secondary">Set Budget</span>
+          </Link>
+        </div>
 
         <section className="space-y-3">
           <h3 className="text-lg font-bold text-on-surface">By Category</h3>

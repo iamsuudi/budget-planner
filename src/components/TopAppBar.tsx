@@ -1,11 +1,11 @@
 import {
-  ArrowLeft,
   Wallet,
   Wifi,
   WifiOff,
   User,
   Settings,
   LogOut,
+  ChevronLeft,
 } from 'lucide-react'
 import { getUser } from '#/lib/storage'
 import type { User as UserType } from '#/types'
@@ -15,14 +15,12 @@ import { useOnlineStatus } from '#/hooks/useOneline'
 import { useSecurity } from '#/lib/security'
 
 interface TopAppBarProps {
-  title?: string
   showProfile?: boolean
   showBack?: boolean
   backTo?: string
 }
 
 export function TopAppBar({
-  title,
   showProfile = true,
   showBack = false,
   backTo = '/',
@@ -59,17 +57,19 @@ export function TopAppBar({
 
   return (
     <header className="fixed top-0 w-full z-50">
-      <div className="max-w-lg w-full bg-slate-950/80 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-6 h-16">
+      <div className="max-w-lg w-full bg-slate-950/80 backdrop-blur-md border-b border-white/10 flex justify-between items-center px-4 h-16">
         <div className="flex items-center gap-2">
           {showBack ? (
-            <ArrowLeft
-              className={`text-secondary hover:text-primary active:scale-95 hover:scale-105 size-6 cursor-pointer`}
+            <ChevronLeft
+              className={`text-on-surface active:scale-95 hover:scale-105 size-6 cursor-pointer`}
               onClick={() => router.navigate({ to: backTo })}
             />
           ) : (
             <div className="flex items-center gap-2">
-              <Wallet className="size-5 text-primary" />
-              <p className={`text-xl font-bold text-primary tracking-tighter`}>
+              <Wallet className="size-5 text-on-surface" />
+              <p
+                className={`text-lg font-bold text-on-surface tracking-tighter`}
+              >
                 Budget Planner
               </p>
             </div>
@@ -109,9 +109,9 @@ export function TopAppBar({
                         router.navigate({ to: '/profile' })
                         setShowDropdown(false)
                       }}
-                      className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm text-primary hover:bg-primary/10 rounded-md cursor-pointer"
+                      className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm hover:bg-primary/10 rounded-md cursor-pointer"
                     >
-                      <User className="w-4 h-4 text-primary" />
+                      <User className="w-4 h-4" />
                       Profile
                     </button>
                     <button
@@ -119,9 +119,9 @@ export function TopAppBar({
                         router.navigate({ to: '/settings/wallets' })
                         setShowDropdown(false)
                       }}
-                      className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm text-error hover:bg-error/10 rounded-md cursor-pointer"
+                      className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm hover:bg-error/10 rounded-md cursor-pointer"
                     >
-                      <Wallet className="w-4 h-4 text-error" />
+                      <Wallet className="w-4 h-4" />
                       Wallets
                     </button>
                     <button
@@ -129,9 +129,9 @@ export function TopAppBar({
                         router.navigate({ to: '/settings' })
                         setShowDropdown(false)
                       }}
-                      className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm text-tertiary hover:bg-tertiary/10 rounded-md cursor-pointer"
+                      className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm hover:bg-tertiary/10 rounded-md cursor-pointer"
                     >
-                      <Settings className="w-4 h-4 text-tertiary" />
+                      <Settings className="w-4 h-4" />
                       Settings
                     </button>
                     <div className="border-t border-white/10 my-1" />

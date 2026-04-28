@@ -81,9 +81,9 @@ function TodoIndex() {
   const dateLabel = new Date(selectedDate + 'T00:00:00').toLocaleDateString(
     'en-US',
     {
-      weekday: 'short',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
+      weekday: 'short',
     },
   )
 
@@ -175,13 +175,13 @@ function TodoIndex() {
         <div className="fixed bottom-24 right-4 flex flex-col gap-2">
           <Link
             to="/todo/categories"
-            className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center shadow-lg cursor-pointer"
+            className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center shadow-lg cursor-pointer"
           >
             <Icon name="category" className="text-secondary" />
           </Link>
           <Link
             to="/todo/add"
-            className="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg cursor-pointer"
+            className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg cursor-pointer"
           >
             <Icon name="add" className="text-on-primary" />
           </Link>

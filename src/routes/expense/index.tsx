@@ -73,20 +73,22 @@ function ExpensePage() {
           </div>
         </GlassCard>
 
-        <div className="flex items-center justify-start gap-3">
+        <div className="flex items-center justify-between gap-3">
           <Link
             to="/expense/categories"
-            className="w-fit border border-tertiary text-tertiary rounded-lg py-2 px-4 flex gap-2 items-center justify-center hover:bg-tertiary/10 active:scale-98 transition-all"
+            className="w-fit border border-tertiary text-tertiary-fixed rounded-lg py-2 px-4 flex gap-2 items-center justify-center bg-tertiary/10 active:scale-98 transition-all"
           >
             <FolderPlus className="w-5 h-5" />
-            <span className="font-bold text-on-surface">Categories</span>
+            <span className="font-bold text-tertiary-fixed">Categories</span>
           </Link>
           <Link
             to="/expense/add"
-            className="w-fit border border-primary text-primary rounded-lg py-2 px-4 flex gap-2 items-center justify-center hover:bg-primary/10 active:scale-98 transition-all"
+            className="w-fit border border-primary-container rounded-lg py-2 px-4 flex gap-2 items-center justify-center bg-primary-container/10 active:scale-98 transition-all"
           >
-            <PlusCircle className="w-5 h-5" />
-            <span className="font-bold text-on-surface">Expense</span>
+            <PlusCircle className="w-5 h-5 text-primary-container" />
+            <span className="font-bold text-primary-container">
+              Add Expense
+            </span>
           </Link>
         </div>
 
