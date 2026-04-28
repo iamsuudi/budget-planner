@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { NoteEditor } from '#/components/NoteEditor'
 import { getNoteById, updateNote, deleteNote } from '#/lib/storage'
 import { GlassCard } from '#/components/GlassCard'
@@ -19,6 +19,9 @@ function NoteEdit() {
   const [content, setContent] = useState('')
   const [editor, setEditor] = useState<any>(null)
   const navigate = useNavigate()
+
+  const handleEditorRef = useCallback((ed: any) => setEditor(ed), [])
+  const handleContentChange = useCallback((html: string) => setContent(html), [])
 
   useEffect(() => {
     const loadNote = async () => {
@@ -78,8 +81,8 @@ function NoteEdit() {
             <div className="border border-outline/30 rounded-lg overflow-hidden bg-surface-container">
               <NoteEditor
                 content={content}
-                onChange={(html: string) => setContent(html)}
-                editorRef={(ed) => setEditor(ed)}
+                onChange={handleContentChange}
+                editorRef={handleEditorRef}
               />
             </div>
           </div>

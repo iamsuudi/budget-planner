@@ -77,7 +77,7 @@ function NoteIndex() {
         <div className="fixed bottom-24 right-4">
           <Link
             to="/note/add"
-            className="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg cursor-pointer"
+            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg cursor-pointer"
           >
             <Icon name="add" className="text-on-primary" />
           </Link>

@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { NoteEditor } from '#/components/NoteEditor'
 import { addNote } from '#/lib/storage'
 import { GlassCard } from '#/components/GlassCard'
@@ -15,6 +15,9 @@ function NoteAdd() {
   const [content, setContent] = useState('')
   const [editor, setEditor] = useState<any>(null)
   const navigate = useNavigate()
+
+  const handleEditorRef = useCallback((ed: any) => setEditor(ed), [])
+  const handleContentChange = useCallback((html: string) => setContent(html), [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,8 +51,8 @@ function NoteAdd() {
             <div className="border border-outline/30 rounded-lg overflow-hidden bg-surface-container">
               <NoteEditor
                 content=""
-                onChange={(html: string) => setContent(html)}
-                editorRef={(ed) => setEditor(ed)}
+                onChange={handleContentChange}
+                editorRef={handleEditorRef}
               />
             </div>
           </div>

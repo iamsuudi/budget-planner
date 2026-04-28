@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import React from 'react'
+import { useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
@@ -10,7 +10,6 @@ import { TextStyle } from '@tiptap/extension-text-style'
 import { FontFamily } from '@tiptap/extension-font-family'
 import { TextAlign } from '@tiptap/extension-text-align'
 import { FontSize } from '@tiptap/extension-text-style/font-size'
-import { Icon } from '#/components/Icon'
 import {
   ClipboardIcon,
   Highlighter,
@@ -21,6 +20,7 @@ import {
   ListOrdered,
   TextAlignJustify,
 } from 'lucide-react'
+import { useToast } from '#/lib/toast'
 
 interface ButtonWrapperProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
@@ -34,18 +34,19 @@ const ButtonWrapper: React.FC<ButtonWrapperProps> = ({
   className = '',
   ...props
 }) => {
-  // Base styles
-  const baseStyles = 'p-1.5 rounded text-sm italic text-on-surface'
+  const baseStyles =
+    'p-1.5 rounded text-sm text-on-surface cursor-pointer hover:text-white hover:bg-primary/10 active:scale-95'
 
   return (
-    <ButtonWrapper
+    <button
       className={`${baseStyles} ${isActive && 'bg-primary/20 text-primary'} ${className}`}
       {...props}
     >
       {children}
-    </ButtonWrapper>
+    </button>
   )
 }
+
 interface NoteEditorProps {
   content: string
   onChange: (html: string) => void
@@ -53,6 +54,7 @@ interface NoteEditorProps {
 }
 
 export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
+  const { showToast } = useToast()
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -72,13 +74,26 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
     editorProps: {
       attributes: {
         class:
-          'prose prose-sm max-w-none p-4 min-h-[300px] focus:outline-none text-on-surface',
+          'prose prose-sm max-w-none p-4 min-h-[300px] focus:outline-none text-on-surface resize-y overflow-auto',
+        spellCheck: 'false',
       },
     },
   })
 
-  // Expose editor to parent
-  editorRef(editor)
+  useEffect(() => {
+    if (editor) {
+      editorRef(editor)
+    }
+  }, [editor, editorRef])
+
+  useEffect(() => {
+    if (editor && content) {
+      const currentContent = editor.getHTML()
+      if (currentContent !== content) {
+        editor.commands.setContent(content, false)
+      }
+    }
+  }, [content, editor])
 
   const setLink = () => {
     const previousUrl = editor?.getAttributes('link').href
@@ -106,36 +121,46 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
           'text/plain': new Blob([editor.getText()], { type: 'text/plain' }),
         }),
       ])
-      alert('Content copied to clipboard!')
+      showToast('Content copied to clipboard!', 'success')
     } catch {
       await navigator.clipboard.writeText(editor.getText())
-      alert('Text copied to clipboard!')
+      showToast('Text copied to clipboard!', 'success')
     }
   }
 
   return (
     <div>
+      <style>{`
+        .editor-selection::selection,
+        .editor-selection *::selection {
+          background-color: rgba(var(--color-primary-rgb), 0.2);
+        }
+      `}</style>
       <div className="flex flex-wrap gap-1 p-2 border-b border-outline/30 bg-surface-container-high">
         <ButtonWrapper
           onClick={() => editor?.chain().focus().toggleBold().run()}
+          className="font-bold"
           title="Bold"
         >
           B
         </ButtonWrapper>
         <ButtonWrapper
           onClick={() => editor?.chain().focus().toggleItalic().run()}
+          className="italic"
           title="Italic"
         >
           I
         </ButtonWrapper>
         <ButtonWrapper
           onClick={() => editor?.chain().focus().toggleUnderline().run()}
+          className="underline"
           title="Underline"
         >
           U
         </ButtonWrapper>
         <ButtonWrapper
           onClick={() => editor?.chain().focus().toggleStrike().run()}
+          className="line-through"
           title="Strikethrough"
         >
           S
@@ -237,40 +262,75 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
         <div className="w-px h-6 bg-outline/30 mx-1" />
 
         <ButtonWrapper
-          onClick={() => editor?.chain().focus().setColor('#ffffff').run()}
-          className="p-1.5 rounded text-xs font-bold text-white"
+          onClick={() => {
+            const currentColor = editor?.getAttributes('textStyle').color
+            if (currentColor === '#ffffff') {
+              editor?.chain().focus().unsetColor().run()
+            } else {
+              editor?.chain().focus().setColor('#ffffff').run()
+            }
+          }}
+          className="font-bold text-white"
           style={{ color: '#ffffff' }}
           title="White"
         >
           A
         </ButtonWrapper>
         <ButtonWrapper
-          onClick={() => editor?.chain().focus().setColor('#000000').run()}
-          className="p-1.5 rounded text-xs font-bold text-black"
+          onClick={() => {
+            const currentColor = editor?.getAttributes('textStyle').color
+            if (currentColor === '#000000') {
+              editor?.chain().focus().unsetColor().run()
+            } else {
+              editor?.chain().focus().setColor('#000000').run()
+            }
+          }}
+          className="font-bold text-black"
           style={{ color: '#000000' }}
           title="Black"
         >
           A
         </ButtonWrapper>
         <ButtonWrapper
-          onClick={() => editor?.chain().focus().setColor('#ff0000').run()}
-          className="p-1.5 rounded text-xs font-bold text-red-500"
+          onClick={() => {
+            const currentColor = editor?.getAttributes('textStyle').color
+            if (currentColor === '#ff0000') {
+              editor?.chain().focus().unsetColor().run()
+            } else {
+              editor?.chain().focus().setColor('#ff0000').run()
+            }
+          }}
+          className="font-bold text-red-500"
           style={{ color: '#ff0000' }}
           title="Red"
         >
           A
         </ButtonWrapper>
         <ButtonWrapper
-          onClick={() => editor?.chain().focus().setColor('#0000ff').run()}
-          className="p-1.5 rounded text-xs font-bold text-blue-500"
+          onClick={() => {
+            const currentColor = editor?.getAttributes('textStyle').color
+            if (currentColor === '#0000ff') {
+              editor?.chain().focus().unsetColor().run()
+            } else {
+              editor?.chain().focus().setColor('#0000ff').run()
+            }
+          }}
+          className="font-bold text-blue-400"
           style={{ color: '#0000ff' }}
           title="Blue"
         >
           A
         </ButtonWrapper>
         <ButtonWrapper
-          onClick={() => editor?.chain().focus().setColor('#008000').run()}
-          className="p-1.5 rounded text-xs font-bold text-green-500"
+          onClick={() => {
+            const currentColor = editor?.getAttributes('textStyle').color
+            if (currentColor === '#008000') {
+              editor?.chain().focus().unsetColor().run()
+            } else {
+              editor?.chain().focus().setColor('#008000').run()
+            }
+          }}
+          className="font-bold text-green-400"
           style={{ color: '#008000' }}
           title="Green"
         >
@@ -287,7 +347,9 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
           <ClipboardIcon className="size-4" />
         </ButtonWrapper>
       </div>
-      <EditorContent editor={editor} />
+      <div className="editor-selection">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   )
 }
