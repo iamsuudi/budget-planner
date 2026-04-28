@@ -74,7 +74,7 @@ function SetBudgetPage() {
         totalBudget: total,
         categoryBudgets: catBudgets,
       },
-      { onSuccess: () => navigate({ to: '/' }) },
+      { onSuccess: () => navigate({ to: '/budget' }) },
     )
   }
 

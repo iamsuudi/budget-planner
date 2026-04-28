@@ -103,7 +103,7 @@ function AddSalaryPage() {
               <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2 flex items-center">
                 <span className="text-slate-500 mr-2">{currencyCC}</span>
                 <input
-                  className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
+                  className="bg-transparent border-none focus:ring-0 focus:outline-0 w-full text-white placeholder-slate-600 text-base"
                   placeholder="0.00"
                   type="number"
                   step="0.01"

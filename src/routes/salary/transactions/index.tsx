@@ -1,9 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import {
   useGetSalaryCategories,
   useGetInvoicesByType,
   useGetWallets,
+  useDeleteInvoice,
 } from '#/hooks/query'
 import { useMonth } from '#/lib/month-context'
 import { formatCurrency } from '#/lib/currency'
@@ -18,6 +19,7 @@ export const Route = createFileRoute('/salary/transactions/')({
 })
 
 function SalaryTransactionsPage() {
+  const navigate = useNavigate()
   const { currentMonth } = useMonth()
   const { year, month } = currentMonth
 
@@ -28,6 +30,7 @@ function SalaryTransactionsPage() {
   )
   const { data: categories = [] } = useGetSalaryCategories()
   const { data: wallets = [] } = useGetWallets()
+  const deleteInvoice = useDeleteInvoice()
 
   const categoryMap = useMemo(() => {
     const map: Record<
@@ -127,16 +130,39 @@ function SalaryTransactionsPage() {
                             </p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-sm font-semibold text-tertiary">
-                            +{formatCurrency(inv.amount)}
-                          </p>
-                          <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">
-                            {new Date(inv.date).toLocaleTimeString('en-US', {
-                              hour: 'numeric',
-                              minute: '2-digit',
-                            })}
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() =>
+                              navigate({
+                                to: '/salary/transactions/edit/$id',
+                                params: { id: inv.id },
+                              })
+                            }
+                            className="p-1.5 rounded-lg hover:bg-white/10 text-on-surface-variant transition-colors"
+                          >
+                            <Icon name="edit" size={16} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (confirm('Delete this transaction?')) {
+                                deleteInvoice.mutate(inv.id)
+                              }
+                            }}
+                            className="p-1.5 rounded-lg hover:bg-error/20 text-error transition-colors"
+                          >
+                            <Icon name="delete" size={16} />
+                          </button>
+                          <div className="text-right">
+                            <p className="text-sm font-semibold text-tertiary">
+                              +{formatCurrency(inv.amount)}
+                            </p>
+                            <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">
+                              {new Date(inv.date).toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit',
+                              })}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     )

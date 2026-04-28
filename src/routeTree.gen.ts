@@ -37,7 +37,9 @@ import { Route as NoteViewIdRouteImport } from './routes/note/view.$id'
 import { Route as NoteEditIdRouteImport } from './routes/note/edit.$id'
 import { Route as ExpenseCategoriesAddRouteImport } from './routes/expense/categories/add'
 import { Route as SettingsWalletsEditIdRouteImport } from './routes/settings/wallets/edit.$id'
+import { Route as SalaryTransactionsEditIdRouteImport } from './routes/salary/transactions/edit.$id'
 import { Route as SalaryCategoriesEditIdRouteImport } from './routes/salary/categories/edit.$id'
+import { Route as ExpenseTransactionsEditIdRouteImport } from './routes/expense/transactions/edit.$id'
 import { Route as ExpenseCategoriesEditIdRouteImport } from './routes/expense/categories/edit.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -181,11 +183,23 @@ const SettingsWalletsEditIdRoute = SettingsWalletsEditIdRouteImport.update({
   path: '/settings/wallets/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SalaryTransactionsEditIdRoute =
+  SalaryTransactionsEditIdRouteImport.update({
+    id: '/salary/transactions/edit/$id',
+    path: '/salary/transactions/edit/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const SalaryCategoriesEditIdRoute = SalaryCategoriesEditIdRouteImport.update({
   id: '/salary/categories/edit/$id',
   path: '/salary/categories/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExpenseTransactionsEditIdRoute =
+  ExpenseTransactionsEditIdRouteImport.update({
+    id: '/expense/transactions/edit/$id',
+    path: '/expense/transactions/edit/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ExpenseCategoriesEditIdRoute = ExpenseCategoriesEditIdRouteImport.update({
   id: '/expense/categories/edit/$id',
   path: '/expense/categories/edit/$id',
@@ -221,7 +235,9 @@ export interface FileRoutesByFullPath {
   '/settings/currency/': typeof SettingsCurrencyIndexRoute
   '/settings/wallets/': typeof SettingsWalletsIndexRoute
   '/expense/categories/edit/$id': typeof ExpenseCategoriesEditIdRoute
+  '/expense/transactions/edit/$id': typeof ExpenseTransactionsEditIdRoute
   '/salary/categories/edit/$id': typeof SalaryCategoriesEditIdRoute
+  '/salary/transactions/edit/$id': typeof SalaryTransactionsEditIdRoute
   '/settings/wallets/edit/$id': typeof SettingsWalletsEditIdRoute
 }
 export interface FileRoutesByTo {
@@ -253,7 +269,9 @@ export interface FileRoutesByTo {
   '/settings/currency': typeof SettingsCurrencyIndexRoute
   '/settings/wallets': typeof SettingsWalletsIndexRoute
   '/expense/categories/edit/$id': typeof ExpenseCategoriesEditIdRoute
+  '/expense/transactions/edit/$id': typeof ExpenseTransactionsEditIdRoute
   '/salary/categories/edit/$id': typeof SalaryCategoriesEditIdRoute
+  '/salary/transactions/edit/$id': typeof SalaryTransactionsEditIdRoute
   '/settings/wallets/edit/$id': typeof SettingsWalletsEditIdRoute
 }
 export interface FileRoutesById {
@@ -286,7 +304,9 @@ export interface FileRoutesById {
   '/settings/currency/': typeof SettingsCurrencyIndexRoute
   '/settings/wallets/': typeof SettingsWalletsIndexRoute
   '/expense/categories/edit/$id': typeof ExpenseCategoriesEditIdRoute
+  '/expense/transactions/edit/$id': typeof ExpenseTransactionsEditIdRoute
   '/salary/categories/edit/$id': typeof SalaryCategoriesEditIdRoute
+  '/salary/transactions/edit/$id': typeof SalaryTransactionsEditIdRoute
   '/settings/wallets/edit/$id': typeof SettingsWalletsEditIdRoute
 }
 export interface FileRouteTypes {
@@ -320,7 +340,9 @@ export interface FileRouteTypes {
     | '/settings/currency/'
     | '/settings/wallets/'
     | '/expense/categories/edit/$id'
+    | '/expense/transactions/edit/$id'
     | '/salary/categories/edit/$id'
+    | '/salary/transactions/edit/$id'
     | '/settings/wallets/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -352,7 +374,9 @@ export interface FileRouteTypes {
     | '/settings/currency'
     | '/settings/wallets'
     | '/expense/categories/edit/$id'
+    | '/expense/transactions/edit/$id'
     | '/salary/categories/edit/$id'
+    | '/salary/transactions/edit/$id'
     | '/settings/wallets/edit/$id'
   id:
     | '__root__'
@@ -384,7 +408,9 @@ export interface FileRouteTypes {
     | '/settings/currency/'
     | '/settings/wallets/'
     | '/expense/categories/edit/$id'
+    | '/expense/transactions/edit/$id'
     | '/salary/categories/edit/$id'
+    | '/salary/transactions/edit/$id'
     | '/settings/wallets/edit/$id'
   fileRoutesById: FileRoutesById
 }
@@ -417,7 +443,9 @@ export interface RootRouteChildren {
   SettingsCurrencyIndexRoute: typeof SettingsCurrencyIndexRoute
   SettingsWalletsIndexRoute: typeof SettingsWalletsIndexRoute
   ExpenseCategoriesEditIdRoute: typeof ExpenseCategoriesEditIdRoute
+  ExpenseTransactionsEditIdRoute: typeof ExpenseTransactionsEditIdRoute
   SalaryCategoriesEditIdRoute: typeof SalaryCategoriesEditIdRoute
+  SalaryTransactionsEditIdRoute: typeof SalaryTransactionsEditIdRoute
   SettingsWalletsEditIdRoute: typeof SettingsWalletsEditIdRoute
 }
 
@@ -619,11 +647,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsWalletsEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/salary/transactions/edit/$id': {
+      id: '/salary/transactions/edit/$id'
+      path: '/salary/transactions/edit/$id'
+      fullPath: '/salary/transactions/edit/$id'
+      preLoaderRoute: typeof SalaryTransactionsEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/salary/categories/edit/$id': {
       id: '/salary/categories/edit/$id'
       path: '/salary/categories/edit/$id'
       fullPath: '/salary/categories/edit/$id'
       preLoaderRoute: typeof SalaryCategoriesEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expense/transactions/edit/$id': {
+      id: '/expense/transactions/edit/$id'
+      path: '/expense/transactions/edit/$id'
+      fullPath: '/expense/transactions/edit/$id'
+      preLoaderRoute: typeof ExpenseTransactionsEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/expense/categories/edit/$id': {
@@ -665,7 +707,9 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsCurrencyIndexRoute: SettingsCurrencyIndexRoute,
   SettingsWalletsIndexRoute: SettingsWalletsIndexRoute,
   ExpenseCategoriesEditIdRoute: ExpenseCategoriesEditIdRoute,
+  ExpenseTransactionsEditIdRoute: ExpenseTransactionsEditIdRoute,
   SalaryCategoriesEditIdRoute: SalaryCategoriesEditIdRoute,
+  SalaryTransactionsEditIdRoute: SalaryTransactionsEditIdRoute,
   SettingsWalletsEditIdRoute: SettingsWalletsEditIdRoute,
 }
 export const routeTree = rootRouteImport

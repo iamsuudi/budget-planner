@@ -148,7 +148,7 @@ function SalaryPage() {
 
   return (
     <div className="">
-      <TopAppBar title="Salary" showProfile />
+      <TopAppBar showProfile />
 
       <Page className="space-y-6">
         <CalendarNav />
@@ -167,14 +167,14 @@ function SalaryPage() {
 
         <div className="flex items-center justify-between gap-3">
           <Link
-            to="/salary/add"
+            to="/salary/categories"
             className="border border-tertiary rounded-lg py-2 px-4 flex gap-2 items-center justify-center bg-tertiary/10 active:scale-98 transition-all"
           >
             <PlusCircle className="w-5 h-5 text-tertiary" />
             <span className="font-bold text-tertiary">Catagories</span>
           </Link>
           <Link
-            to="/salary/categories"
+            to="/salary/add"
             className="border border-primary-container rounded-lg py-2 px-4 flex gap-2 items-center justify-center bg-primary-container/10 active:scale-98 transition-all"
           >
             <FolderPlus className="w-5 h-5 text-primary-container" />
@@ -227,8 +227,7 @@ function SalaryPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold text-tertiary">
-                        +{currencyCC}
-                        {inv.amount.toFixed(2)}
+                        {formatCurrency(inv.amount)}
                       </p>
                     </div>
                   </div>

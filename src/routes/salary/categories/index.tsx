@@ -35,7 +35,7 @@ function SalaryCategoryPage() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <TopAppBar showBack backTo="/settings" />
+      <TopAppBar showBack backTo="/salary" />
 
       <Page>
         <section className="flex justify-between items-center mb-6 gap-3">

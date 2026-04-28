@@ -24,7 +24,7 @@ export function SWProgressBar({ visible }: SWProgressBarProps) {
   if (!isVisible) return null
 
   return (
-    <div className="fixed top-20 left-4 right-4 z-50">
+    <div className="fixed top-20 left-4 right-4 z-100">
       <div className="mx-auto max-w-120 bg-slate-900/95 backdrop-blur-md border border-white/10 rounded-xl p-4">
         <div className="flex items-center gap-3">
           {status === 'installing' && (

@@ -43,11 +43,7 @@ function AddSalaryCategoryPage() {
 
   return (
     <div className="">
-      <TopAppBar
-        title="Add Salary Category"
-        showBack
-        backTo="/salary/categories"
-      />
+      <TopAppBar showBack backTo="/salary/categories" />
 
       <Page
         title="Add Category"
