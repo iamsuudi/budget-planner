@@ -32,17 +32,16 @@ function NoteIndex() {
     <div className="">
       <TopAppBar showProfile />
 
-      <Page className="space-y-4 pb-48">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-lg font-bold text-on-surface">Notes</h2>
-          <span className="text-sm text-outline">{notes.length} notes</span>
-        </div>
-
+      <Page
+        className="pb-48"
+        title="Notes"
+        description="Create, edit and delete your notes here."
+      >
         <div className="space-y-2">
           {notes.map((note) => (
             <GlassCard key={note.id} className="p-4">
               <Link
-                to="/note/edit/$id"
+                to="/note/view/$id"
                 params={{ id: note.id }}
                 className="flex items-center justify-between group"
               >
@@ -51,7 +50,14 @@ function NoteIndex() {
                     {note.title}
                   </p>
                   <p className="text-xs text-outline">
-                    {new Date(note.updatedAt).toLocaleDateString()}
+                    {new Date(note.updatedAt).toLocaleDateString('en-US', {
+                      weekday: 'short',
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
                   </p>
                 </div>
                 <button
@@ -59,7 +65,7 @@ function NoteIndex() {
                     e.preventDefault()
                     handleDelete(note.id)
                   }}
-                  className="p-1 hover:bg-error-container rounded flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="p-1 hover:bg-error-container rounded-full shrink-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                 >
                   <Icon name="close" size={16} />
                 </button>

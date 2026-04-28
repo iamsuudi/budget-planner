@@ -17,7 +17,10 @@ function NoteAdd() {
   const navigate = useNavigate()
 
   const handleEditorRef = useCallback((ed: any) => setEditor(ed), [])
-  const handleContentChange = useCallback((html: string) => setContent(html), [])
+  const handleContentChange = useCallback(
+    (html: string) => setContent(html),
+    [],
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,9 +33,10 @@ function NoteAdd() {
     <div className="space-y-4 pb-20">
       <TopAppBar showBack backTo="/note" />
 
-      <Page className="space-y-6">
-        <h2 className="text-lg font-bold text-on-surface">Add Note</h2>
-
+      <Page
+        title="Add Note"
+        description="Create your note writing to the editor and click save to store it."
+      >
         <GlassCard className="p-4 space-y-4">
           <div>
             <label className="text-sm text-outline mb-1 block">Title</label>

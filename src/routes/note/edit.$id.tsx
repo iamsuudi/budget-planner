@@ -21,7 +21,10 @@ function NoteEdit() {
   const navigate = useNavigate()
 
   const handleEditorRef = useCallback((ed: any) => setEditor(ed), [])
-  const handleContentChange = useCallback((html: string) => setContent(html), [])
+  const handleContentChange = useCallback(
+    (html: string) => setContent(html),
+    [],
+  )
 
   useEffect(() => {
     const loadNote = async () => {
@@ -53,16 +56,13 @@ function NoteEdit() {
     <div className="space-y-4 pb-20">
       <TopAppBar showBack backTo="/note" />
 
-      <Page className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-on-surface">Edit Note</h2>
-          <button
-            onClick={handleDelete}
-            className="p-2 bg-error-container rounded-lg text-sm text-on-error-container cursor-pointer"
-          >
-            <Icon name="delete" size={16} />
-          </button>
-        </div>
+      <Page className="relative" title="Edit Note">
+        <button
+          onClick={handleDelete}
+          className="absolute top-24 right-4 py-2 px-3 bg-error-container rounded-lg text-sm text-on-error-container cursor-pointer"
+        >
+          <Icon name="delete" size={16} />
+        </button>
 
         <GlassCard className="p-4 space-y-4">
           <div>

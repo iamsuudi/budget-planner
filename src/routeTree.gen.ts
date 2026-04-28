@@ -33,6 +33,7 @@ import { Route as BudgetEditIndexRouteImport } from './routes/budget/edit/index'
 import { Route as SettingsWalletsAddRouteImport } from './routes/settings/wallets/add'
 import { Route as SettingsSecurityPinRouteImport } from './routes/settings/security/pin'
 import { Route as SalaryCategoriesAddRouteImport } from './routes/salary/categories/add'
+import { Route as NoteViewIdRouteImport } from './routes/note/view.$id'
 import { Route as NoteEditIdRouteImport } from './routes/note/edit.$id'
 import { Route as ExpenseCategoriesAddRouteImport } from './routes/expense/categories/add'
 import { Route as SettingsWalletsEditIdRouteImport } from './routes/settings/wallets/edit.$id'
@@ -160,6 +161,11 @@ const SalaryCategoriesAddRoute = SalaryCategoriesAddRouteImport.update({
   path: '/salary/categories/add',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NoteViewIdRoute = NoteViewIdRouteImport.update({
+  id: '/note/view/$id',
+  path: '/note/view/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NoteEditIdRoute = NoteEditIdRouteImport.update({
   id: '/note/edit/$id',
   path: '/note/edit/$id',
@@ -203,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/todo/': typeof TodoIndexRoute
   '/expense/categories/add': typeof ExpenseCategoriesAddRoute
   '/note/edit/$id': typeof NoteEditIdRoute
+  '/note/view/$id': typeof NoteViewIdRoute
   '/salary/categories/add': typeof SalaryCategoriesAddRoute
   '/settings/security/pin': typeof SettingsSecurityPinRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
@@ -234,6 +241,7 @@ export interface FileRoutesByTo {
   '/todo': typeof TodoIndexRoute
   '/expense/categories/add': typeof ExpenseCategoriesAddRoute
   '/note/edit/$id': typeof NoteEditIdRoute
+  '/note/view/$id': typeof NoteViewIdRoute
   '/salary/categories/add': typeof SalaryCategoriesAddRoute
   '/settings/security/pin': typeof SettingsSecurityPinRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
@@ -266,6 +274,7 @@ export interface FileRoutesById {
   '/todo/': typeof TodoIndexRoute
   '/expense/categories/add': typeof ExpenseCategoriesAddRoute
   '/note/edit/$id': typeof NoteEditIdRoute
+  '/note/view/$id': typeof NoteViewIdRoute
   '/salary/categories/add': typeof SalaryCategoriesAddRoute
   '/settings/security/pin': typeof SettingsSecurityPinRoute
   '/settings/wallets/add': typeof SettingsWalletsAddRoute
@@ -299,6 +308,7 @@ export interface FileRouteTypes {
     | '/todo/'
     | '/expense/categories/add'
     | '/note/edit/$id'
+    | '/note/view/$id'
     | '/salary/categories/add'
     | '/settings/security/pin'
     | '/settings/wallets/add'
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/todo'
     | '/expense/categories/add'
     | '/note/edit/$id'
+    | '/note/view/$id'
     | '/salary/categories/add'
     | '/settings/security/pin'
     | '/settings/wallets/add'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/todo/'
     | '/expense/categories/add'
     | '/note/edit/$id'
+    | '/note/view/$id'
     | '/salary/categories/add'
     | '/settings/security/pin'
     | '/settings/wallets/add'
@@ -393,6 +405,7 @@ export interface RootRouteChildren {
   TodoIndexRoute: typeof TodoIndexRoute
   ExpenseCategoriesAddRoute: typeof ExpenseCategoriesAddRoute
   NoteEditIdRoute: typeof NoteEditIdRoute
+  NoteViewIdRoute: typeof NoteViewIdRoute
   SalaryCategoriesAddRoute: typeof SalaryCategoriesAddRoute
   SettingsSecurityPinRoute: typeof SettingsSecurityPinRoute
   SettingsWalletsAddRoute: typeof SettingsWalletsAddRoute
@@ -578,6 +591,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalaryCategoriesAddRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/note/view/$id': {
+      id: '/note/view/$id'
+      path: '/note/view/$id'
+      fullPath: '/note/view/$id'
+      preLoaderRoute: typeof NoteViewIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/note/edit/$id': {
       id: '/note/edit/$id'
       path: '/note/edit/$id'
@@ -633,6 +653,7 @@ const rootRouteChildren: RootRouteChildren = {
   TodoIndexRoute: TodoIndexRoute,
   ExpenseCategoriesAddRoute: ExpenseCategoriesAddRoute,
   NoteEditIdRoute: NoteEditIdRoute,
+  NoteViewIdRoute: NoteViewIdRoute,
   SalaryCategoriesAddRoute: SalaryCategoriesAddRoute,
   SettingsSecurityPinRoute: SettingsSecurityPinRoute,
   SettingsWalletsAddRoute: SettingsWalletsAddRoute,

@@ -14,11 +14,11 @@ import {
   ClipboardIcon,
   Highlighter,
   LinkIcon,
-  List,
   ListIndentDecrease,
   ListIndentIncrease,
-  ListOrdered,
   TextAlignJustify,
+  Undo2,
+  Redo2,
 } from 'lucide-react'
 import { useToast } from '#/lib/toast'
 
@@ -55,9 +55,12 @@ interface NoteEditorProps {
 
 export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
   const { showToast } = useToast()
+
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        // Enable list extensions from StarterKit
+      }),
       Underline,
       Highlight.configure({ multicolor: true }),
       Link.configure({ openOnClick: false }),
@@ -96,11 +99,14 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
   }, [content, editor])
 
   const setLink = () => {
-    const previousUrl = editor?.getAttributes('link').href
-    const url = window.prompt('URL', previousUrl)
+    const previousUrl = editor?.getAttributes('link').href || ''
+
+    const url = window.prompt('Enter URL:', previousUrl)
     if (url === null) return
+
     if (url === '') {
       editor?.chain().focus().extendMarkRange('link').unsetLink().run()
+      showToast('Link removed', 'success')
     } else {
       editor
         ?.chain()
@@ -108,6 +114,7 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
         .extendMarkRange('link')
         .setLink({ href: url })
         .run()
+      showToast('Link updated', 'success')
     }
   }
 
@@ -128,6 +135,14 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
     }
   }
 
+  const colorButtons = [
+    { title: 'White', color: '#ffffff', className: 'text-white' },
+    { title: 'Black', color: '#000000', className: 'text-black' },
+    { title: 'Red', color: '#ff0000', className: 'text-red-400' },
+    { title: 'Blue', color: '#0000ff', className: 'text-blue-400' },
+    { title: 'Green', color: '#008000', className: 'text-green-400' },
+  ]
+
   return (
     <div>
       <style>{`
@@ -135,8 +150,33 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
         .editor-selection *::selection {
           background-color: rgba(var(--color-primary-rgb), 0.2);
         }
+        .editor-selection a {
+          color: #3b82f6;
+          text-decoration: underline;
+          text-underline-offset: 2px;
+          cursor: pointer;
+        }
+        .editor-selection a:hover {
+          color: #2563eb;
+          background-color: rgba(59, 130, 246, 0.1);
+        }
       `}</style>
       <div className="flex flex-wrap gap-1 p-2 border-b border-outline/30 bg-surface-container-high">
+        <ButtonWrapper
+          onClick={() => editor?.chain().focus().undo().run()}
+          title="Undo"
+        >
+          <Undo2 className="size-4" />
+        </ButtonWrapper>
+        <ButtonWrapper
+          onClick={() => editor?.chain().focus().redo().run()}
+          title="Redo"
+        >
+          <Redo2 className="size-4" />
+        </ButtonWrapper>
+
+        <div className="w-px h-6 bg-outline/30 mx-1" />
+
         <ButtonWrapper
           onClick={() => editor?.chain().focus().toggleBold().run()}
           className="font-bold"
@@ -181,11 +221,20 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
           <option value="" disabled>
             Font
           </option>
-          <option value="Arial">Arial</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Courier New">Courier New</option>
-          <option value="Times New Roman">Times New Roman</option>
-          <option value="Verdana">Verdana</option>
+          <optgroup label="Sans-Serif">
+            <option value="Arial">Arial</option>
+            <option value="Verdana">Verdana</option>
+          </optgroup>
+          <optgroup label="Serif">
+            <option value="Georgia">Georgia</option>
+            <option value="Times New Roman">Times New Roman</option>
+          </optgroup>
+          <optgroup label="Monospace">
+            <option value="Courier New">Courier New</option>
+          </optgroup>
+          <optgroup label="Handwriting">
+            <option value="Caveat">Caveat (Downloaded)</option>
+          </optgroup>
         </select>
 
         <select
@@ -213,30 +262,30 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
         <div className="w-px h-6 bg-outline/30 mx-1" />
 
         <ButtonWrapper
-          onClick={() => editor?.chain().focus().toggleBulletList().run()}
-          title="Bullet List"
-        >
-          <List className="size-4" />
-        </ButtonWrapper>
-        <ButtonWrapper
-          onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-          title="Ordered List"
-        >
-          <ListOrdered className="size-4" />
-        </ButtonWrapper>
-
-        <div className="w-px h-6 bg-outline/30 mx-1" />
-
-        <ButtonWrapper
           onClick={() => editor?.chain().focus().toggleHighlight().run()}
           title="Highlight"
         >
           <Highlighter className="text-yellow-400 size-4" />
         </ButtonWrapper>
 
-        <ButtonWrapper onClick={setLink} title="Add Link">
+        <ButtonWrapper
+          onClick={setLink}
+          title={editor?.getAttributes('link').href ? 'Edit Link' : 'Add Link'}
+          isActive={!!editor?.getAttributes('link').href}
+        >
           <LinkIcon className="size-4" />
         </ButtonWrapper>
+        {editor?.getAttributes('link').href && (
+          <ButtonWrapper
+            onClick={() => {
+              editor.chain().focus().unsetLink().run()
+              showToast('Link removed', 'success')
+            }}
+            title="Remove Link"
+          >
+            <span className="text-xs text-red-400">×</span>
+          </ButtonWrapper>
+        )}
 
         <div className="w-px h-6 bg-outline/30 mx-1" />
 
@@ -261,81 +310,18 @@ export function NoteEditor({ content, onChange, editorRef }: NoteEditorProps) {
 
         <div className="w-px h-6 bg-outline/30 mx-1" />
 
-        <ButtonWrapper
-          onClick={() => {
-            const currentColor = editor?.getAttributes('textStyle').color
-            if (currentColor === '#ffffff') {
-              editor?.chain().focus().unsetColor().run()
-            } else {
-              editor?.chain().focus().setColor('#ffffff').run()
-            }
-          }}
-          className="font-bold text-white"
-          style={{ color: '#ffffff' }}
-          title="White"
-        >
-          A
-        </ButtonWrapper>
-        <ButtonWrapper
-          onClick={() => {
-            const currentColor = editor?.getAttributes('textStyle').color
-            if (currentColor === '#000000') {
-              editor?.chain().focus().unsetColor().run()
-            } else {
-              editor?.chain().focus().setColor('#000000').run()
-            }
-          }}
-          className="font-bold text-black"
-          style={{ color: '#000000' }}
-          title="Black"
-        >
-          A
-        </ButtonWrapper>
-        <ButtonWrapper
-          onClick={() => {
-            const currentColor = editor?.getAttributes('textStyle').color
-            if (currentColor === '#ff0000') {
-              editor?.chain().focus().unsetColor().run()
-            } else {
-              editor?.chain().focus().setColor('#ff0000').run()
-            }
-          }}
-          className="font-bold text-red-500"
-          style={{ color: '#ff0000' }}
-          title="Red"
-        >
-          A
-        </ButtonWrapper>
-        <ButtonWrapper
-          onClick={() => {
-            const currentColor = editor?.getAttributes('textStyle').color
-            if (currentColor === '#0000ff') {
-              editor?.chain().focus().unsetColor().run()
-            } else {
-              editor?.chain().focus().setColor('#0000ff').run()
-            }
-          }}
-          className="font-bold text-blue-400"
-          style={{ color: '#0000ff' }}
-          title="Blue"
-        >
-          A
-        </ButtonWrapper>
-        <ButtonWrapper
-          onClick={() => {
-            const currentColor = editor?.getAttributes('textStyle').color
-            if (currentColor === '#008000') {
-              editor?.chain().focus().unsetColor().run()
-            } else {
-              editor?.chain().focus().setColor('#008000').run()
-            }
-          }}
-          className="font-bold text-green-400"
-          style={{ color: '#008000' }}
-          title="Green"
-        >
-          A
-        </ButtonWrapper>
+        {/* Color Buttons */}
+        {colorButtons.map((btn) => (
+          <ButtonWrapper
+            key={btn.title}
+            onClick={() => editor?.chain().focus().setColor(btn.color).run()}
+            className={`font-bold ${btn.className}`}
+            style={{ color: btn.color }}
+            title={btn.title}
+          >
+            A
+          </ButtonWrapper>
+        ))}
 
         <div className="w-px h-6 bg-outline/30 mx-1" />
 
