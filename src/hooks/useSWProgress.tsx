@@ -27,22 +27,6 @@ export function useSWProgress(): SWProgress {
       return
     }
 
-    // Don't show progress if onboarding isn't complete
-    const welcomeSeen = localStorage.getItem('welcome-seen') === 'true'
-    let securitySetUp = false
-    try {
-      const settings = localStorage.getItem('security-settings')
-      if (settings) {
-        const parsed = JSON.parse(settings)
-        securitySetUp = parsed.pinEnabled || parsed.biometricEnabled
-      }
-    } catch {}
-
-    if (!welcomeSeen || !securitySetUp) {
-      // Still in onboarding, don't show progress
-      return
-    }
-
     if (window.swError) {
       setProgress({ progress: 0, status: 'error' })
       return
@@ -73,7 +57,8 @@ export function useSWProgress(): SWProgress {
     window.addEventListener('sw-error', handleError)
     window.addEventListener('sw-progress', handleProgress)
 
-    setProgress((prev) => ({ ...prev, status: 'installing' }))
+    // Don't set 'installing' here - wait for actual progress events
+    // The SW registration is delayed until onboarding completes
 
     return () => {
       window.removeEventListener('sw-ready', handleReady)

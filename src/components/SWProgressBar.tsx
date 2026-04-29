@@ -18,23 +18,9 @@ export function SWProgressBar({ visible }: SWProgressBarProps) {
       return () => clearTimeout(timer)
     }
   }, [status])
+  console.log({ status })
 
   const isVisible = visible ?? show
-
-  // Don't show progress bar if onboarding isn't complete
-  const welcomeSeen = typeof window !== 'undefined' ? localStorage.getItem('welcome-seen') === 'true' : false
-  const securitySetUp = (() => {
-    try {
-      const settings = localStorage.getItem('security-settings')
-      if (settings) {
-        const parsed = JSON.parse(settings)
-        return parsed.pinEnabled || parsed.biometricEnabled
-      }
-    } catch {}
-    return false
-  })()
-
-  if (!welcomeSeen || !securitySetUp) return null
 
   if (!isVisible) return null
 
