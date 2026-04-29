@@ -1,12 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import {
-  Receipt,
-  Wallet,
-  BarChart3,
-  CheckSquare,
-  FileText,
-  AlarmCheck,
-} from 'lucide-react'
+import { Receipt, Wallet, BarChart3, FileText, AlarmCheck } from 'lucide-react'
 
 const navItems = [
   { icon: Receipt, label: 'Expense', to: '/expense' },
@@ -18,6 +11,15 @@ const navItems = [
 
 export function BottomNavBar() {
   const location = useLocation()
+  const welcomeSeen = localStorage.getItem('welcome-seen') === 'true'
+  const securitySetUp = localStorage.getItem('security-settings')
+    ? JSON.parse(localStorage.getItem('security-settings')!).pinEnabled ||
+      JSON.parse(localStorage.getItem('security-settings')!).biometricEnabled
+    : false
+  const isOnboardingComplete = welcomeSeen && securitySetUp
+
+  if (!isOnboardingComplete) return null
+
   return (
     <nav className="fixed bottom-0 left-0 w-full z-50">
       <div className="max-w-lg flex justify-around items-center pb-safe px-4 h-20 mx-auto bg-slate-950/90 backdrop-blur-xl border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.2)]">

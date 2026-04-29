@@ -4,6 +4,8 @@
 
 This application uses a versioned Service Worker (SW) with a consent-based update flow. Users explicitly approve registration, download, and activation of new SW versions. No polling — updates are checked only on app load or manually via Settings.
 
+**Note**: SW registration is **delayed until onboarding completes** (welcome pages + security setup). This prevents interrupting the user experience during first-time setup.
+
 ## Architecture
 
 ### Files

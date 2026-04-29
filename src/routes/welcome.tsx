@@ -1,7 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { ChevronRight, ChevronLeft, Check } from 'lucide-react'
-import { useSecurity } from '#/lib/security'
 
 export const Route = createFileRoute('/welcome')({
   component: WelcomePage,
@@ -10,31 +8,36 @@ export const Route = createFileRoute('/welcome')({
 const slides = [
   {
     title: 'Welcome to Budget Manager',
-    description: 'Your all-in-one productivity suite: Budget Planner, Todo List, and Notes - three powerful apps in one.',
+    description:
+      'Your all-in-one productivity suite: Budget Planner, Todo List, and Notes - three powerful apps in one.',
     icon: '🚀',
     color: 'from-violet-500 to-purple-600',
   },
   {
     title: 'Budget Planner',
-    description: 'Take control of your finances. Track expenses, manage wallets, and set monthly budgets with ease.',
+    description:
+      'Take control of your finances. Track expenses, manage wallets, and set monthly budgets with ease.',
     icon: '💰',
     color: 'from-blue-500 to-cyan-600',
   },
   {
     title: 'Todo List',
-    description: 'Stay organized with categorized task lists. Set priorities and track your daily productivity.',
+    description:
+      'Stay organized with categorized task lists. Set priorities and track your daily productivity.',
     icon: '✅',
     color: 'from-green-500 to-emerald-600',
   },
   {
     title: 'Notes',
-    description: 'Capture your thoughts with rich text editing. Organize ideas, plans, and important information.',
+    description:
+      'Capture your thoughts with rich text editing. Organize ideas, plans, and important information.',
     icon: '📝',
     color: 'from-orange-500 to-amber-600',
   },
   {
     title: 'Secure Your Data',
-    description: 'Protect your personal information with PIN and biometric authentication. Your data stays private.',
+    description:
+      'Protect your personal information with PIN and biometric authentication. Your data stays private.',
     icon: '🔒',
     color: 'from-red-500 to-pink-600',
   },
@@ -134,9 +137,8 @@ function WelcomePage() {
           {currentSlide > 0 ? (
             <button
               onClick={prevSlide}
-              className="flex items-center gap-2 text-slate-400 hover:text-white px-4 py-2"
+              className="flex items-center justify-center border border-primary text-primary bg-primary/10 px-4 text-sm py-1 rounded-full font-semibold active:scale-95"
             >
-              <ChevronLeft className="w-5 h-5" />
               Back
             </button>
           ) : (
@@ -146,18 +148,16 @@ function WelcomePage() {
           {currentSlide < slides.length - 1 ? (
             <button
               onClick={nextSlide}
-              className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors"
+              className="flex items-center justify-center bg-primary-container text-on-primary-container px-4 text-sm py-1 rounded-full font-semibold active:scale-95"
             >
               Next
-              <ChevronRight className="w-5 h-5" />
             </button>
           ) : (
             <button
               onClick={handleGetStarted}
-              className="flex items-center gap-2 bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25"
+              className="flex items-center gap-2 bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full font-semibold shadow-lg shadow-primary/25"
             >
-              Get Started
-              <Check className="w-5 h-5" />
+              Start
             </button>
           )}
         </div>

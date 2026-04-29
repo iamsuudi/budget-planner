@@ -6,6 +6,37 @@ Budget Manager implements client-side security features to protect user data wit
 
 **Important**: All security is enforced client-side. This provides convenience security (preventing casual access) but not bank-grade security, as the code runs on the user's device and can theoretically be manipulated.
 
+## User Flow
+
+### First-Time Users
+
+```
+First Visit → Welcome Pages (5 slides) → PIN Setup → Optional Biometric → Main App
+```
+
+The app features a professional onboarding experience with sliding welcome pages that introduce the 3-in-1 app (Budget Planner + Todo List + Notes).
+
+**Welcome Flow** (see `docs/app-flow.md` for details):
+1. **Welcome slides** introduce app features
+2. **Get Started** button navigates to PIN setup
+3. **PIN Setup** - User creates 4-digit PIN (hashed with SHA-256)
+4. **Optional** - Enable biometric authentication
+5. **Main App** - User lands on dashboard
+
+### Returning Users
+
+```
+Return Visit → Check Session → Authenticated? → Skip Lock Screen
+                              ↓ (no)
+                           Lock Screen → PIN/Biometric → Unlock
+```
+
+### Service Worker Registration
+
+SW registration is **delayed until onboarding completes** (welcome + security setup). This ensures users have a peaceful onboarding experience without SW download interruptions.
+
+See `docs/service-worker-versioning.md` and `docs/app-flow.md` for full details.
+
 ## Security Features
 
 | Feature | Description |
