@@ -426,8 +426,12 @@ export async function clearAllData(): Promise<void> {
   await db.clear('user')
   await db.clear('wallets')
   await db.clear('expenseCategories')
+  await db.clear('salaryCategories')
   await db.clear('invoices')
   await db.clear('monthBudgets')
+  await db.clear('todoCategories')
+  await db.clear('todoTasks')
+  await db.clear('notes')
 }
 
 // Todo Categories

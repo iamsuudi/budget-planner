@@ -27,6 +27,7 @@ import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
 import { ToggleSwitch } from '#/components/ToggleSwitch'
 import { TopAppBar } from '#/components/TopAppBar'
+import type { AuthenticatorType } from '#/lib/security'
 
 export const Route = createFileRoute('/settings/')({
   component: SettingsPage,
@@ -58,8 +59,12 @@ function SettingsPage() {
     biometricAvailable,
     toggleBiometric,
     lock,
+    authenticatorType,
+    getAvailableAuthenticators,
   } = useSecurity()
   const isOnline = navigator.onLine
+  const [showAuthTypeDialog, setShowAuthTypeDialog] = useState(false)
+  const [availableAuthTypes, setAvailableAuthTypes] = useState<AuthenticatorType[]>([])
 
   useEffect(() => {
     getActiveCurrency().then(setCurrency)
@@ -94,6 +99,47 @@ function SettingsPage() {
     await clearAllData()
     showToast('All data has been deleted', 'success')
     window.location.reload()
+  }
+
+  const handleBiometricToggle = async (enabled: boolean) => {
+    if (enabled && !authenticatorType) {
+      // Show authenticator type selection dialog
+      const types = await getAvailableAuthenticators()
+      setAvailableAuthTypes(types)
+      setShowAuthTypeDialog(true)
+      return
+    }
+    try {
+      await toggleBiometric(enabled)
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : 'Failed to toggle biometric',
+        'error'
+      )
+    }
+  }
+
+  const handleAuthTypeSelect = async (type: AuthenticatorType) => {
+    setShowAuthTypeDialog(false)
+    try {
+      await toggleBiometric(true, type)
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : 'Failed to setup biometric',
+        'error'
+      )
+    }
+  }
+
+  const getAuthTypeLabel = (type: AuthenticatorType): string => {
+    switch (type) {
+      case 'platform':
+        return 'This Device (Fingerprint, Face ID, Windows Hello)'
+      case 'cross-platform':
+        return 'Security Device (USB key, phone, tablet)'
+      case 'google-password-manager':
+        return 'Google Password Manager'
+    }
   }
 
   return (
@@ -204,7 +250,7 @@ function SettingsPage() {
                       {!biometricAvailable
                         ? 'Not available on this device'
                         : biometricEnabled
-                          ? 'Enabled'
+                          ? `Enabled${authenticatorType ? ` (${getAuthTypeLabel(authenticatorType)})` : ''}`
                           : 'Disabled'}
                     </p>
                   </div>
@@ -216,7 +262,7 @@ function SettingsPage() {
                 ) : (
                   <ToggleSwitch
                     checked={biometricEnabled}
-                    onChange={toggleBiometric}
+                    onChange={handleBiometricToggle}
                     disabled={!pinEnabled && biometricEnabled}
                   />
                 )}
@@ -399,30 +445,6 @@ function SettingsPage() {
             </GlassCard>
           </section>
 
-          {/* <section>
-            <h3 className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">
-              Support & Legal
-            </h3>
-            <GlassCard className="p-1 flex flex-col gap-1">
-              <ActionListItem
-                icon="help_center"
-                iconBg="bg-tertiary/10"
-                iconColor="text-tertiary"
-                title="Help Center"
-                description=""
-                showChevron={false}
-              />
-              <ActionListItem
-                icon="policy"
-                iconBg="bg-primary/10"
-                iconColor="text-primary"
-                title="Privacy Policy"
-                description=""
-              />
-            </GlassCard>
-          </section>
-          */}
-
           <div className="py-6 text-center">
             <p className="text-xs text-slate-500 mb-3">
               Budget Planner v{currentVersion}
@@ -436,6 +458,32 @@ function SettingsPage() {
           </div>
         </div>
       </Page>
+
+      {showAuthTypeDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
+          <div className="bg-slate-900 w-full max-w-lg rounded-t-2xl p-6 space-y-4">
+            <h3 className="text-lg font-semibold text-white">Choose Authenticator Type</h3>
+            <p className="text-sm text-slate-400">Select how you want to authenticate</p>
+            <div className="space-y-2">
+              {availableAuthTypes.map((type) => (
+                <button
+                  key={type}
+                  onClick={() => handleAuthTypeSelect(type)}
+                  className="w-full p-4 bg-slate-800 rounded-xl text-white text-left hover:bg-slate-700 transition-colors"
+                >
+                  {getAuthTypeLabel(type)}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowAuthTypeDialog(false)}
+              className="w-full p-4 bg-slate-800/50 rounded-xl text-slate-400 text-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -12,10 +12,10 @@ export const Route = createFileRoute('/settings/security/pin')({
 })
 
 function PinPage() {
-  const { pinEnabled, setupPin, removePin } = useSecurity()
+  const { pinEnabled, setupPin, removePin, verifyPin } = useSecurity()
   const { showToast } = useToast()
   const navigate = useNavigate()
-  const [step, setStep] = useState<'choice' | 'setup' | 'verify'>(
+  const [step, setStep] = useState<'choice' | 'setup' | 'verify' | 'remove-auth'>(
     pinEnabled ? 'choice' : 'setup',
   )
   const [newPin, setNewPin] = useState('')
@@ -41,13 +41,22 @@ function PinPage() {
 
   const handleChoice = async (action: 'change' | 'remove') => {
     if (action === 'remove') {
-      if (confirm('Are you sure you want to remove PIN security?')) {
-        await removePin()
-        showToast('PIN removed', 'success')
-      }
+      setStep('remove-auth')
+      setError('')
     } else {
       setStep('setup')
       setError('')
+    }
+  }
+
+  const handleRemoveAuth = async (pin: string) => {
+    const isValid = await verifyPin(pin)
+    if (isValid) {
+      await removePin()
+      showToast('PIN removed', 'success')
+      navigate({ to: '/settings' })
+    } else {
+      setError('Invalid PIN')
     }
   }
 
@@ -78,6 +87,19 @@ function PinPage() {
             )}
           </div>
         </Page>
+      </div>
+    )
+  }
+
+  if (step === 'remove-auth') {
+    return (
+      <div className="fixed inset-0 bg-slate-950 z-100">
+        <PinInput
+          key="remove-auth"
+          mode="remove"
+          onComplete={handleRemoveAuth}
+          error={error}
+        />
       </div>
     )
   }

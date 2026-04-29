@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import { useSecurity } from '#/lib/security'
-import { Lock, Fingerprint, ArrowLeft, ArrowUpCircle } from 'lucide-react'
+import { Lock, Fingerprint, ArrowLeft, AlertTriangle, Trash2 } from 'lucide-react'
 import { useRouter } from '@tanstack/react-router'
+import { clearAllData } from '#/lib/storage'
 
 interface PinInputProps {
-  mode: 'enter' | 'setup' | 'confirm'
+  mode: 'enter' | 'setup' | 'confirm' | 'remove'
   onComplete: (pin: string) => void
   onCancel?: () => void
   error?: string
@@ -50,6 +51,25 @@ export function PinInput({ mode, onComplete, onCancel, error }: PinInputProps) {
 
   const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 
+  const getTitle = () => {
+    switch (mode) {
+      case 'enter': return 'Enter PIN'
+      case 'setup': return 'Create PIN'
+      case 'confirm': return 'Confirm PIN'
+      case 'remove': return 'Enter Current PIN'
+    }
+  }
+
+  const getDescription = () => {
+    if (error) return error
+    switch (mode) {
+      case 'enter': return 'Enter your 4-digit PIN to unlock'
+      case 'setup': return 'Create a 4-digit PIN to secure your app'
+      case 'confirm': return 'Re-enter your PIN to confirm'
+      case 'remove': return 'Enter your current PIN to remove it'
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6">
       <div className="w-full max-w-sm">
@@ -67,17 +87,10 @@ export function PinInput({ mode, onComplete, onCancel, error }: PinInputProps) {
             <Lock className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">
-            {mode === 'enter'
-              ? 'Enter PIN'
-              : mode === 'setup'
-                ? 'Create PIN'
-                : 'Confirm PIN'}
+            {getTitle()}
           </h1>
           <p className="text-slate-400 text-sm text-center">
-            {error ||
-              (mode === 'enter'
-                ? 'Enter your 4-digit PIN to unlock'
-                : 'Create a 4-digit PIN to secure your app')}
+            {getDescription()}
           </p>
         </div>
 
@@ -134,6 +147,7 @@ export function LockScreen() {
   const [pinKey, setPinKey] = useState(0)
   const [authenticating, setAuthenticating] = useState(false)
   const [showForgot, setShowForgot] = useState(false)
+  const [showResetConfirm, setShowResetConfirm] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -158,22 +172,18 @@ export function LockScreen() {
     if (!biometricEnabled) return
     setAuthenticating(true)
     try {
-      console.log('Trying biometric auth...')
-      
       if (!('PublicKeyCredential' in window)) {
-        console.log('WebAuthn not supported')
         return
       }
-      
+
       const credential = await navigator.credentials.get({
         publicKey: {
-          challenge: new TextEncoder().encode('authenticate'),
+          challenge: crypto.getRandomValues(new Uint8Array(32)),
           timeout: 60000,
           userVerification: 'required',
         },
       })
-      
-      console.log('Credential result:', credential)
+
       if (credential) {
         if (showForgot) {
           await resetPinWithBiometric()
@@ -186,6 +196,26 @@ export function LockScreen() {
       console.log('Biometric failed:', err)
     } finally {
       setAuthenticating(false)
+    }
+  }
+
+  const handleResetApp = async () => {
+    try {
+      // Clear IndexedDB (all data)
+      await clearAllData()
+
+      // Clear localStorage (security settings, passkey data, etc.)
+      localStorage.clear()
+
+      // Clear sessionStorage
+      sessionStorage.clear()
+
+      // Show message and reload
+      alert('App has been reset. The page will now reload.')
+      window.location.reload()
+    } catch (error) {
+      console.error('Failed to reset app:', error)
+      alert('Failed to reset app. Please try again.')
     }
   }
 
@@ -206,21 +236,75 @@ export function LockScreen() {
           <button
             onClick={handleBiometric}
             disabled={authenticating}
-            className="p-3 rounded-full bg-primary/20 text-primary hover:bg-primary/30"
+            className="p-3 rounded-full bg-primary/20 text-primary hover:bg-primary/30 disabled:opacity-50"
           >
             <Fingerprint className="w-6 h-6" />
           </button>
         )}
       </div>
+
       <PinInput key={pinKey} mode="enter" onComplete={handleVerify} error={error} />
-      {biometricEnabled && (
-        <div className="absolute bottom-8 left-0 right-0 text-center">
+
+      <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-4">
+        {biometricEnabled && (
           <button
             onClick={() => setShowForgot(true)}
             className="text-sm text-slate-400 hover:text-white"
           >
             Forgot PIN? Reset with biometric
           </button>
+        )}
+
+        <button
+          onClick={() => setShowResetConfirm(true)}
+          className="text-sm text-red-400/70 hover:text-red-400 flex items-center gap-2"
+        >
+          <Trash2 className="w-4 h-4" />
+          Reset App (Delete all data)
+        </button>
+      </div>
+
+      {showResetConfirm && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-6">
+          <div className="bg-slate-900 rounded-2xl p-6 max-w-sm w-full space-y-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white">Reset App?</h3>
+              </div>
+            </div>
+
+            <p className="text-sm text-slate-400">
+              This will permanently delete ALL your data including:
+            </p>
+            <ul className="text-sm text-slate-400 list-disc list-inside space-y-1">
+              <li>Wallets and accounts</li>
+              <li>Expenses and income records</li>
+              <li>Budgets and categories</li>
+              <li>Todo lists and notes</li>
+              <li>Security settings (PIN, biometric)</li>
+            </ul>
+            <p className="text-sm text-slate-400 font-semibold">
+              This action cannot be undone.
+            </p>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setShowResetConfirm(false)}
+                className="flex-1 py-3 rounded-xl bg-slate-800 text-white font-semibold hover:bg-slate-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResetApp}
+                className="flex-1 py-3 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600"
+              >
+                Reset App
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
