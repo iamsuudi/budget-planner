@@ -20,7 +20,6 @@ import {
   HardDrive,
   WifiOff,
   Wifi,
-  FolderOpen,
   Trash2,
   LockKeyhole,
 } from 'lucide-react'
@@ -42,7 +41,15 @@ function SettingsPage() {
   })
   const { data: wallets = [] } = useGetWallets()
   const { installStatus, showInstallPrompt } = usePWAInstall()
-  const { showUpdate, applyUpdate } = usePWAUpdate()
+  const {
+    currentVersion,
+    availableVersion,
+    updateStatus,
+    progress,
+    acceptUpdate,
+    activateUpdate,
+    checkForUpdates,
+  } = usePWAUpdate()
   const { usage, quota, loading, formatBytes, percentage } = useStorageUsage()
   const { showToast } = useToast()
   const {
@@ -67,9 +74,13 @@ function SettingsPage() {
   }
 
   const handleUpdate = () => {
-    if (!showUpdate) return
-    applyUpdate()
-    showToast('Updating app...', 'info')
+    if (updateStatus === 'idle') {
+      checkForUpdates()
+    } else if (updateStatus === 'available') {
+      acceptUpdate()
+    } else if (updateStatus === 'waiting') {
+      activateUpdate()
+    }
   }
 
   const handleDeleteAll = async () => {
@@ -123,44 +134,6 @@ function SettingsPage() {
               General
             </h3>
             <GlassCard className="p-1 flex flex-col gap-1">
-              <Link
-                to="/expense/categories"
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
-                    <FolderOpen className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">
-                      Expense Categories
-                    </p>
-                    <p className="text-xs text-on-surface-variant">
-                      Manage spending categories
-                    </p>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
-              </Link>
-              <Link
-                to="/salary/categories"
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
-                    <FolderOpen className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">
-                      Salary Categories
-                    </p>
-                    <p className="text-xs text-on-surface-variant">
-                      Manage income categories
-                    </p>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
-              </Link>
               <Link
                 to="/settings/currency"
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
@@ -359,26 +332,51 @@ function SettingsPage() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-400">
-                    <RefreshCw className="w-5 h-5" />
+                    <RefreshCw
+                      className={`w-5 h-5 ${updateStatus === 'downloading' ? 'animate-spin' : ''}`}
+                    />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-on-surface">
                       Update App
                     </p>
                     <p className="text-xs text-on-surface-variant">
-                      Tap to install new version
+                      {updateStatus === 'downloading'
+                        ? `Downloading... ${progress}%`
+                        : updateStatus === 'waiting'
+                          ? `Tap to activate v${availableVersion}`
+                          : updateStatus === 'available'
+                            ? `v${availableVersion} available`
+                            : currentVersion
+                              ? `v${currentVersion}`
+                              : 'Checking...'}
                     </p>
                   </div>
                 </div>
-                {showUpdate ? (
+                {updateStatus === 'available' && (
                   <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg">
-                    Install Update
-                  </span>
-                ) : (
-                  <span className="text-xs text-gray-400 bg-gray-400/20 px-2 py-1 rounded-lg">
-                    Latest Version
+                    Download
                   </span>
                 )}
+                {updateStatus === 'waiting' && (
+                  <span className="text-xs text-yellow-400 bg-yellow-500/20 px-2 py-1 rounded-lg">
+                    Activate
+                  </span>
+                )}
+                {updateStatus === 'downloading' && (
+                  <span className="text-xs text-cyan-400 bg-cyan-500/20 px-2 py-1 rounded-lg">
+                    {progress}%
+                  </span>
+                )}
+                {(updateStatus === 'idle' ||
+                  updateStatus === 'available' ||
+                  updateStatus === 'waiting') &&
+                  currentVersion &&
+                  !availableVersion && (
+                    <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg">
+                      Up to Date
+                    </span>
+                  )}
               </div>
               <div
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
@@ -427,7 +425,7 @@ function SettingsPage() {
 
           <div className="py-6 text-center">
             <p className="text-xs text-slate-500 mb-3">
-              Budget Planner v2.44.6
+              Budget Planner v{currentVersion}
             </p>
             <button
               className="px-5 py-2 rounded-full border border-error/30 text-error text-xs font-semibold hover:bg-error/10 transition-colors"

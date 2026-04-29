@@ -11,6 +11,7 @@ declare global {
   interface Window {
     swReady?: boolean
     swError?: boolean
+    latestSWVersion?: string
   }
 }
 
@@ -46,7 +47,10 @@ export function useSWProgress(): SWProgress {
 
     const handleProgress = (event: Event) => {
       const customEvent = event as CustomEvent<{ percent: number }>
-      setProgress({ progress: customEvent.detail.percent, status: 'installing' })
+      setProgress({
+        progress: customEvent.detail.percent,
+        status: 'installing',
+      })
     }
 
     window.addEventListener('sw-ready', handleReady)

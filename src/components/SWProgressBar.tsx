@@ -14,10 +14,11 @@ export function SWProgressBar({ visible }: SWProgressBarProps) {
     if (status === 'installing') {
       setShow(true)
     } else if (status === 'ready' || status === 'error') {
-      const timer = setTimeout(() => setShow(false), 10000)
+      const timer = setTimeout(() => setShow(false), 3000)
       return () => clearTimeout(timer)
     }
   }, [status])
+  console.log({ status })
 
   const isVisible = visible ?? show
 

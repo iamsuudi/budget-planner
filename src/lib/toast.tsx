@@ -52,10 +52,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           return (
             <div
               key={toast.id}
-              className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-md ${colors[toast.type]}`}
+              className={`pointer-events-auto flex items-center gap-3 px-4 py-2 rounded-xl border backdrop-blur-md ${colors[toast.type]}`}
               onClick={() => removeToast(toast.id)}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className="size-4" />
               <span className="text-sm font-medium">{toast.message}</span>
             </div>
           )

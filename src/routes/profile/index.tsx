@@ -4,6 +4,7 @@ import { ActionListItem } from '#/components/ActionListItem'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { useSecurity } from '#/lib/security'
+import { usePWAUpdate } from '#/hooks/usePWAUpdate'
 
 export const Route = createFileRoute('/profile/')({
   component: ProfilePage,
@@ -12,6 +13,7 @@ export const Route = createFileRoute('/profile/')({
 function ProfilePage() {
   const { data: user } = useGetUser()
   const { lock } = useSecurity()
+  const { currentVersion } = usePWAUpdate()
 
   const profileImage = user?.profilePicture
 
@@ -74,7 +76,9 @@ function ProfilePage() {
         </section>
 
         <div className="py-6 text-center">
-          <p className="text-xs text-slate-500 mb-3">Budget Planner v2.44.6</p>
+          <p className="text-xs text-slate-500 mb-3">
+            Budget Planner v{currentVersion}
+          </p>
           <button
             className="px-5 py-2 rounded-full border border-error/30 text-error text-xs font-semibold hover:bg-error/10 transition-colors"
             onClick={() => lock()}

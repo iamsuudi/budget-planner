@@ -10,5 +10,12 @@ export interface BeforeInstallPromptEvent extends Event {
 declare global {
   interface Window {
     deferredInstallPrompt: BeforeInstallPromptEvent | null
+    latestSWVersion?: string
+    currentSWVersion?: string
+    swRegisteredVersion?: string
+    swAvailableVersion?: string
+    swForceUpdate?: boolean
+    swReady?: boolean
+    swError?: boolean
   }
 }
