@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TodoIndexRouteImport } from './routes/todo/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
@@ -42,6 +43,11 @@ import { Route as SalaryCategoriesEditIdRouteImport } from './routes/salary/cate
 import { Route as ExpenseTransactionsEditIdRouteImport } from './routes/expense/transactions/edit.$id'
 import { Route as ExpenseCategoriesEditIdRouteImport } from './routes/expense/categories/edit.$id'
 
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -208,6 +214,7 @@ const ExpenseCategoriesEditIdRoute = ExpenseCategoriesEditIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/welcome': typeof WelcomeRoute
   '/expense/add': typeof ExpenseAddRoute
   '/note/add': typeof NoteAddRoute
   '/profile/edit': typeof ProfileEditRoute
@@ -242,6 +249,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/welcome': typeof WelcomeRoute
   '/expense/add': typeof ExpenseAddRoute
   '/note/add': typeof NoteAddRoute
   '/profile/edit': typeof ProfileEditRoute
@@ -277,6 +285,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/welcome': typeof WelcomeRoute
   '/expense/add': typeof ExpenseAddRoute
   '/note/add': typeof NoteAddRoute
   '/profile/edit': typeof ProfileEditRoute
@@ -313,6 +322,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/welcome'
     | '/expense/add'
     | '/note/add'
     | '/profile/edit'
@@ -347,6 +357,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/welcome'
     | '/expense/add'
     | '/note/add'
     | '/profile/edit'
@@ -381,6 +392,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/welcome'
     | '/expense/add'
     | '/note/add'
     | '/profile/edit'
@@ -416,6 +428,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  WelcomeRoute: typeof WelcomeRoute
   ExpenseAddRoute: typeof ExpenseAddRoute
   NoteAddRoute: typeof NoteAddRoute
   ProfileEditRoute: typeof ProfileEditRoute
@@ -451,6 +464,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -680,6 +700,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  WelcomeRoute: WelcomeRoute,
   ExpenseAddRoute: ExpenseAddRoute,
   NoteAddRoute: NoteAddRoute,
   ProfileEditRoute: ProfileEditRoute,
