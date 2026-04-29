@@ -10,31 +10,31 @@ export const Route = createFileRoute('/welcome')({
 const slides = [
   {
     title: 'Welcome to Budget Manager',
-    description: 'Take control of your finances with our intuitive budget management tool.',
-    icon: '💰',
+    description: 'Your all-in-one productivity suite: Budget Planner, Todo List, and Notes - three powerful apps in one.',
+    icon: '🚀',
     color: 'from-violet-500 to-purple-600',
   },
   {
-    title: 'Track Your Expenses',
-    description: 'Easily record and categorize your daily expenses to understand your spending habits.',
-    icon: '📊',
+    title: 'Budget Planner',
+    description: 'Take control of your finances. Track expenses, manage wallets, and set monthly budgets with ease.',
+    icon: '💰',
     color: 'from-blue-500 to-cyan-600',
   },
   {
-    title: 'Manage Multiple Wallets',
-    description: 'Keep track of all your accounts in one place - cash, bank, credit cards and more.',
-    icon: '👛',
+    title: 'Todo List',
+    description: 'Stay organized with categorized task lists. Set priorities and track your daily productivity.',
+    icon: '✅',
     color: 'from-green-500 to-emerald-600',
   },
   {
-    title: 'Set Monthly Budgets',
-    description: 'Plan your spending with custom monthly budgets for each category.',
-    icon: '🎯',
+    title: 'Notes',
+    description: 'Capture your thoughts with rich text editing. Organize ideas, plans, and important information.',
+    icon: '📝',
     color: 'from-orange-500 to-amber-600',
   },
   {
     title: 'Secure Your Data',
-    description: 'Protect your financial information with PIN and biometric authentication.',
+    description: 'Protect your personal information with PIN and biometric authentication. Your data stays private.',
     icon: '🔒',
     color: 'from-red-500 to-pink-600',
   },
@@ -43,7 +43,6 @@ const slides = [
 function WelcomePage() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const navigate = useNavigate()
-  const { setIsFirstTime } = useSecurity()
 
   const nextSlide = () => {
     if (currentSlide < slides.length - 1) {
@@ -59,7 +58,6 @@ function WelcomePage() {
 
   const handleGetStarted = () => {
     localStorage.setItem('welcome-seen', 'true')
-    setIsFirstTime(true)
     navigate({ to: '/settings/security/pin' })
   }
 
