@@ -35,6 +35,7 @@ interface SecurityContextValue {
   toggleBiometric: (enabled: boolean, type?: AuthenticatorType) => Promise<void>
   removePin: () => Promise<void>
   resetPinWithBiometric: () => Promise<void>
+  resetApp: () => Promise<void>
   getAvailableAuthenticators: () => Promise<AuthenticatorType[]>
 }
 
