@@ -219,7 +219,10 @@ export function LockScreen() {
     }
   }
 
-  if (isFirstTime) {
+  // Don't show PIN setup if user hasn't seen welcome page yet
+  const welcomeSeen = localStorage.getItem('welcome-seen') === 'true'
+
+  if (isFirstTime && welcomeSeen) {
     return (
       <div className="fixed inset-0 bg-slate-950 z-[100]">
         <PinInput key="setup" mode="setup" onComplete={handleSetup} />
