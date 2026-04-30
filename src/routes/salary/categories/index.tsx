@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { PlusCircle, Edit2, Trash2, Plus } from 'lucide-react'
+import { PlusCircle, Edit2, Trash2, Plus, Folder } from 'lucide-react'
 import {
   useGetSalaryCategories,
   useDeleteSalaryCategory,
@@ -9,6 +9,7 @@ import { getIconStyle } from '#/lib/icons'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
+import { GlassCard } from '#/components/GlassCard'
 
 export const Route = createFileRoute('/salary/categories/')({
   component: SalaryCategoryPage,
@@ -45,27 +46,35 @@ function SalaryCategoryPage() {
             </h2>
             <p className="text-slate-400 text-sm">Income sources.</p>
           </div>
-          <Link
-            to="/salary/categories/add"
-            className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
-          >
-            <PlusCircle className="w-4 h-4" />
-            Add
-          </Link>
+          {categories.length > 0 && (
+            <Link
+              to="/salary/categories/add"
+              className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
+            >
+              <PlusCircle className="w-4 h-4" />
+              Add
+            </Link>
+          )}
         </section>
 
         {isLoading ? (
           <div className="text-center py-8 text-slate-500">Loading...</div>
         ) : categories.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-slate-500 mb-4">No salary categories yet.</p>
+          <GlassCard className="flex flex-col items-center justify-center gap-2 p-6">
+            <Folder className="w-8 h-8 text-slate-500 mx-auto mb-2" />
+            <h2 className="">No categories yet</h2>
+            <p className="text-slate-400 text-sm text-center max-w-80">
+              You haven't created any categories yet. Get started by creating
+              your first category.
+            </p>
             <Link
               to="/salary/categories/add"
-              className="text-secondary hover:underline text-sm"
+              className="w-fit bg-primary-container text-on-primary-container py-2 px-6 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
             >
-              Add Category
+              <PlusCircle className="w-4 h-4" />
+              Add
             </Link>
-          </div>
+          </GlassCard>
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {categories.map((category) => {

@@ -6,6 +6,7 @@ import { GlassCard } from '#/components/GlassCard'
 import type { TodoCategory } from '#/types/todo'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Page } from '#/components/Page'
+import { Folder, PlusCircle } from 'lucide-react'
 
 export const Route = createFileRoute('/todo/add')({
   component: TodoAdd,
@@ -50,62 +51,72 @@ function TodoAdd() {
       <TopAppBar showBack backTo="/todo" />
 
       <Page title="Add Task" description="Add a new task to your todo list.">
-        <GlassCard className="p-4 space-y-4">
-          <div>
-            <p className="text-sm text-outline mb-1">Date</p>
-            <p className="text-on-surface font-medium">{dateLabel}</p>
-          </div>
-
-          <div>
-            <p className="text-sm text-outline mb-2">Category</p>
-            <div className="grid grid-cols-2 gap-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`p-3 rounded-lg text-sm font-medium transition-colors cursor-pointer active:scale-95 ${
-                    selectedCategory === cat.id
-                      ? 'bg-primary-container text-on-primary-container'
-                      : 'bg-surface-container-high text-on-surface hover:bg-primary/20'
-                  }`}
-                >
-                  {cat.name}
-                </button>
-              ))}
-            </div>
-            {categories.length === 0 && (
-              <p className="text-sm text-outline text-center py-2">
-                No categories.{' '}
-                <Link to="/todo/categories" className="text-primary underline">
-                  Create one
-                </Link>
-              </p>
-            )}
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-3">
+        {categories.length > 0 ? (
+          <GlassCard className="p-4 space-y-4">
             <div>
-              <label className="text-sm text-outline mb-1 block">
-                Task Name
-              </label>
-              <input
-                type="text"
-                value={taskName}
-                onChange={(e) => setTaskName(e.target.value)}
-                placeholder="What needs to be done?"
-                className="w-full px-3 py-2.5 rounded-lg bg-surface-container border border-outline/30 text-on-surface text-sm focus:outline-none focus:border-primary"
-                autoFocus
-              />
+              <p className="text-sm text-outline mb-1">Date</p>
+              <p className="text-on-surface font-medium">{dateLabel}</p>
             </div>
-            <button
-              type="submit"
-              disabled={!taskName.trim() || !selectedCategory}
-              className="w-full py-2.5 bg-primary text-on-primary rounded-lg text-sm font-medium disabled:opacity-50 cursor-pointer"
+
+            <div>
+              <p className="text-sm text-outline mb-2">Category</p>
+              <div className="grid grid-cols-2 gap-2">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`p-3 rounded-lg text-sm font-medium transition-colors cursor-pointer active:scale-95 ${
+                      selectedCategory === cat.id
+                        ? 'bg-primary-container text-on-primary-container'
+                        : 'bg-surface-container-high text-on-surface hover:bg-primary/20'
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div>
+                <label className="text-sm text-outline mb-1 block">
+                  Task Name
+                </label>
+                <input
+                  type="text"
+                  value={taskName}
+                  onChange={(e) => setTaskName(e.target.value)}
+                  placeholder="What needs to be done?"
+                  className="w-full px-3 py-2.5 rounded-lg bg-surface-container border border-outline/30 text-on-surface text-sm focus:outline-none focus:border-primary"
+                  autoFocus
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={!taskName.trim() || !selectedCategory}
+                className="w-full py-2.5 bg-primary text-on-primary rounded-lg text-sm font-medium disabled:opacity-50 cursor-pointer"
+              >
+                Add Task
+              </button>
+            </form>
+          </GlassCard>
+        ) : (
+          <GlassCard className="flex flex-col items-center justify-center gap-2 p-6">
+            <Folder className="w-8 h-8 text-slate-500 mx-auto mb-2" />
+            <h2 className="">No categories yet</h2>
+            <p className="text-slate-400 text-sm text-center max-w-80">
+              You haven't created any categories yet. Get started by creating
+              your first category.
+            </p>
+            <Link
+              to="/todo/categories"
+              className="w-fit bg-primary-container text-on-primary-container py-2 px-6 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
             >
-              Add Task
-            </button>
-          </form>
-        </GlassCard>
+              <PlusCircle className="w-4 h-4" />
+              Add
+            </Link>
+          </GlassCard>
+        )}
       </Page>
     </div>
   )

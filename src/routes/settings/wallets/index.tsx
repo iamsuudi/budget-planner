@@ -33,26 +33,33 @@ function WalletsPage() {
                 You have ({wallets.length}) wallets
               </p>
             </div>
-            <Link
-              to="/settings/wallets/add"
-              className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
-            >
-              <PlusCircle className="w-4 h-4" />
-              Add
-            </Link>
+            {wallets.length > 0 && (
+              <Link
+                to="/settings/wallets/add"
+                className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Add
+              </Link>
+            )}
           </section>
 
           {isLoading ? (
             <div className="text-center py-8 text-slate-500">Loading...</div>
           ) : wallets.length === 0 ? (
-            <GlassCard className="p-6 text-center">
+            <GlassCard className="flex flex-col items-center justify-center gap-2 p-6">
               <Building2 className="w-8 h-8 text-slate-500 mx-auto mb-2" />
-              <p className="text-slate-400 text-sm">No wallets yet</p>
+              <h2 className="">No wallets yet</h2>
+              <p className="text-slate-400 text-sm text-center max-w-80">
+                You haven't created any wallets yet. Get started by creating
+                your first wallet.
+              </p>
               <Link
                 to="/settings/wallets/add"
-                className="text-violet-400 text-sm font-medium mt-2 inline-block"
+                className="w-fit bg-primary-container text-on-primary-container py-2 px-6 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
               >
-                Add your first wallet
+                <PlusCircle className="w-4 h-4" />
+                Add
               </Link>
             </GlassCard>
           ) : (
@@ -68,7 +75,8 @@ function WalletsPage() {
                     iconBg="bg-violet-500/20"
                     iconColor="text-violet-400"
                     title={wallet.name}
-                    description={`****${wallet.accountNumber.slice(-4)}`}
+                    description={wallet.accountNumber}
+                    showChevron={false}
                   />
                 </Link>
                 <button

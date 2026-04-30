@@ -7,6 +7,8 @@ import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'
 import { CancelButton } from '#/components/CancelButton'
 import { useToast } from '#/lib/toast'
+import { PlusCircle, Wallet } from 'lucide-react'
+import { GlassCard } from '#/components/GlassCard'
 
 export const Route = createFileRoute('/salary/categories/add')({
   component: AddSalaryCategoryPage,
@@ -15,7 +17,7 @@ export const Route = createFileRoute('/salary/categories/add')({
 function AddSalaryCategoryPage() {
   const navigate = useNavigate()
   const createCategory = useCreateSalaryCategory()
-  const { data: wallets = [], isLoading: isLoadingWallets } = useGetWallets()
+  const { data: wallets = [] } = useGetWallets()
   const { showToast } = useToast()
   const [name, setName] = useState('')
   const [selectedIcon, setSelectedIcon] = useState('briefcase')
@@ -41,6 +43,8 @@ function AddSalaryCategoryPage() {
 
   const isValid = name.trim() && selectedWalletId
 
+  const hasWallets = wallets.length > 0
+
   return (
     <div className="">
       <TopAppBar showBack backTo="/salary/categories" />
@@ -49,20 +53,22 @@ function AddSalaryCategoryPage() {
         title="Add Category"
         description="Create source of your salary/income"
       >
-        {isLoadingWallets ? (
-          <p className="text-slate-500">Loading...</p>
-        ) : wallets.length === 0 ? (
-          <div className="glass-panel rounded-xl p-6">
-            <p className="text-slate-400 mb-4">
-              You need to create at least one wallet first.
+        {!hasWallets ? (
+          <GlassCard className="flex flex-col items-center justify-center gap-2 p-6">
+            <Wallet className="w-8 h-8 text-slate-500 mx-auto mb-2" />
+            <h2 className="">No wallets yet</h2>
+            <p className="text-slate-400 text-sm text-center max-w-80">
+              You haven't created any wallets yet. Get started by creating your
+              first wallet.
             </p>
             <Link
               to="/settings/wallets/add"
-              className="text-secondary hover:underline"
+              className="w-fit bg-primary-container text-on-primary-container py-2 px-6 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
             >
-              Create Wallet
+              <PlusCircle className="w-4 h-4" />
+              Add
             </Link>
-          </div>
+          </GlassCard>
         ) : (
           <>
             <div className="glass-panel rounded-xl p-4 space-y-4">

@@ -6,6 +6,7 @@ import { Icon } from '#/components/Icon'
 import type { Note } from '#/types/note'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Page } from '#/components/Page'
+import { NotebookPen, PlusCircle } from 'lucide-react'
 
 export const Route = createFileRoute('/note/')({
   component: NoteIndex,
@@ -37,47 +38,59 @@ function NoteIndex() {
         title="Notes"
         description="Create, edit and delete your notes here."
       >
-        <div className="space-y-2">
-          {notes.map((note) => (
-            <GlassCard key={note.id} className="p-4">
-              <Link
-                to="/note/view/$id"
-                params={{ id: note.id }}
-                className="flex items-center justify-between group"
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-on-surface truncate">
-                    {note.title}
-                  </p>
-                  <p className="text-xs text-outline">
-                    {new Date(note.updatedAt).toLocaleDateString('en-US', {
-                      weekday: 'short',
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault()
-                    handleDelete(note.id)
-                  }}
-                  className="p-1 hover:bg-error-container rounded-full shrink-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+        {notes.length > 0 ? (
+          <div className="space-y-2">
+            {notes.map((note) => (
+              <GlassCard key={note.id} className="p-4">
+                <Link
+                  to="/note/view/$id"
+                  params={{ id: note.id }}
+                  className="flex items-center justify-between group"
                 >
-                  <Icon name="close" size={16} />
-                </button>
-              </Link>
-            </GlassCard>
-          ))}
-        </div>
-
-        {notes.length === 0 && (
-          <p className="text-center text-outline py-8 text-sm">
-            No notes yet. Create your first note!
-          </p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-on-surface truncate">
+                      {note.title}
+                    </p>
+                    <p className="text-xs text-outline">
+                      {new Date(note.updatedAt).toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      handleDelete(note.id)
+                    }}
+                    className="p-1 hover:bg-error-container rounded-full shrink-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  >
+                    <Icon name="close" size={16} />
+                  </button>
+                </Link>
+              </GlassCard>
+            ))}
+          </div>
+        ) : (
+          <GlassCard className="flex flex-col items-center justify-center gap-2 p-6">
+            <NotebookPen className="w-8 h-8 text-slate-500 mx-auto mb-2" />
+            <h2 className="">No notes yet</h2>
+            <p className="text-slate-400 text-sm text-center max-w-80">
+              You haven't created any notes yet. Get started by creating your
+              first note.
+            </p>
+            <Link
+              to="/note/add"
+              className="w-fit bg-primary-container text-on-primary-container py-2 px-6 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
+            >
+              <PlusCircle className="w-4 h-4" />
+              Add
+            </Link>
+          </GlassCard>
         )}
 
         <div className="fixed bottom-24 right-4">
