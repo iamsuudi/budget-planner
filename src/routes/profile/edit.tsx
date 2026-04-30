@@ -93,7 +93,7 @@ function ProfileEditPage() {
                 <div className="w-full h-full rounded-full overflow-hidden border-2 border-surface">
                   <img
                     className="w-full h-full object-cover"
-                    src={profilePicture}
+                    src={profilePicture || '/user.png'}
                   />
                 </div>
               </div>

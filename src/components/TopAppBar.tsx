@@ -6,6 +6,7 @@ import {
   Settings,
   LogOut,
   ChevronLeft,
+  CircleDollarSign,
 } from 'lucide-react'
 import { getUser } from '#/lib/storage'
 import type { User as UserType } from '#/types'
@@ -94,12 +95,12 @@ export function TopAppBar({
               </div>
               <div className="relative">
                 <div
-                  className="w-9 h-9 rounded-full overflow-hidden bg-primary border border-violet-500/30 cursor-pointer"
+                  className="w-9 h-9 rounded-full overflow-hidden cursor-pointer"
                   onClick={() => setShowDropdown(!showDropdown)}
                 >
                   <img
-                    className="w-full h-full object-cover bg-primary"
-                    src={user?.profilePicture}
+                    className="w-full h-full object-cover bg-black"
+                    src={user?.profilePicture ?? '/user.png'}
                   />
                 </div>
                 {showDropdown && (
@@ -113,6 +114,16 @@ export function TopAppBar({
                     >
                       <User className="w-4 h-4" />
                       Profile
+                    </button>
+                    <button
+                      onClick={() => {
+                        router.navigate({ to: '/settings/currency' })
+                        setShowDropdown(false)
+                      }}
+                      className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm hover:bg-error/10 rounded-md cursor-pointer"
+                    >
+                      <CircleDollarSign className="w-4 h-4" />
+                      Currency
                     </button>
                     <button
                       onClick={() => {

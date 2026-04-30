@@ -30,6 +30,7 @@ function CurrencyPage() {
 
   const handleSelect = async (code: string) => {
     await setActiveCurrency(code)
+    setCurrentCC(code)
     // navigate({ to: '/settings' })
   }
 

@@ -64,7 +64,9 @@ function SettingsPage() {
   } = useSecurity()
   const isOnline = navigator.onLine
   const [showAuthTypeDialog, setShowAuthTypeDialog] = useState(false)
-  const [availableAuthTypes, setAvailableAuthTypes] = useState<AuthenticatorType[]>([])
+  const [availableAuthTypes, setAvailableAuthTypes] = useState<
+    AuthenticatorType[]
+  >([])
 
   useEffect(() => {
     getActiveCurrency().then(setCurrency)
@@ -114,7 +116,7 @@ function SettingsPage() {
     } catch (error) {
       showToast(
         error instanceof Error ? error.message : 'Failed to toggle biometric',
-        'error'
+        'error',
       )
     }
   }
@@ -126,7 +128,7 @@ function SettingsPage() {
     } catch (error) {
       showToast(
         error instanceof Error ? error.message : 'Failed to setup biometric',
-        'error'
+        'error',
       )
     }
   }
@@ -150,7 +152,7 @@ function SettingsPage() {
         <div className="flex flex-col gap-6">
           <section>
             <h3 className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">
-              Wallet
+              General
             </h3>
             <GlassCard className="p-1 flex flex-col gap-1">
               <Link
@@ -172,14 +174,6 @@ function SettingsPage() {
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
               </Link>
-            </GlassCard>
-          </section>
-
-          <section>
-            <h3 className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3">
-              General
-            </h3>
-            <GlassCard className="p-1 flex flex-col gap-1">
               <Link
                 to="/settings/currency"
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer group"
@@ -462,8 +456,12 @@ function SettingsPage() {
       {showAuthTypeDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
           <div className="bg-slate-900 w-full max-w-lg rounded-t-2xl p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-white">Choose Authenticator Type</h3>
-            <p className="text-sm text-slate-400">Select how you want to authenticate</p>
+            <h3 className="text-lg font-semibold text-white">
+              Choose Authenticator Type
+            </h3>
+            <p className="text-sm text-slate-400">
+              Select how you want to authenticate
+            </p>
             <div className="space-y-2">
               {availableAuthTypes.map((type) => (
                 <button

@@ -31,7 +31,7 @@ function ProfilePage() {
               <div className="w-full h-full rounded-full overflow-hidden border-2 border-surface">
                 <img
                   className="w-full h-full object-cover bg-secondary"
-                  src={profileImage}
+                  src={profileImage || '/user.png'}
                 />
               </div>
             </div>
