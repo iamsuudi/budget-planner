@@ -31,25 +31,6 @@ function ExpensePage() {
   const { data: categories = [] } = useGetCategories()
   const { data: wallets = [] } = useGetWallets()
 
-  const categoryMap = useMemo(() => {
-    const map: Record<
-      string,
-      { name: string; icon: string; walletId?: string }
-    > = {}
-    categories.forEach((cat) => {
-      map[cat.id] = { name: cat.name, icon: cat.icon, walletId: cat.walletId }
-    })
-    return map
-  }, [categories])
-
-  const walletMap = useMemo(() => {
-    const map: Record<string, { name: string; accountNumber: string }> = {}
-    wallets.forEach((w) => {
-      map[w.id] = { name: w.name, accountNumber: w.accountNumber }
-    })
-    return map
-  }, [wallets])
-
   const totalExpenses = useMemo(() => {
     return invoices.reduce((sum, inv) => sum + inv.amount, 0)
   }, [invoices])
@@ -109,7 +90,10 @@ function ExpensePage() {
           ) : (
             <div className="space-y-2">
               {invoices.slice(0, 8).map((inv) => {
-                const category = categoryMap[inv.categoryId]
+                const category = categories.find((c) => c.id === inv.categoryId)
+                const wallet = category
+                  ? wallets.find((w) => w.id === category.walletId)
+                  : null
                 const style = getIconStyle(category?.icon || 'receipt')
                 return (
                   <div
@@ -128,9 +112,7 @@ function ExpensePage() {
                         </p>
                         <p className="text-[10px] text-on-surface-variant opacity-60">
                           {category?.name || inv.categoryName}
-                          {category?.walletId && walletMap[category.walletId]
-                            ? ` • ${walletMap[category.walletId].name}`
-                            : ''}
+                          {wallet ? ` • ${wallet.name}` : ''}
                         </p>
                       </div>
                     </div>

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Building2, Trash2 } from 'lucide-react'
+import { Building2, PlusCircle, Trash2 } from 'lucide-react'
 import { useGetWallets, useDeleteWallet } from '#/hooks/query'
 import { ActionListItem } from '#/components/ActionListItem'
 import { GlassCard } from '#/components/GlassCard'
@@ -24,19 +24,23 @@ function WalletsPage() {
     <div className="">
       <TopAppBar showBack backTo={'/settings'} />
 
-      <Page title="My Wallets" description="Manage your wallets here.">
+      <Page>
         <section className="flex flex-col gap-3">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-widest">
-              Bank Accounts ({wallets.length})
-            </h2>
+          <section className="flex justify-between items-center mb-6 gap-3">
+            <div>
+              <h2 className="text-3xl font-bold text-white mb-1">Wallets</h2>
+              <p className="text-slate-400 text-sm">
+                You have ({wallets.length}) wallets
+              </p>
+            </div>
             <Link
               to="/settings/wallets/add"
-              className="text-violet-400 text-sm font-medium hover:text-violet-300"
+              className="bg-primary-container text-on-primary-container py-2 px-4 rounded-lg text-sm font-semibold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all"
             >
-              + Add
+              <PlusCircle className="w-4 h-4" />
+              Add
             </Link>
-          </div>
+          </section>
 
           {isLoading ? (
             <div className="text-center py-8 text-slate-500">Loading...</div>

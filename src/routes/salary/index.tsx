@@ -1,14 +1,13 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { FolderPlus, PlusCircle } from 'lucide-react'
-import { useState, useMemo, useEffect } from 'react'
+import { useMemo } from 'react'
 import {
   useGetSalaryCategories,
-  useCreateInvoice,
   useGetInvoicesByType,
   useGetWallets,
 } from '#/hooks/query'
 import { getIconStyle } from '#/lib/icons'
-import { formatCurrency, getActiveCurrency } from '#/lib/currency'
+import { formatCurrency } from '#/lib/currency'
 import { useMonth } from '#/lib/month-context'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
@@ -21,136 +20,21 @@ export const Route = createFileRoute('/salary/')({
 })
 
 function SalaryPage() {
-  const navigate = useNavigate()
-  const [currencyCC, setCurrencyCC] = useState('USD')
-  const { currentMonth, isCurrentMonth } = useMonth()
+  const { currentMonth } = useMonth()
   const { year, month } = currentMonth
-  const { data: categories = [], isLoading: isLoadingCategories } =
-    useGetSalaryCategories()
-  const { data: wallets = [], isLoading: isLoadingWallets } = useGetWallets()
+  const { data: categories = [] } = useGetSalaryCategories()
+  const { data: wallets = [] } = useGetWallets()
   const { data: invoices = [] } = useGetInvoicesByType('salary', year, month)
-  const createInvoice = useCreateInvoice()
 
-  const [amount, setAmount] = useState('')
-  const [selectedCategoryId, setSelectedCategoryId] = useState('')
-  const [note, setNote] = useState('')
-
-  const isLoading = isLoadingCategories || isLoadingWallets
-
-  const selectedCategory = categories.find((c) => c.id === selectedCategoryId)
-  const selectedWallet = selectedCategory
-    ? wallets.find((w) => w.id === selectedCategory.walletId)
-    : null
-
-  const handleSave = () => {
-    if (!amount || !selectedCategoryId) return
-
-    const category = categories.find((c) => c.id === selectedCategoryId)
-    if (!category) return
-
-    createInvoice.mutate(
-      {
-        amount: parseFloat(amount),
-        date: new Date().toISOString(),
-        categoryId: selectedCategoryId,
-        categoryName: category.name,
-        type: 'salary',
-        note: note.trim() || undefined,
-      },
-      { onSuccess: () => navigate({ to: '/salary' }) },
-    )
-  }
-
-  const isValid = useMemo(() => {
-    return !!amount && parseFloat(amount) > 0 && selectedCategoryId
-  }, [amount, selectedCategoryId])
-
-  const totalSalary =
-    invoices.length > 0 ? invoices.reduce((sum, inv) => sum + inv.amount, 0) : 0
-
-  useEffect(() => {
-    getActiveCurrency().then((c) => setCurrencyCC(c.cc))
-  }, [])
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background text-on-surface flex items-center justify-center">
-        <p className="text-slate-500">Loading...</p>
-      </div>
-    )
-  }
-
-  if (categories.length === 0 || wallets.length === 0) {
-    return (
-      <div className="">
-        <TopAppBar />
-
-        <Page
-          title="Salary"
-          description="Manage your salary categories and invoices."
-        >
-          {categories.length === 0 && (
-            <div className="glass-panel rounded-xl p-6 mb-4">
-              <p className="text-slate-400 mb-4">
-                You need to create at least one salary category first.
-              </p>
-              <Link
-                to="/salary/categories/add"
-                className="text-secondary hover:underline"
-              >
-                Create Salary Category
-              </Link>
-            </div>
-          )}
-
-          {wallets.length === 0 && (
-            <div className="glass-panel rounded-xl p-6">
-              <p className="text-slate-400 mb-4">
-                You need to create at least one wallet first.
-              </p>
-              <Link
-                to="/settings/wallets/add"
-                className="text-secondary hover:underline"
-              >
-                Create Wallet
-              </Link>
-            </div>
-          )}
-        </Page>
-      </div>
-    )
-  }
-
-  const categoriesWithoutWallet = categories.filter((c) => !c.walletId)
-
-  if (categoriesWithoutWallet.length > 0) {
-    return (
-      <div className="">
-        <TopAppBar title="Salary" showBack backTo="/" />
-
-        <Page className="space-y-6">
-          <div className="glass-panel rounded-xl p-6 mb-4">
-            <p className="text-slate-400 mb-4">
-              Some salary categories don't have a wallet assigned yet. Please
-              assign a wallet to all categories first.
-            </p>
-            <Link
-              to="/salary/categories"
-              className="text-secondary hover:underline"
-            >
-              Manage Categories
-            </Link>
-          </div>
-        </Page>
-      </div>
-    )
-  }
+  const totalSalary = useMemo(() => {
+    return invoices.reduce((sum, inv) => sum + inv.amount, 0)
+  }, [invoices])
 
   return (
     <div className="">
       <TopAppBar showProfile />
 
-      <Page className="space-y-6">
+      <Page title="Salary" description="View and manage your salaries.">
         <CalendarNav />
 
         <GlassCard className="p-6 relative overflow-hidden">

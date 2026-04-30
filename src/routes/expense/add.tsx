@@ -6,11 +6,7 @@ import {
   useGetInvoicesByMonth,
   useGetWallets,
 } from '#/hooks/query'
-import {
-  getCurrencyCode,
-  formatCurrency,
-  getActiveCurrency,
-} from '#/lib/currency'
+import { getActiveCurrency } from '#/lib/currency'
 import { useMonth } from '#/lib/month-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
@@ -130,7 +126,7 @@ function AddExpensePage() {
   if (categoriesWithoutWallet.length > 0) {
     return (
       <div className="">
-        <TopAppBar title="Add Expense" showBack backTo="/" />
+        <TopAppBar showBack backTo="/" />
 
         <Page className="space-y-6">
           <div className="glass-panel rounded-xl p-6 mb-4">
@@ -152,7 +148,7 @@ function AddExpensePage() {
 
   return (
     <div className="">
-      <TopAppBar title="Add Expense" showBack backTo="/" />
+      <TopAppBar showBack backTo="/" />
 
       <Page className="space-y-6">
         <div className="glass-panel rounded-xl p-4 space-y-4">

@@ -20,14 +20,14 @@ function AddSalaryPage() {
   const [currencyCC, setCurrencyCC] = useState('USD')
   const { data: categories = [], isLoading: isLoadingCategories } =
     useGetSalaryCategories()
-  const { data: wallets = [] } = useGetWallets()
+  const { data: wallets = [], isLoading: isLoadingWallets } = useGetWallets()
   const createInvoice = useCreateInvoice()
 
   const [amount, setAmount] = useState('')
   const [selectedCategoryId, setSelectedCategoryId] = useState('')
   const [note, setNote] = useState('')
 
-  const isLoading = isLoadingCategories
+  const isLoading = isLoadingCategories || isLoadingWallets
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId)
   const selectedWallet = selectedCategory
@@ -69,21 +69,62 @@ function AddSalaryPage() {
     )
   }
 
-  if (categories.length === 0) {
+  if (categories.length === 0 || wallets.length === 0) {
     return (
       <div className="">
-        <TopAppBar title="Add Salary" showBack backTo="/salary" />
+        <TopAppBar showBack backTo="/salary" />
+
+        <Page title="Add Salary" description="Add a new salary invoice.">
+          {categories.length === 0 && (
+            <div className="glass-panel rounded-xl p-6 mb-4">
+              <p className="text-slate-400 mb-4">
+                You need to create at least one salary category first.
+              </p>
+              <Link
+                to="/salary/categories/add"
+                className="text-secondary hover:underline"
+              >
+                Create Salary Category
+              </Link>
+            </div>
+          )}
+
+          {wallets.length === 0 && (
+            <div className="glass-panel rounded-xl p-6">
+              <p className="text-slate-400 mb-4">
+                You need to create at least one wallet first.
+              </p>
+              <Link
+                to="/settings/wallets/add"
+                className="text-secondary hover:underline"
+              >
+                Create Wallet
+              </Link>
+            </div>
+          )}
+        </Page>
+      </div>
+    )
+  }
+
+  const categoriesWithoutWallet = categories.filter((c) => !c.walletId)
+
+  if (categoriesWithoutWallet.length > 0) {
+    return (
+      <div className="">
+        <TopAppBar showBack backTo="/salary" />
 
         <Page title="Add Salary" description="Add a new salary invoice.">
           <div className="glass-panel rounded-xl p-6 mb-4">
             <p className="text-slate-400 mb-4">
-              You need to create at least one salary category first.
+              Some salary categories don't have a wallet assigned yet. Please
+              assign a wallet to all categories first.
             </p>
             <Link
-              to="/salary/categories/add"
+              to="/salary/categories"
               className="text-secondary hover:underline"
             >
-              Create Salary Category
+              Manage Categories
             </Link>
           </div>
         </Page>
