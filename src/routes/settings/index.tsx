@@ -48,7 +48,6 @@ function SettingsPage() {
     updateStatus,
     progress,
     acceptUpdate,
-    activateUpdate,
     checkForUpdates,
   } = usePWAUpdate()
   const { usage, quota, loading, formatBytes, percentage } = useStorageUsage()
@@ -85,8 +84,6 @@ function SettingsPage() {
       checkForUpdates()
     } else if (updateStatus === 'available') {
       acceptUpdate()
-    } else if (updateStatus === 'waiting') {
-      activateUpdate()
     }
   }
 
@@ -383,13 +380,11 @@ function SettingsPage() {
                     <p className="text-xs text-on-surface-variant">
                       {updateStatus === 'downloading'
                         ? `Downloading... ${progress}%`
-                        : updateStatus === 'waiting'
-                          ? `Tap to activate v${availableVersion}`
-                          : updateStatus === 'available'
-                            ? `v${availableVersion} available`
-                            : currentVersion
-                              ? `v${currentVersion}`
-                              : 'Checking...'}
+                        : updateStatus === 'available'
+                          ? `v${availableVersion} available`
+                          : currentVersion
+                            ? `v${currentVersion}`
+                            : 'Checking...'}
                     </p>
                   </div>
                 </div>
@@ -398,19 +393,13 @@ function SettingsPage() {
                     Download
                   </span>
                 )}
-                {updateStatus === 'waiting' && (
-                  <span className="text-xs text-yellow-400 bg-yellow-500/20 px-2 py-1 rounded-lg">
-                    Activate
-                  </span>
-                )}
                 {updateStatus === 'downloading' && (
                   <span className="text-xs text-cyan-400 bg-cyan-500/20 px-2 py-1 rounded-lg">
                     {progress}%
                   </span>
                 )}
                 {(updateStatus === 'idle' ||
-                  updateStatus === 'available' ||
-                  updateStatus === 'waiting') &&
+                  updateStatus === 'available') &&
                   currentVersion &&
                   !availableVersion && (
                     <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg">

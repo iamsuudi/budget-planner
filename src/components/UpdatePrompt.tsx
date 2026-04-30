@@ -11,7 +11,6 @@ export function UpdatePrompt() {
     forceUpdate,
     dismissUpdate,
     acceptUpdate,
-    activateUpdate,
   } = usePWAUpdate()
   const { showToast } = useToast()
 
@@ -21,9 +20,6 @@ export function UpdatePrompt() {
     if (updateStatus === 'available') {
       showToast('Downloading update...', 'info')
       acceptUpdate()
-    } else if (updateStatus === 'waiting') {
-      showToast('Activating update...', 'info')
-      activateUpdate()
     }
   }
 
@@ -38,15 +34,11 @@ export function UpdatePrompt() {
         {updateStatus === 'downloading' && (
           <Download className="size-5 text-cyan-400 shrink-0 mt-0.5" />
         )}
-        {updateStatus === 'waiting' && (
-          <RefreshCw className="size-5 text-yellow-400 shrink-0 mt-0.5" />
-        )}
 
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-on-surface">
             {updateStatus === 'available' && 'Update Available'}
             {updateStatus === 'downloading' && 'Downloading Update...'}
-            {updateStatus === 'waiting' && 'Update Ready to Activate'}
           </p>
           <p className="text-xs text-on-surface-variant">
             {currentVersion && availableVersion
@@ -70,25 +62,6 @@ export function UpdatePrompt() {
                 className="px-3 py-1.5 rounded-lg bg-cyan-500 text-white text-xs font-semibold hover:bg-cyan-600 transition-colors"
               >
                 Update
-              </button>
-              {canDismiss && (
-                <button
-                  onClick={dismissUpdate}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors"
-                >
-                  Later
-                </button>
-              )}
-            </div>
-          )}
-
-          {updateStatus === 'waiting' && (
-            <div className="flex items-center gap-2 mt-2">
-              <button
-                onClick={handleUpdate}
-                className="px-3 py-1.5 rounded-lg bg-yellow-500 text-white text-xs font-semibold hover:bg-yellow-600 transition-colors"
-              >
-                Activate
               </button>
               {canDismiss && (
                 <button

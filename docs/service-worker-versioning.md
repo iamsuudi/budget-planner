@@ -15,7 +15,7 @@ This application uses a versioned Service Worker (SW) with a consent-based updat
 | `src/sw-template.js` | SW template with placeholders for cache name and asset list |
 | `public/generate-sw.js` | Build script that reads `package.json` version, injects assets, writes `sw-v{version}.js` and `version.json` |
 | `src/main.tsx` | Entry point — handles SW registration on first visit, detects version mismatches on return |
-| `src/hooks/usePWAUpdate.tsx` | Central hook for update state management (`idle` → `available` → `downloading` → `waiting`) |
+| `src/hooks/usePWAUpdate.tsx` | Central hook for update state management (`idle` → `available` → `downloading`) |
 | `src/components/UpdatePrompt.tsx` | Global bottom-sheet dialog for SW updates with progress bar and version display |
 | `src/components/SWProgressBar.tsx` | Full-screen progress bar shown during first-time SW installation |
 | `src/hooks/useSWProgress.tsx` | Hook that tracks SW install progress for the progress bar |
@@ -78,10 +78,7 @@ User opens app, server version > localStorage version
     → main.tsx registers new sw-v{version}.js
     → SW downloads all assets in background
     → Progress messages from SW → progress bar updates
-    → When download complete → state → 'waiting'
-    → UpdatePrompt shows: "Update Ready to Activate" with Activate / Later buttons
-  → User clicks "Activate":
-    → Sends SKIP_WAITING to waiting SW
+    → When download complete → SKIP_WAITING sent automatically
     → controllerchange fires → page reloads
     → On reload: new SW is active, versions match → normal flow
 ```
@@ -93,7 +90,6 @@ User opens Settings → App & Storage → "Update App"
   → If idle: calls checkForUpdates() → fetches version.json
   → If new version found: shows Update dialog (same as app load flow)
   → If downloading: shows progress percentage
-  → If waiting: shows "Tap to activate vX.X.X"
   → If up to date: shows current version
 ```
 
@@ -118,18 +114,13 @@ When `version.json` has `"forceUpdate": true`:
                                     └──────┬──────┘
                                            │ sw-ready (100%)
                                            ▼
-                                     ┌───────────┐
-                                     │  waiting  │
-                                     └─────┬─────┘
-                                           │ activateUpdate()
-                                           ▼
+                                    (SKIP_WAITING sent)
                                     (page reloads)
 ```
 
 State transitions:
 - `available` → `idle`: user dismisses (if not forceUpdate)
-- `downloading` → `waiting`: SW download complete (sw-ready event at 100%)
-- Any state → `idle`: only from user dismiss on `available` or `waiting`
+- `downloading` → `idle`: SW download complete, auto-activates via SKIP_WAITING
 - `handleReady` and `handleProgress` only affect state when already in `downloading` — this prevents first-install events from triggering the update dialog
 
 ## Events
@@ -172,12 +163,11 @@ interface Window {
 const {
   currentVersion,       // string | null — currently registered version
   availableVersion,     // string | null — version available for update
-  updateStatus,         // 'idle' | 'available' | 'downloading' | 'waiting'
+  updateStatus,         // 'idle' | 'available' | 'downloading'
   progress,             // number — download percentage (0-100)
   forceUpdate,          // boolean — whether dialog is dismissible
   dismissUpdate,        // () => void — dismiss the update dialog
-  acceptUpdate,         // () => Promise<void> — download the new version
-  activateUpdate,       // () => void — activate the waiting SW (triggers reload)
+  acceptUpdate,         // () => Promise<void> — download and auto-activate the new version
   checkForUpdates,      // () => Promise<void> — manually check version.json
 } = usePWAUpdate()
 ```
@@ -210,7 +200,7 @@ const {
 
 4. **Implicit first-install consent** — On first visit, the SW is registered automatically. The user chose to use the app, which implies consent. Subsequent updates require explicit approval.
 
-5. **Two-phase update** — Download (`acceptUpdate`) and activation (`activateUpdate`) are separate. The user can download in the background and choose when to activate (reload).
+5. **One-click update** — Download and activation happen automatically when user clicks Update. The SW skips waiting and page reloads when ready.
 
 6. **SWProgressBar separate from UpdatePrompt** — `SWProgressBar` shows only during the first install at the top of the screen. `UpdatePrompt` shows for subsequent updates at the bottom as a bottom sheet.
 

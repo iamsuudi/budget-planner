@@ -250,11 +250,7 @@ Register new sw-v{version}.js
   ↓
 Download progress: 0% → 100%
   ↓
-State → 'waiting'
-  ↓
-User clicks "Activate"
-  ↓
-SKIP_WAITING sent to SW
+SKIP_WAITING sent automatically
   ↓
 controllerchange event → page reloads
   ↓

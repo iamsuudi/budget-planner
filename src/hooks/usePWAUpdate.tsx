@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
-export type UpdateStatus = 'idle' | 'available' | 'downloading' | 'waiting'
+export type UpdateStatus = 'idle' | 'available' | 'downloading'
 
 export interface UpdateState {
   currentVersion: string | null
@@ -21,13 +21,13 @@ export const usePWAUpdate = () => {
     forceUpdate: window.swForceUpdate || false,
   })
 
-  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null)
+  const registrationRef = useRef<ServiceWorkerRegistration | null>(null)
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
 
     navigator.serviceWorker.getRegistration().then((reg) => {
-      if (reg) setRegistration(reg)
+      if (reg) registrationRef.current = reg
     })
 
     const handleUpdateAvailable = (event: Event) => {
@@ -57,10 +57,14 @@ export const usePWAUpdate = () => {
         if (prev.updateStatus !== 'downloading') return prev
         return {
           ...prev,
-          updateStatus: 'waiting',
+          updateStatus: 'idle',
           progress: 100,
         }
       })
+      const sw = registrationRef.current?.waiting || registrationRef.current?.installing
+      if (sw) {
+        sw.postMessage({ type: 'SKIP_WAITING' })
+      }
     }
 
     const handleVersionDetected = () => {
@@ -107,7 +111,7 @@ export const usePWAUpdate = () => {
       const swUrl = '/sw-v' + version + '.js'
       const newReg = await navigator.serviceWorker.register(swUrl)
 
-      setRegistration(newReg)
+      registrationRef.current = newReg
 
       localStorage.setItem(STORAGE_KEY, version)
       window.currentSWVersion = version
@@ -125,24 +129,13 @@ export const usePWAUpdate = () => {
       }
 
       if (newReg.waiting) {
-        setState((prev) => ({
-          ...prev,
-          updateStatus: 'waiting',
-          progress: 100,
-        }))
+        newReg.waiting.postMessage({ type: 'SKIP_WAITING' })
       }
     } catch (error) {
       console.error('Failed to register new SW:', error)
       setState((prev) => ({ ...prev, updateStatus: 'available' }))
     }
   }, [])
-
-  const activateUpdate = useCallback(() => {
-    const sw = registration?.waiting || registration?.installing
-    if (sw) {
-      sw.postMessage({ type: 'SKIP_WAITING' })
-    }
-  }, [registration])
 
   const checkForUpdates = useCallback(async () => {
     try {
@@ -179,7 +172,6 @@ export const usePWAUpdate = () => {
     ...state,
     dismissUpdate,
     acceptUpdate,
-    activateUpdate,
     checkForUpdates,
   }
 }
