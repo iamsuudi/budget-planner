@@ -11,6 +11,8 @@ import { useStorageUsage } from '#/hooks/useStorageUsage'
 import {
   Building2,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   CircleDollarSign,
   Moon,
   Bell,
@@ -28,7 +30,8 @@ import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
 import { ToggleSwitch } from '#/components/ToggleSwitch'
 import { TopAppBar } from '#/components/TopAppBar'
-import type { AuthenticatorType } from '#/lib/security'
+import { StorageBarChart } from '#/components/StorageBarChart'
+import type { AuthenticatorType } from '#/lib/security/types'
 
 export const Route = createFileRoute('/settings/')({
   component: SettingsPage,
@@ -51,7 +54,18 @@ function SettingsPage() {
     acceptUpdate,
     checkForUpdates,
   } = usePWAUpdate()
-  const { usage, quota, loading, formatBytes, percentage } = useStorageUsage()
+  const {
+    usage,
+    quota,
+    indexedDBSize,
+    otherSize,
+    storeBreakdown,
+    loading,
+    formatBytes,
+    percentage,
+    refreshStorage,
+  } = useStorageUsage()
+  const [showStorageDetails, setShowStorageDetails] = useState(false)
   const { showToast } = useToast()
   const {
     pinEnabled,
@@ -290,7 +304,8 @@ function SettingsPage() {
                       Auto-Lock Time
                     </p>
                     <p className="text-xs text-on-surface-variant">
-                      Lock after {autoLockTime} {autoLockTime === 1 ? 'minute' : 'minutes'} of inactivity
+                      Lock after {autoLockTime}{' '}
+                      {autoLockTime === 1 ? 'minute' : 'minutes'} of inactivity
                     </p>
                   </div>
                 </div>
@@ -337,26 +352,100 @@ function SettingsPage() {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                    <HardDrive className="w-5 h-5" />
+              <div>
+                <div
+                  className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
+                  onClick={() => setShowStorageDetails(!showStorageDetails)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                      <HardDrive className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-on-surface">
+                        Storage Used
+                      </p>
+                      <p className="text-xs text-on-surface-variant">
+                        {loading
+                          ? 'Calculating...'
+                          : `${formatBytes(usage)} of ${formatBytes(quota)}`}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">
-                      Storage Used
-                    </p>
-                    <p className="text-xs text-on-surface-variant">
-                      {loading
-                        ? 'Calculating...'
-                        : `${formatBytes(usage)} of ${formatBytes(quota)}`}
-                    </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        refreshStorage()
+                      }}
+                      className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                      title="Refresh storage info"
+                    >
+                      <RefreshCw className="w-4 h-4 text-slate-400" />
+                    </button>
+                    {!loading && percentage > 80 && (
+                      <span className="text-xs text-orange-400 bg-orange-500/20 px-2 py-1 rounded-lg">
+                        {percentage.toFixed(0)}%
+                      </span>
+                    )}
+                    {showStorageDetails ? (
+                      <ChevronUp className="w-4 h-4 text-slate-400" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-slate-400" />
+                    )}
                   </div>
                 </div>
-                {!loading && percentage > 80 && (
-                  <span className="text-xs text-orange-400 bg-orange-500/20 px-2 py-1 rounded-lg">
-                    {percentage.toFixed(0)}%
-                  </span>
+
+                {showStorageDetails && !loading && (
+                  <div className="px-3 pb-3 space-y-3">
+                    <div className="bg-white/5 rounded-lg p-3 space-y-2">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-on-surface-variant">
+                          IndexedDB
+                        </span>
+                        <span className="text-on-surface font-medium">
+                          {formatBytes(indexedDBSize)}
+                        </span>
+                      </div>
+                      {otherSize > 0 && (
+                        <div className="flex justify-between text-xs">
+                          <span className="text-on-surface-variant">
+                            Other (Cache, etc.)
+                          </span>
+                          <span className="text-on-surface font-medium">
+                            {formatBytes(otherSize)}
+                          </span>
+                        </div>
+                      )}
+                      {storeBreakdown.length > 0 && (
+                        <div className="pt-2 border-t border-white/10">
+                          <p className="text-xs text-on-surface font-bold mb-2">
+                            Data Breakdown
+                          </p>
+                          <StorageBarChart
+                            data={storeBreakdown}
+                            totalSize={indexedDBSize}
+                            formatBytes={formatBytes}
+                          />
+                          <div className="mt-3 space-y-1">
+                            {storeBreakdown.map((store) => (
+                              <div
+                                key={store.name}
+                                className="flex justify-between text-xs py-1"
+                              >
+                                <span className="text-on-surface-variant">
+                                  {store.name}
+                                </span>
+                                <span className="text-on-surface">
+                                  {formatBytes(store.size)}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
               <div
@@ -427,8 +516,7 @@ function SettingsPage() {
                     {progress}%
                   </span>
                 )}
-                {(updateStatus === 'idle' ||
-                  updateStatus === 'available') &&
+                {(updateStatus === 'idle' || updateStatus === 'available') &&
                   currentVersion &&
                   !availableVersion && (
                     <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg">
