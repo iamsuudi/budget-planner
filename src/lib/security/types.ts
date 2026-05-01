@@ -7,6 +7,7 @@ export interface SecuritySettings {
   pinEnabled: boolean
   biometricEnabled: boolean
   authenticatorType?: AuthenticatorType
+  autoLockTime?: number
 }
 
 export interface SecurityContextValue {
@@ -17,6 +18,7 @@ export interface SecurityContextValue {
   biometricAvailable: boolean
   isFirstTime: boolean
   authenticatorType: AuthenticatorType | undefined
+  autoLockTime: number
   unlock: () => void
   lock: () => void
   setupPin: (pin: string) => Promise<void>
@@ -26,4 +28,5 @@ export interface SecurityContextValue {
   resetPinWithBiometric: () => Promise<void>
   resetApp: () => Promise<void>
   getAvailableAuthenticators: () => Promise<AuthenticatorType[]>
+  setAutoLockTime: (minutes: number) => void
 }

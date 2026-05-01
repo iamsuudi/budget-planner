@@ -18,7 +18,7 @@ import { authenticateWithBiometric, registerBiometric } from './biometric'
 
 const SecurityContext = createContext<SecurityContextValue | null>(null)
 
-const INACTIVITY_TIMEOUT = 5 * 60 * 1000 // 5 minutes
+const DEFAULT_AUTO_LOCK_TIME = 15 // minutes
 
 export function SecurityProvider({ children }: { children: ReactNode }) {
   const [isLocked, setIsLocked] = useState(true)
@@ -31,6 +31,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
   >(undefined)
   const [isFirstTime, setIsFirstTime] = useState(true)
   const [loading, setLoading] = useState(true)
+  const [autoLockTime, setAutoLockTimeState] = useState(DEFAULT_AUTO_LOCK_TIME)
   const [inactivityTimer, setInactivityTimer] = useState<NodeJS.Timeout | null>(
     null,
   )
@@ -57,6 +58,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     setPinEnabled(settings.pinEnabled)
     setBiometric(settings.biometricEnabled)
     setAuthenticatorType(settings.authenticatorType)
+    setAutoLockTimeState(settings.autoLockTime ?? DEFAULT_AUTO_LOCK_TIME)
     setIsFirstTime(!settings.pinEnabled && !settings.biometricEnabled)
 
     const isSessionAuthenticated =
@@ -97,9 +99,9 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     if (isLocked || !isAuthenticated) return
     const timer = setTimeout(() => {
       lock()
-    }, INACTIVITY_TIMEOUT)
+    }, autoLockTime * 60 * 1000)
     setInactivityTimer(timer)
-  }, [isLocked, isAuthenticated])
+  }, [isLocked, isAuthenticated, autoLockTime])
 
   useEffect(() => {
     if (isLocked || !isAuthenticated) return
@@ -231,6 +233,18 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
     window.location.reload()
   }, [])
 
+  const setAutoLockTime = useCallback((minutes: number) => {
+    setAutoLockTimeState(minutes)
+    const settings = loadSecuritySettings()
+    saveSecuritySettings({
+      ...settings,
+      autoLockTime: minutes,
+    })
+    if (!isLocked && isAuthenticated) {
+      resetInactivityTimer()
+    }
+  }, [isLocked, isAuthenticated, resetInactivityTimer])
+
   if (loading) {
     return null
   }
@@ -245,6 +259,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         biometricAvailable,
         isFirstTime,
         authenticatorType,
+        autoLockTime,
         unlock,
         lock,
         setupPin,
@@ -254,6 +269,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         resetPinWithBiometric,
         getAvailableAuthenticators,
         resetApp,
+        setAutoLockTime,
       }}
     >
       {children}

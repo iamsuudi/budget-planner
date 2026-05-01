@@ -1,19 +1,30 @@
 import { useState, useRef, useEffect } from 'react'
 import { useSecurity } from '#/lib/security'
-import { Lock, Fingerprint, ArrowLeft, AlertTriangle, Trash2 } from 'lucide-react'
+import {
+  Lock,
+  Fingerprint,
+  ArrowLeft,
+  AlertTriangle,
+  Trash2,
+  Loader2,
+} from 'lucide-react'
 import { useRouter } from '@tanstack/react-router'
 import { clearAllData } from '#/lib/storage'
+import { useToast } from '#/lib/toast'
 
 interface PinInputProps {
   mode: 'enter' | 'setup' | 'confirm' | 'remove'
   onComplete: (pin: string) => void
   onCancel?: () => void
   error?: string
+  showBiometric?: boolean
+  authenticating?: boolean
+  onBiometric?: () => void
 }
 
 const PIN_LENGTH = 4
 
-export function PinInput({ mode, onComplete, onCancel, error }: PinInputProps) {
+export function PinInput({ mode, onComplete, onCancel, error, showBiometric, authenticating, onBiometric }: PinInputProps) {
   const [pin, setPin] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -49,24 +60,32 @@ export function PinInput({ mode, onComplete, onCancel, error }: PinInputProps) {
     setPin(pin.slice(0, -1))
   }
 
-  const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+  const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 
   const getTitle = () => {
     switch (mode) {
-      case 'enter': return 'Enter PIN'
-      case 'setup': return 'Create PIN'
-      case 'confirm': return 'Confirm PIN'
-      case 'remove': return 'Enter Current PIN'
+      case 'enter':
+        return 'Enter PIN'
+      case 'setup':
+        return 'Create PIN'
+      case 'confirm':
+        return 'Confirm PIN'
+      case 'remove':
+        return 'Enter Current PIN'
     }
   }
 
   const getDescription = () => {
     if (error) return error
     switch (mode) {
-      case 'enter': return 'Enter your 4-digit PIN to unlock'
-      case 'setup': return 'Create a 4-digit PIN to secure your app'
-      case 'confirm': return 'Re-enter your PIN to confirm'
-      case 'remove': return 'Enter your current PIN to remove it'
+      case 'enter':
+        return 'Enter your 4-digit PIN to unlock'
+      case 'setup':
+        return 'Create a 4-digit PIN to secure your app'
+      case 'confirm':
+        return 'Re-enter your PIN to confirm'
+      case 'remove':
+        return 'Enter your current PIN to remove it'
     }
   }
 
@@ -86,9 +105,7 @@ export function PinInput({ mode, onComplete, onCancel, error }: PinInputProps) {
           <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4">
             <Lock className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">
-            {getTitle()}
-          </h1>
+          <h1 className="text-2xl font-bold text-white mb-2">{getTitle()}</h1>
           <p className="text-slate-400 text-sm text-center">
             {getDescription()}
           </p>
@@ -127,14 +144,33 @@ export function PinInput({ mode, onComplete, onCancel, error }: PinInputProps) {
               {num}
             </button>
           ))}
-          <div />
+          <button
+            onClick={() => handleNumberClick('0')}
+            className="w-16 h-16 rounded-full bg-slate-800 text-white text-2xl font-semibold hover:bg-slate-700 active:bg-slate-600 transition-colors"
+          >
+            0
+          </button>
+          {showBiometric ? (
+            <button
+              onClick={onBiometric}
+              disabled={authenticating}
+              className="w-16 h-16 rounded-full bg-slate-800 text-primary hover:bg-slate-700 disabled:opacity-50 flex items-center justify-center transition-colors"
+            >
+              {authenticating ? (
+                <Loader2 className="w-6 h-6 animate-spin" />
+              ) : (
+                <Fingerprint className="w-6 h-6" />
+              )}
+            </button>
+          ) : (
+            <div />
+          )}
           <button
             onClick={handleBackspace}
-            className="w-16 h-16 rounded-full bg-slate-800 text-slate-400 text-xl flex items-center justify-center hover:bg-slate-700"
+            className="w-16 h-16 rounded-full bg-slate-800 text-slate-400 text-xl flex items-center justify-center hover:bg-slate-700 transition-colors"
           >
             ←
           </button>
-          <div />
         </div>
       </div>
     </div>
@@ -142,13 +178,22 @@ export function PinInput({ mode, onComplete, onCancel, error }: PinInputProps) {
 }
 
 export function LockScreen() {
-  const { isLocked, verifyPin, isFirstTime, setupPin, biometricEnabled, unlock, pinEnabled, removePin, resetPinWithBiometric } = useSecurity()
+  const {
+    isLocked,
+    verifyPin,
+    isFirstTime,
+    setupPin,
+    biometricEnabled,
+    unlock,
+    resetPinWithBiometric,
+  } = useSecurity()
   const [error, setError] = useState('')
   const [pinKey, setPinKey] = useState(0)
   const [authenticating, setAuthenticating] = useState(false)
   const [showForgot, setShowForgot] = useState(false)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const router = useRouter()
+  const { showToast } = useToast()
 
   useEffect(() => {
     if (showForgot && biometricEnabled) {
@@ -211,11 +256,11 @@ export function LockScreen() {
       sessionStorage.clear()
 
       // Show message and reload
-      alert('App has been reset. The page will now reload.')
+      showToast('App has been reset. The page will now reload.', 'info')
       window.location.reload()
     } catch (error) {
       console.error('Failed to reset app:', error)
-      alert('Failed to reset app. Please try again.')
+      showToast('Failed to reset app. ' + error, 'error')
     }
   }
 
@@ -234,19 +279,15 @@ export function LockScreen() {
 
   return (
     <div className="fixed inset-0 bg-slate-950 z-[100]">
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
-        {biometricEnabled && (
-          <button
-            onClick={handleBiometric}
-            disabled={authenticating}
-            className="p-3 rounded-full bg-primary/20 text-primary hover:bg-primary/30 disabled:opacity-50"
-          >
-            <Fingerprint className="w-6 h-6" />
-          </button>
-        )}
-      </div>
-
-      <PinInput key={pinKey} mode="enter" onComplete={handleVerify} error={error} />
+      <PinInput
+        key={pinKey}
+        mode="enter"
+        onComplete={handleVerify}
+        error={error}
+        showBiometric={biometricEnabled}
+        authenticating={authenticating}
+        onBiometric={handleBiometric}
+      />
 
       <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-4">
         {biometricEnabled && (

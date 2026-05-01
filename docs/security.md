@@ -44,7 +44,7 @@ See `docs/service-worker-versioning.md` and `docs/app-flow.md` for full details.
 | PIN Protection | 4-digit PIN stored as SHA-256 hash with random salt |
 | Biometric Auth | WebAuthn-based authentication supporting multiple authenticator types |
 | Session Persistence | Auth state survives page refreshes via sessionStorage |
-| Auto-Lock | Automatic lock after 5 minutes of inactivity |
+| Auto-Lock | Configurable auto-lock timer (default: 15 minutes) |
 | App Reset | Last-resort option to wipe all data and start fresh |
 
 ## PIN Security
@@ -170,8 +170,9 @@ Page Load → Check sessionStorage → Authenticated? → Skip lock screen
 
 ### Configuration
 
-- **Timeout**: 5 minutes (300,000 ms)
-- **Configurable**: `INACTIVITY_TIMEOUT` constant in `security.tsx`
+- **Default Timeout**: 15 minutes
+- **Configurable**: User can select 1, 5, 15 (default), 30, or 60 minutes
+- **Storage**: Saved in `security-settings` as `autoLockTime` (in minutes)
 
 ### Activity Detection
 
@@ -185,8 +186,8 @@ The following events reset the inactivity timer:
 ### Implementation
 
 ```typescript
-// Start timer on unlock
-const timer = setTimeout(() => lock(), INACTIVITY_TIMEOUT)
+// Timer uses configurable autoLockTime (converted to ms)
+const timer = setTimeout(() => lock(), autoLockTime * 60 * 1000)
 
 // Reset timer on user activity
 const events = ['mousemove', 'keydown', 'click', 'touchstart', 'scroll']
@@ -241,7 +242,7 @@ Lock Screen → "Reset App" button → Confirmation dialog → Delete all data �
 
 | Key | Purpose | Format |
 |-----|---------|--------|
-| `security-settings` | PIN/biometric enable state | JSON: `{ pinEnabled, biometricEnabled, authenticatorType }` |
+| `security-settings` | PIN/biometric enable state | JSON: `{ pinEnabled, biometricEnabled, authenticatorType, autoLockTime }` |
 | `pin-hash` | Hashed PIN with salt | `salt:hash` (hex:hex) |
 | `passkey-credential-id` | WebAuthn credential ID | Base64-encoded ArrayBuffer |
 | `user-id` | Unique user ID for WebAuthn | Hex-encoded 16-byte array |
@@ -311,7 +312,8 @@ self.addEventListener('activate', (event) => {
 SecurityProvider (Context)
   ├─ LockScreen (shows when isLocked=true)
   │    ├─ PinInput (PIN entry/setup)
-  │    ├─ Biometric button (fingerprint icon)
+  │    │    └─ Biometric button (in PIN pad, between 0 and backspace)
+  │    ├─ "Forgot PIN" link (when biometric enabled)
   │    └─ Reset App button
   └─ Children (app content, only rendered when isLocked=false)
 ```
@@ -327,6 +329,7 @@ interface SecurityContextValue {
   biometricAvailable: boolean   // Whether WebAuthn is available
   isFirstTime: boolean         // First time setup needed
   authenticatorType: AuthenticatorType | undefined
+  autoLockTime: number          // Auto-lock time in minutes (default: 15)
   unlock: () => void           // Unlock the app
   lock: () => void             // Lock the app
   setupPin: (pin: string) => Promise<void>
@@ -336,6 +339,7 @@ interface SecurityContextValue {
   resetPinWithBiometric: () => Promise<void>
   resetApp: () => Promise<void>
   getAvailableAuthenticators: () => Promise<AuthenticatorType[]>
+  setAutoLockTime: (minutes: number) => void
 }
 ```
 
@@ -343,9 +347,13 @@ interface SecurityContextValue {
 
 | File | Purpose |
 |------|---------|
-| `src/lib/security.tsx` | Security context, PIN hashing, WebAuthn, session management |
-| `src/components/PinInput.tsx` | PIN entry UI, lock screen, reset app UI |
-| `src/routes/settings/index.tsx` | Security settings page, biometric toggle |
+| `src/lib/security/index.tsx` | Security context, session management, auto-lock logic |
+| `src/lib/security/types.ts` | TypeScript interfaces and types |
+| `src/lib/security/local-storage.ts` | localStorage helpers for security settings |
+| `src/lib/security/pin-crypto.ts` | PIN hashing and verification (SHA-256) |
+| `src/lib/security/biometric.ts` | WebAuthn registration and authentication |
+| `src/components/PinInput.tsx` | PIN entry UI, lock screen, biometric button in PIN pad |
+| `src/routes/settings/index.tsx` | Settings page with auto-lock time selector |
 | `src/routes/settings/security/pin.tsx` | PIN setup/change/removal flow |
 
 ## Security Considerations & Limitations
@@ -399,6 +407,9 @@ Not suitable for:
 
 ## Future Enhancements
 
+- [x] Make auto-lock time configurable (completed v1.1.3)
+- [x] Move biometric button to PIN pad (completed v1.1.3)
+- [x] Add loading state to biometric button (completed v1.1.3)
 - [ ] Add PIN attempt limiting (lockout after N failed attempts)
 - [ ] Encrypt IndexedDB data with keys derived from PIN
 - [ ] Add security audit log (failed attempts, lock/unlock events)

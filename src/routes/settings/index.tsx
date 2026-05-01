@@ -22,6 +22,7 @@ import {
   Wifi,
   Trash2,
   LockKeyhole,
+  Clock,
 } from 'lucide-react'
 import { GlassCard } from '#/components/GlassCard'
 import { Page } from '#/components/Page'
@@ -60,6 +61,8 @@ function SettingsPage() {
     lock,
     authenticatorType,
     getAvailableAuthenticators,
+    autoLockTime,
+    setAutoLockTime,
   } = useSecurity()
   const isOnline = navigator.onLine
   const [showAuthTypeDialog, setShowAuthTypeDialog] = useState(false)
@@ -277,6 +280,32 @@ function SettingsPage() {
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors" />
               </Link>
+              <div className="flex items-center justify-between p-3 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-400">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-on-surface">
+                      Auto-Lock Time
+                    </p>
+                    <p className="text-xs text-on-surface-variant">
+                      Lock after {autoLockTime} {autoLockTime === 1 ? 'minute' : 'minutes'} of inactivity
+                    </p>
+                  </div>
+                </div>
+                <select
+                  value={autoLockTime}
+                  onChange={(e) => setAutoLockTime(Number(e.target.value))}
+                  className="bg-slate-800 text-white text-sm rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:border-primary"
+                >
+                  <option value={1}>1 minute</option>
+                  <option value={5}>5 minutes</option>
+                  <option value={15}>15 minutes</option>
+                  <option value={30}>30 minutes</option>
+                  <option value={60}>1 hour</option>
+                </select>
+              </div>
             </GlassCard>
           </section>
 
