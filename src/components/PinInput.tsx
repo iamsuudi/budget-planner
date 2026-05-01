@@ -24,7 +24,15 @@ interface PinInputProps {
 
 const PIN_LENGTH = 4
 
-export function PinInput({ mode, onComplete, onCancel, error, showBiometric, authenticating, onBiometric }: PinInputProps) {
+export function PinInput({
+  mode,
+  onComplete,
+  onCancel,
+  error,
+  showBiometric,
+  authenticating,
+  onBiometric,
+}: PinInputProps) {
   const [pin, setPin] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -289,11 +297,11 @@ export function LockScreen() {
         onBiometric={handleBiometric}
       />
 
-      <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-4">
+      <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-6">
         {biometricEnabled && (
           <button
             onClick={() => setShowForgot(true)}
-            className="text-sm text-slate-400 hover:text-white"
+            className="text-sm text-slate-400 hover:text-white cursor-pointer"
           >
             Forgot PIN? Reset with biometric
           </button>
@@ -301,10 +309,10 @@ export function LockScreen() {
 
         <button
           onClick={() => setShowResetConfirm(true)}
-          className="text-sm text-red-400/70 hover:text-red-400 flex items-center gap-2"
+          className="text-sm flex items-center gap-2 bg-red-600 text-on-surface py-1 px-4 rounded-md cursor-pointer"
         >
           <Trash2 className="w-4 h-4" />
-          Reset App (Delete all data)
+          Reset App
         </button>
       </div>
 

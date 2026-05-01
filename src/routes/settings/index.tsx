@@ -258,7 +258,9 @@ function SettingsPage() {
                       {!biometricAvailable
                         ? 'Not available on this device'
                         : biometricEnabled
-                          ? `Enabled${authenticatorType ? ` (${getAuthTypeLabel(authenticatorType)})` : ''}`
+                          ? authenticatorType
+                            ? getAuthTypeLabel(authenticatorType)
+                            : 'Enabled'
                           : 'Disabled'}
                     </p>
                   </div>
@@ -312,7 +314,7 @@ function SettingsPage() {
                 <select
                   value={autoLockTime}
                   onChange={(e) => setAutoLockTime(Number(e.target.value))}
-                  className="bg-slate-800 text-white text-sm rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:border-primary"
+                  className=" bg-slate-800 text-white text-sm rounded-lg px-3 py-1.5 border border-slate-700 focus:outline-none focus:border-primary"
                 >
                   <option value={1}>1 minute</option>
                   <option value={5}>5 minutes</option>
@@ -560,20 +562,20 @@ function SettingsPage() {
       </Page>
 
       {showAuthTypeDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
-          <div className="bg-slate-900 w-full max-w-lg rounded-t-2xl p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-white">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-slate-900 w-full max-w-lg rounded-2xl p-6">
+            <h3 className="text-xl font-semibold text-white px-1">
               Choose Authenticator Type
             </h3>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-400 px-1">
               Select how you want to authenticate
             </p>
-            <div className="space-y-2">
+            <div className="space-y-2 my-5">
               {availableAuthTypes.map((type) => (
                 <button
                   key={type}
                   onClick={() => handleAuthTypeSelect(type)}
-                  className="w-full p-4 bg-slate-800 rounded-xl text-white text-left hover:bg-slate-700 transition-colors"
+                  className="text-sm w-full p-3 bg-secondary-container/5 rounded-lg text-secondary-container border border-secondary-container text-left hover:bg-secondary-container/15 transition-colors cursor-pointer"
                 >
                   {getAuthTypeLabel(type)}
                 </button>
@@ -581,7 +583,7 @@ function SettingsPage() {
             </div>
             <button
               onClick={() => setShowAuthTypeDialog(false)}
-              className="w-full p-4 bg-slate-800/50 rounded-xl text-slate-400 text-sm"
+              className="text-xs w-full p-3 bg-error/5 border border-error rounded-lg text-error cursor-pointer"
             >
               Cancel
             </button>

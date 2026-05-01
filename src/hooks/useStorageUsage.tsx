@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getDB } from '#/lib/storage/db'
 
-interface StoreUsage {
+export interface StoreUsage {
   name: string
   size: number
 }
@@ -36,7 +36,10 @@ function calculateObjectSize(obj: unknown): number {
   }
 }
 
-async function calculateIndexedDBSize(): Promise<{ total: number; breakdown: StoreUsage[] }> {
+async function calculateIndexedDBSize(): Promise<{
+  total: number
+  breakdown: StoreUsage[]
+}> {
   try {
     const db = await getDB()
     const storeNames = Array.from(db.objectStoreNames)
@@ -88,7 +91,8 @@ export function useStorageUsage() {
       const usage = estimate.usage ?? 0
       const quota = estimate.quota ?? 0
 
-      const { total: indexedDBSize, breakdown: storeBreakdown } = await calculateIndexedDBSize()
+      const { total: indexedDBSize, breakdown: storeBreakdown } =
+        await calculateIndexedDBSize()
       const otherSize = Math.max(0, usage - indexedDBSize)
 
       setStorage({
@@ -116,7 +120,8 @@ export function useStorageUsage() {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
   }
 
-  const percentage = storage.quota > 0 ? (storage.usage / storage.quota) * 100 : 0
+  const percentage =
+    storage.quota > 0 ? (storage.usage / storage.quota) * 100 : 0
 
   return {
     ...storage,
