@@ -12,9 +12,10 @@ import {
   loadSecuritySettings,
   saveSecuritySettings,
   PIN_HASH_KEY,
+  clearPasskeyCredentialId,
 } from './local-storage'
 import { hashPin, verifyPinHash } from './pin-crypto'
-import { authenticateWithBiometric, registerBiometric } from './biometric'
+import { authenticateWithBiometric, registerBiometric, detectAuthenticatorTypes } from './biometric'
 
 const SecurityContext = createContext<SecurityContextValue | null>(null)
 
@@ -118,7 +119,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
   }, [resetInactivityTimer])
 
   const getAvailableAuthenticators = useCallback(async () => {
-    return (await import('./biometric')).detectAuthenticatorTypes()
+    return detectAuthenticatorTypes()
   }, [])
 
   const unlock = useCallback(() => {
@@ -181,7 +182,6 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
           setAuthenticatorType(authType)
         }
       } else {
-        const { clearPasskeyCredentialId } = await import('./local-storage')
         clearPasskeyCredentialId()
         setAuthenticatorType(undefined)
       }
