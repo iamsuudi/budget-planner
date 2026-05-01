@@ -30,7 +30,7 @@ function TodoCategories() {
     load()
   }, [])
 
-  const handleSubmit = async (e: React.SubmitEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!name.trim()) return
     if (editingId) {
@@ -61,8 +61,8 @@ function TodoCategories() {
         title="Categories"
         description="Set and manage your todo categories."
       >
-        <GlassCard className="p-4">
-          <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+        <GlassCard className="p-4 space-y-4">
+          <form onSubmit={handleSubmit} className="flex gap-2">
             <input
               type="text"
               value={name}

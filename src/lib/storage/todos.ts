@@ -71,7 +71,7 @@ export async function addTodoTask(
   date: string,
 ): Promise<TodoTask> {
   const db = await getDB()
-  const existingTasks = await getTasksByCategoryAndDate(categoryId, date)
+  const existingTasks = await getTasksByDate(date)
   const newTask: TodoTask = {
     id: await generateId(),
     categoryId,
@@ -103,7 +103,6 @@ export async function deleteTodoTask(id: string): Promise<void> {
 }
 
 export async function reorderTodoTasks(
-  categoryId: string,
   date: string,
   taskIds: string[],
 ): Promise<void> {
@@ -111,7 +110,7 @@ export async function reorderTodoTasks(
   const updates = taskIds.map((id, index) => ({ id, priority: index }))
   for (const update of updates) {
     const existing = await db.get('todoTasks', update.id)
-    if (existing && existing.categoryId === categoryId && existing.date === date) {
+    if (existing && existing.date === date) {
       await db.put('todoTasks', { ...existing, priority: update.priority, updatedAt: Date.now() })
     }
   }

@@ -6,7 +6,7 @@ export function DaySelector() {
   const { selectedDate } = currentMonth
 
   return (
-    <div className="overflow-x-auto pb-2 no-scrollbar">
+    <div className="overflow-x-auto py-1 no-scrollbar">
       <div className="flex gap-2 min-w-max px-1">
         {days.map(({ day, date, dayName, isToday }) => {
           const isSelected = date === selectedDate
@@ -14,7 +14,7 @@ export function DaySelector() {
             <button
               key={date}
               onClick={() => setSelectedDate(date)}
-              className={`flex flex-col items-center justify-center w-12 h-16 rounded-xl transition-all cursor-pointer
+              className={`flex flex-col items-center justify-center w-10 h-14 rounded-xl transition-all cursor-pointer
                 ${
                   isSelected
                     ? 'bg-primary-container text-on-primary-container scale-105'
