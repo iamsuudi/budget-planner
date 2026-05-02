@@ -75,15 +75,6 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
       setIsLocked(false)
       setIsAuthenticated(true)
       sessionStorage.setItem('security-auth', 'true')
-    } else if (settings.biometricEnabled && !isSessionAuthenticated) {
-      setIsLocked(true)
-      authenticateWithBiometric().then((success) => {
-        if (success) {
-          setIsLocked(false)
-          setIsAuthenticated(true)
-          sessionStorage.setItem('security-auth', 'true')
-        }
-      })
     } else if (settings.pinEnabled && !isSessionAuthenticated) {
       setIsLocked(true)
     } else {

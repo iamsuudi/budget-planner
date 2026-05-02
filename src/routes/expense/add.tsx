@@ -19,7 +19,6 @@ export const Route = createFileRoute('/expense/add')({
 function AddExpensePage() {
   const navigate = useNavigate()
   const [currencyCC, setCurrencyCC] = useState('USD')
-  const { currentMonth } = useMonth()
   const { data: categories = [] } = useGetCategories()
   const { data: wallets = [] } = useGetWallets()
   const createInvoice = useCreateInvoice()
@@ -68,7 +67,7 @@ function AddExpensePage() {
     <div className="">
       <TopAppBar showBack backTo="/" />
 
-      <Page className="space-y-6">
+      <Page title="Add Expense" description="Create a new expense invoice.">
         {!hasCategories || !hasWallets ? (
           <div className="space-y-4">
             {!hasCategories && (
@@ -181,7 +180,9 @@ function AddExpensePage() {
 
             <section className="space-y-2">
               <div className="space-y-2">
-                <label className="text-sm text-violet-400">Note (Optional)</label>
+                <label className="text-sm text-violet-400">
+                  Note (Optional)
+                </label>
                 <div className="recessed-input rounded-lg border border-outline-variant focus-within:border-secondary transition-colors px-3 py-2">
                   <input
                     className="bg-transparent border-none focus:ring-0 w-full text-white placeholder-slate-600 text-base"
@@ -197,15 +198,17 @@ function AddExpensePage() {
         )}
 
         <div className="mt-6 flex flex-col gap-3">
-          {hasCategories && hasWallets && categoriesWithoutWallet.length === 0 && (
-            <button
-              onClick={handleSave}
-              disabled={!isValid || createInvoice.isPending}
-              className="w-full py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {createInvoice.isPending ? 'Saving...' : 'Save Expense'}
-            </button>
-          )}
+          {hasCategories &&
+            hasWallets &&
+            categoriesWithoutWallet.length === 0 && (
+              <button
+                onClick={handleSave}
+                disabled={!isValid || createInvoice.isPending}
+                className="w-full py-3 bg-primary rounded-xl text-on-primary text-sm font-semibold electric-glow active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {createInvoice.isPending ? 'Saving...' : 'Save Expense'}
+              </button>
+            )}
           <CancelButton to="/" />
         </div>
 
