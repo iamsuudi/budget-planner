@@ -8,6 +8,10 @@ export interface BeforeInstallPromptEvent extends Event {
 }
 
 declare global {
+  interface Navigator {
+    standalone?: boolean
+  }
+
   interface Window {
     deferredInstallPrompt: BeforeInstallPromptEvent | null
     latestSWVersion?: string

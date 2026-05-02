@@ -7,14 +7,6 @@ interface SWProgress {
   status: SWStatus
 }
 
-declare global {
-  interface Window {
-    swReady?: boolean
-    swError?: boolean
-    latestSWVersion?: string
-  }
-}
-
 export function useSWProgress(): SWProgress {
   const [progress, setProgress] = useState<SWProgress>({
     progress: 0,

@@ -14,7 +14,8 @@ const STORAGE_KEY = 'swRegisteredVersion'
 
 export const usePWAUpdate = () => {
   const [state, setState] = useState<UpdateState>({
-    currentVersion: window.currentSWVersion || localStorage.getItem(STORAGE_KEY),
+    currentVersion:
+      window.currentSWVersion || localStorage.getItem(STORAGE_KEY),
     availableVersion: window.swAvailableVersion ?? null,
     updateStatus: window.swAvailableVersion ? 'available' : 'idle',
     progress: 0,
@@ -61,7 +62,8 @@ export const usePWAUpdate = () => {
           progress: 100,
         }
       })
-      const sw = registrationRef.current?.waiting || registrationRef.current?.installing
+      const sw =
+        registrationRef.current?.waiting || registrationRef.current?.installing
       if (sw) {
         sw.postMessage({ type: 'SKIP_WAITING' })
       }
