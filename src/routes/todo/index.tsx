@@ -70,7 +70,6 @@ function SortableTask({
           ? 'opacity-60 bg-surface-container-low'
           : 'bg-surface-container-high hover:bg-surface-container-highest'
       } ${isDragging ? 'shadow-2xl scale-[1.02] z-50' : ''}`}
-      onClick={() => onToggle(task)}
     >
       <div className="text-outline/40 hover:text-outline cursor-grab active:cursor-grabbing select-none shrink-0">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -83,7 +82,10 @@ function SortableTask({
         </svg>
       </div>
 
-      <div className="flex-1 flex items-center gap-1 min-w-0">
+      <div
+        onClick={() => onToggle(task)}
+        className="flex-1 flex items-center gap-1 min-w-0"
+      >
         {category && (
           <span
             className="mt-0.5 px-2 py-0.5 rounded-full text-[10px] font-medium leading-tight"
@@ -110,7 +112,7 @@ function SortableTask({
         <button
           onClick={(e) => {
             e.stopPropagation()
-            onToggle(task)
+            // onToggle(task)
           }}
           className="rounded-full p-0.5 bg-on-background shrink-0"
         >
