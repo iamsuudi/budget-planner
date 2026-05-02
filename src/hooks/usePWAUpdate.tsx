@@ -12,17 +12,54 @@ export interface UpdateState {
 
 const STORAGE_KEY = 'swRegisteredVersion'
 
-export const usePWAUpdate = () => {
-  const [state, setState] = useState<UpdateState>({
-    currentVersion:
-      window.currentSWVersion || localStorage.getItem(STORAGE_KEY),
-    availableVersion: window.swAvailableVersion ?? null,
-    updateStatus: window.swAvailableVersion ? 'available' : 'idle',
-    progress: 0,
-    forceUpdate: window.swForceUpdate || false,
-  })
+// Shared store to keep all hook instances in sync
+type Listener = (state: UpdateState) => void
+let globalState: UpdateState = {
+  currentVersion: null,
+  availableVersion: null,
+  updateStatus: 'idle',
+  progress: 0,
+  forceUpdate: false,
+}
+const listeners = new Set<Listener>()
 
+const getInitialState = (): UpdateState => ({
+  currentVersion: window.currentSWVersion || localStorage.getItem(STORAGE_KEY),
+  availableVersion: window.swAvailableVersion ?? null,
+  updateStatus: window.swAvailableVersion ? 'available' : 'idle',
+  progress: 0,
+  forceUpdate: window.swForceUpdate || false,
+})
+
+const notify = () => {
+  listeners.forEach((fn) => fn(globalState))
+}
+
+const setGlobalState = (updater: (prev: UpdateState) => UpdateState) => {
+  const prev = globalState
+  const next = updater(prev)
+  if (next !== prev) {
+    globalState = next
+    notify()
+  }
+}
+
+export const usePWAUpdate = () => {
+  const [state, setState] = useState<UpdateState>(getInitialState)
   const registrationRef = useRef<ServiceWorkerRegistration | null>(null)
+
+  useEffect(() => {
+    // Subscribe to global state changes
+    listeners.add(setState)
+    // Sync initial state if needed
+    if (globalState.updateStatus !== 'idle' || globalState.availableVersion) {
+      setState(globalState)
+    }
+
+    return () => {
+      listeners.delete(setState)
+    }
+  }, [])
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
@@ -34,9 +71,10 @@ export const usePWAUpdate = () => {
     const handleUpdateAvailable = (event: Event) => {
       const detail = (event as CustomEvent<{ version: string }>).detail
       const registeredVersion = localStorage.getItem(STORAGE_KEY)
-      setState((prev) => ({
+      setGlobalState((prev) => ({
         ...prev,
         currentVersion: window.currentSWVersion || registeredVersion,
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         availableVersion: detail?.version ?? null,
         updateStatus: 'available',
       }))
@@ -44,17 +82,18 @@ export const usePWAUpdate = () => {
 
     const handleProgress = (event: Event) => {
       const detail = (event as CustomEvent<{ percent: number }>).detail
-      setState((prev) => {
+      setGlobalState((prev) => {
         if (prev.updateStatus !== 'downloading') return prev
         return {
           ...prev,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           progress: detail?.percent ?? 0,
         }
       })
     }
 
     const handleReady = () => {
-      setState((prev) => {
+      setGlobalState((prev) => {
         if (prev.updateStatus !== 'downloading') return prev
         return {
           ...prev,
@@ -71,7 +110,7 @@ export const usePWAUpdate = () => {
 
     const handleVersionDetected = () => {
       const registeredVersion = localStorage.getItem(STORAGE_KEY)
-      setState((prev) => ({
+      setGlobalState((prev) => ({
         ...prev,
         currentVersion: window.currentSWVersion || registeredVersion,
         availableVersion: window.swAvailableVersion ?? null,
@@ -93,16 +132,20 @@ export const usePWAUpdate = () => {
   }, [])
 
   const dismissUpdate = useCallback(() => {
-    if (state.forceUpdate) return
+    if (globalState.forceUpdate) return
     sessionStorage.setItem('sw-dismissed-update', 'true')
-    setState((prev) => ({
+    setGlobalState((prev) => ({
       ...prev,
       updateStatus: 'idle',
     }))
-  }, [state.forceUpdate])
+  }, [])
 
   const acceptUpdate = useCallback(async () => {
-    setState((prev) => ({ ...prev, updateStatus: 'downloading', progress: 0 }))
+    setGlobalState((prev) => ({
+      ...prev,
+      updateStatus: 'downloading',
+      progress: 0,
+    }))
 
     try {
       const res = await fetch('/version.json?t=' + Date.now())
@@ -135,7 +178,7 @@ export const usePWAUpdate = () => {
       }
     } catch (error) {
       console.error('Failed to register new SW:', error)
-      setState((prev) => ({ ...prev, updateStatus: 'available' }))
+      setGlobalState((prev) => ({ ...prev, updateStatus: 'available' }))
     }
   }, [])
 
@@ -152,7 +195,7 @@ export const usePWAUpdate = () => {
       const registeredVersion = localStorage.getItem(STORAGE_KEY)
       if (registeredVersion && registeredVersion !== version) {
         window.swAvailableVersion = version
-        setState((prev) => ({
+        setGlobalState((prev) => ({
           ...prev,
           currentVersion: registeredVersion,
           availableVersion: version,
@@ -160,7 +203,7 @@ export const usePWAUpdate = () => {
           forceUpdate: manifest.forceUpdate === true,
         }))
       } else {
-        setState((prev) => ({
+        setGlobalState((prev) => ({
           ...prev,
           currentVersion: window.currentSWVersion || registeredVersion,
         }))

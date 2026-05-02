@@ -484,48 +484,64 @@ function SettingsPage() {
                 )}
               </div>
               <div
-                className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
-                onClick={handleUpdate}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-400">
-                    <RefreshCw
-                      className={`w-5 h-5 ${updateStatus === 'downloading' ? 'animate-spin' : ''}`}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-on-surface">
-                      Update App
-                    </p>
-                    <p className="text-xs text-on-surface-variant">
-                      {updateStatus === 'downloading'
-                        ? `Downloading... ${progress}%`
-                        : updateStatus === 'available'
-                          ? `v${availableVersion} available`
-                          : currentVersion
-                            ? `v${currentVersion}`
-                            : 'Checking...'}
-                    </p>
-                  </div>
-                </div>
-                {updateStatus === 'available' && (
-                  <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg">
-                    Download
-                  </span>
-                )}
-                {updateStatus === 'downloading' && (
-                  <span className="text-xs text-cyan-400 bg-cyan-500/20 px-2 py-1 rounded-lg">
-                    {progress}%
-                  </span>
-                )}
-                {(updateStatus === 'idle' || updateStatus === 'available') &&
-                  currentVersion &&
-                  !availableVersion && (
-                    <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg">
-                      Up to Date
-                    </span>
-                  )}
-              </div>
+                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
+                 onClick={updateStatus !== 'downloading' ? handleUpdate : undefined}
+               >
+                 <div className="flex items-center gap-3 flex-1 min-w-0">
+                   <div className="w-9 h-9 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-400 shrink-0">
+                     <RefreshCw
+                       className={`w-5 h-5 ${updateStatus === 'downloading' ? 'animate-spin' : ''}`}
+                     />
+                   </div>
+                   <div className="flex-1 min-w-0">
+                     <p className="text-sm font-semibold text-on-surface">
+                       {updateStatus === 'downloading'
+                         ? 'Downloading Update...'
+                         : updateStatus === 'available'
+                           ? 'Update Available'
+                           : 'Update App'}
+                     </p>
+                     <p className="text-xs text-on-surface-variant">
+                       {updateStatus === 'downloading' && currentVersion && availableVersion
+                         ? `v${currentVersion} → v${availableVersion}`
+                         : updateStatus === 'downloading'
+                           ? `Downloading... ${progress}%`
+                           : updateStatus === 'available' && currentVersion && availableVersion
+                             ? `v${currentVersion} → v${availableVersion}`
+                             : updateStatus === 'available'
+                               ? `v${availableVersion} available`
+                               : currentVersion
+                                 ? `v${currentVersion}`
+                                 : 'Checking...'}
+                     </p>
+                     {updateStatus === 'downloading' && (
+                       <div className="mt-2 w-full bg-white/10 rounded-full h-1.5">
+                         <div
+                           className="bg-yellow-400 h-1.5 rounded-full transition-all duration-300"
+                           style={{ width: `${progress}%` }}
+                         />
+                       </div>
+                     )}
+                   </div>
+                 </div>
+                 {updateStatus === 'available' && (
+                   <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg shrink-0 ml-2">
+                     Update
+                   </span>
+                 )}
+                 {updateStatus === 'downloading' && (
+                   <span className="text-xs text-cyan-400 bg-cyan-500/20 px-2 py-1 rounded-lg shrink-0 ml-2">
+                     {progress}%
+                   </span>
+                 )}
+                 {updateStatus === 'idle' &&
+                   currentVersion &&
+                   !availableVersion && (
+                     <span className="text-xs text-green-400 bg-green-500/20 px-2 py-1 rounded-lg shrink-0 ml-2">
+                       Up to Date
+                     </span>
+                   )}
+               </div>
               <div
                 className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
                 onClick={handleDeleteAll}
