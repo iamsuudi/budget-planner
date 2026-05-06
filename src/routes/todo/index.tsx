@@ -20,6 +20,7 @@ import {
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
@@ -53,11 +54,12 @@ function SortableTask({
     isDragging,
   } = useSortable({ id: task.id })
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  }
+   const style = {
+     transform: CSS.Transform.toString(transform),
+     transition,
+     opacity: isDragging ? 0.5 : 1,
+     touchAction: 'none',
+   }
 
   return (
     <div
@@ -171,6 +173,9 @@ function TodoIndex() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 8 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
