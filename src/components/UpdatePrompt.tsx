@@ -25,6 +25,54 @@ export function UpdatePrompt() {
 
   const canDismiss = !forceUpdate
 
+  // Full-screen overlay for forced updates
+  if (forceUpdate) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div className="w-[90%] max-w-md p-6 rounded-xl border border-cyan-500/30 bg-surface-container-high">
+          <div className="flex items-center gap-3 mb-4">
+            {updateStatus === 'available' && (
+              <RefreshCw className="size-6 text-cyan-400 shrink-0" />
+            )}
+            {updateStatus === 'downloading' && (
+              <Download className="size-6 text-cyan-400 shrink-0" />
+            )}
+            <div>
+              <h3 className="text-lg font-semibold text-on-surface">
+                {updateStatus === 'available' && 'Update Required'}
+                {updateStatus === 'downloading' && 'Downloading Update...'}
+              </h3>
+              <p className="text-sm text-on-surface-variant mt-1">
+                {currentVersion && availableVersion
+                  ? `v${currentVersion} → v${availableVersion}`
+                  : 'New version required'}
+              </p>
+            </div>
+          </div>
+
+          {updateStatus === 'downloading' && (
+            <div className="mt-4 w-full bg-white/10 rounded-full h-2">
+              <div
+                className="bg-cyan-400 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          )}
+
+          {updateStatus === 'available' && (
+            <button
+              onClick={handleUpdate}
+              className="mt-4 w-full px-4 py-2 rounded-lg bg-cyan-500 text-white text-sm font-semibold hover:bg-cyan-600 transition-colors"
+            >
+              Update Now
+            </button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Regular bottom-sheet for optional updates
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md">
       <div className="flex items-start gap-3 px-4 py-3 rounded-xl border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-md">
@@ -42,7 +90,7 @@ export function UpdatePrompt() {
           </p>
           <p className="text-xs text-on-surface-variant">
             {currentVersion && availableVersion
-              ? `v${currentVersion} \u2192 v${availableVersion}`
+              ? `v${currentVersion} → v${availableVersion}`
               : 'New version ready'}
           </p>
 

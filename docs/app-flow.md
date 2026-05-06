@@ -257,15 +257,19 @@ controllerchange event → page reloads
 New SW active, versions match
 ```
 
-### Force Update
+### Minimum Supported Version (Force Update)
 
 ```
-version.json has "forceUpdate": true
+version.json has "minSupportedVersion": "1.0.5"
   ↓
-UpdatePrompt: no dismiss button
+User's registered version (e.g., "1.0.4") < minSupportedVersion
   ↓
-User must update
+UpdatePrompt: full-screen overlay, no dismiss button
+  ↓
+User must update (even if latest version is not forced)
 ```
+
+**Note**: This replaces the per-version `forceUpdate` flag. The minimum version is set in `package.json` and enforced regardless of how many non-forced versions were released after it.
 
 ## Navigation Structure
 

@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { routeTree } from './routeTree.gen'
 import { ToastProvider } from './lib/toast'
 import { UpdatePrompt } from './components/UpdatePrompt'
+import { isVersionLessThan } from './lib/version'
 
 const queryClient = new QueryClient()
 const STORAGE_KEY = 'swRegisteredVersion'
@@ -47,11 +48,13 @@ async function registerServiceWorker() {
   if (!manifest?.version) return
 
   window.latestSWVersion = manifest.version
-  window.swForceUpdate = manifest.forceUpdate === true
+  const registeredVersion = localStorage.getItem(STORAGE_KEY) || '0.0.0'
+  const minSupportedVersion = manifest.minSupportedVersion || '0.0.0'
 
-  const registeredVersion = localStorage.getItem(STORAGE_KEY)
+  window.swMinSupportedVersion = minSupportedVersion
+  window.swUpdateRequired = isVersionLessThan(registeredVersion, minSupportedVersion)
 
-  if (!registeredVersion) {
+  if (!registeredVersion || registeredVersion === '0.0.0') {
     const swUrl = '/sw-v' + manifest.version + '.js'
     const registration = await navigator.serviceWorker.register(swUrl)
 
@@ -85,7 +88,7 @@ async function registerServiceWorker() {
     window.currentSWVersion = registeredVersion
 
     const dismissed = sessionStorage.getItem('sw-dismissed-update')
-    if (!dismissed) {
+    if (!dismissed || window.swUpdateRequired) {
       window.dispatchEvent(
         new CustomEvent('sw-update-available', {
           detail: { version: manifest.version },

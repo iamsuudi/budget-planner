@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { isVersionLessThan } from '#/lib/version'
 
 export type UpdateStatus = 'idle' | 'available' | 'downloading'
 
@@ -28,7 +29,7 @@ const getInitialState = (): UpdateState => ({
   availableVersion: window.swAvailableVersion ?? null,
   updateStatus: window.swAvailableVersion ? 'available' : 'idle',
   progress: 0,
-  forceUpdate: window.swForceUpdate || false,
+  forceUpdate: window.swUpdateRequired || false,
 })
 
 const notify = () => {
@@ -74,9 +75,9 @@ export const usePWAUpdate = () => {
       setGlobalState((prev) => ({
         ...prev,
         currentVersion: window.currentSWVersion || registeredVersion,
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         availableVersion: detail?.version ?? null,
         updateStatus: 'available',
+        forceUpdate: window.swUpdateRequired || false,
       }))
     }
 
@@ -86,7 +87,6 @@ export const usePWAUpdate = () => {
         if (prev.updateStatus !== 'downloading') return prev
         return {
           ...prev,
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           progress: detail?.percent ?? 0,
         }
       })
@@ -114,7 +114,7 @@ export const usePWAUpdate = () => {
         ...prev,
         currentVersion: window.currentSWVersion || registeredVersion,
         availableVersion: window.swAvailableVersion ?? null,
-        forceUpdate: window.swForceUpdate || false,
+        forceUpdate: window.swUpdateRequired || false,
       }))
     }
 
@@ -190,17 +190,24 @@ export const usePWAUpdate = () => {
       const version = manifest?.version
       if (!version) return
 
-      window.swForceUpdate = manifest.forceUpdate === true
+      const registeredVersion = localStorage.getItem(STORAGE_KEY) || '0.0.0'
+      const minSupportedVersion = manifest.minSupportedVersion || '0.0.0'
+      const isRequired = isVersionLessThan(
+        registeredVersion,
+        minSupportedVersion,
+      )
 
-      const registeredVersion = localStorage.getItem(STORAGE_KEY)
-      if (registeredVersion && registeredVersion !== version) {
+      window.swUpdateRequired = isRequired
+      window.swMinSupportedVersion = minSupportedVersion
+
+      if (registeredVersion !== version) {
         window.swAvailableVersion = version
         setGlobalState((prev) => ({
           ...prev,
           currentVersion: registeredVersion,
           availableVersion: version,
           updateStatus: 'available',
-          forceUpdate: manifest.forceUpdate === true,
+          forceUpdate: isRequired,
         }))
       } else {
         setGlobalState((prev) => ({

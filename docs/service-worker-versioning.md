@@ -10,24 +10,24 @@ This application uses a versioned Service Worker (SW) with a consent-based updat
 
 ### Files
 
-| File | Purpose |
-|------|---------|
-| `src/sw-template.js` | SW template with placeholders for cache name and asset list |
-| `public/generate-sw.js` | Build script that reads `package.json` version, injects assets, writes `sw-v{version}.js` and `version.json` |
-| `src/main.tsx` | Entry point — handles SW registration on first visit, detects version mismatches on return |
-| `src/hooks/usePWAUpdate.tsx` | Central hook for update state management (`idle` → `available` → `downloading`) |
-| `src/components/UpdatePrompt.tsx` | Global bottom-sheet dialog for SW updates with progress bar and version display |
-| `src/components/SWProgressBar.tsx` | Full-screen progress bar shown during first-time SW installation |
-| `src/hooks/useSWProgress.tsx` | Hook that tracks SW install progress for the progress bar |
-| `src/hooks/useSWToasts.tsx` | Hook that shows toast notifications for SW events |
-| `src/hooks/usePWAVersion.ts` | Hook to read current/latest SW version for display in UI |
-| `sw.d.ts` | TypeScript declarations for window extensions |
+| File                               | Purpose                                                                                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `src/sw-template.js`               | SW template with placeholders for cache name and asset list                                                  |
+| `public/generate-sw.js`            | Build script that reads `package.json` version, injects assets, writes `sw-v{version}.js` and `version.json` |
+| `src/main.tsx`                     | Entry point — handles SW registration on first visit, detects version mismatches on return                   |
+| `src/hooks/usePWAUpdate.tsx`       | Central hook for update state management (`idle` → `available` → `downloading`)                              |
+| `src/components/UpdatePrompt.tsx`  | Global bottom-sheet dialog for SW updates with progress bar and version display                              |
+| `src/components/SWProgressBar.tsx` | Full-screen progress bar shown during first-time SW installation                                             |
+| `src/hooks/useSWProgress.tsx`      | Hook that tracks SW install progress for the progress bar                                                    |
+| `src/hooks/usePWAVersion.ts`       | Hook to read current/latest SW version for display in UI                                                     |
+| `sw.d.ts`                          | TypeScript declarations for window extensions                                                                |
 
 ### Build Output
 
 Running `bun run build` produces:
+
 - `dist/sw-v{version}.js` — versioned service worker file (e.g., `sw-v0.0.2.js`)
-- `dist/version.json` — manifest with `{ "version": "0.0.2", "generatedAt": "...", "forceUpdate": false }`
+- `dist/version.json` — manifest with `{ "version": "0.0.2", "minSupportedVersion": "0.0.0", "generatedAt": "..." }`
 
 No generic `sw.js` is generated. Each version has a unique URL, preventing browser auto-update behavior.
 
@@ -93,13 +93,36 @@ User opens Settings → App & Storage → "Update App"
   → If up to date: shows current version
 ```
 
-### Force Update
+### Minimum Supported Version
 
-When `version.json` has `"forceUpdate": true`:
-- The Update/Later buttons are hidden
-- The X (dismiss) button is hidden
-- User cannot dismiss the dialog
-- Set `forceUpdate: true` in `public/generate-sw.js` before building when you need to force an update
+The app uses a `minSupportedVersion` field in `package.json` and `version.json` to enforce critical updates. Unlike a per-version `forceUpdate` flag, this approach ensures users who missed a forced version are still required to update when a newer non-forced version is released.
+
+**How it works**:
+
+1. Developer sets `minSupportedVersion` in `package.json` when releasing critical updates
+2. Build script copies this to `version.json`
+3. On app load, client compares registered version with `minSupportedVersion`
+4. If registered version < `minSupportedVersion`, update is mandatory (full-screen overlay, no dismiss)
+5. If registered version >= `minSupportedVersion`, update is optional (standard bottom-sheet)
+
+**Example Scenario**:
+
+- v1.0.5 released with `minSupportedVersion: "1.0.5"` (critical security fix)
+- v1.0.6 released with `minSupportedVersion: "1.0.5"` (non-critical feature)
+- User with v1.0.4 visits during v1.0.6 era → **forced to update** (because 1.0.4 < 1.0.5)
+- User with v1.0.5 visits during v1.0.6 era → optional update to v1.0.6
+
+**Developer Workflow**:
+
+```json
+// package.json
+{
+  "version": "1.0.5",
+  "minSupportedVersion": "1.0.5"
+}
+```
+
+Build and deploy. All users below v1.0.5 will be forced to update.
 
 ## State Machine
 
@@ -119,39 +142,41 @@ When `version.json` has `"forceUpdate": true`:
 ```
 
 State transitions:
+
 - `available` → `idle`: user dismisses (if not forceUpdate)
 - `downloading` → `idle`: SW download complete, auto-activates via SKIP_WAITING
 - `handleReady` and `handleProgress` only affect state when already in `downloading` — this prevents first-install events from triggering the update dialog
 
 ## Events
 
-| Event | Source | Detail | Purpose |
-|-------|--------|--------|---------|
-| `sw-version-detected` | main.tsx | none | Signals version info is available on window object |
-| `sw-update-available` | main.tsx | `{ version: string }` | New version detected on server, differs from local |
-| `sw-progress` | main.tsx (from SW postMessage) | `{ percent: number }` | Download progress during SW install |
-| `sw-ready` | main.tsx | none | SW is active and controlling the page |
-| `sw-error` | main.tsx | none | SW registration failed |
+| Event                 | Source                         | Detail                | Purpose                                            |
+| --------------------- | ------------------------------ | --------------------- | -------------------------------------------------- |
+| `sw-version-detected` | main.tsx                       | none                  | Signals version info is available on window object |
+| `sw-update-available` | main.tsx                       | `{ version: string }` | New version detected on server, differs from local |
+| `sw-progress`         | main.tsx (from SW postMessage) | `{ percent: number }` | Download progress during SW install                |
+| `sw-ready`            | main.tsx                       | none                  | SW is active and controlling the page              |
+| `sw-error`            | main.tsx                       | none                  | SW registration failed                             |
 
 ## Storage Keys
 
-| Key | Type | Purpose |
-|-----|------|---------|
-| `localStorage['swRegisteredVersion']` | string (e.g., "0.0.2") | Tracks which SW version is registered. Used to detect updates. |
-| `sessionStorage['sw-dismissed-update']` | string ("true") | Suppresses update dialog for current browser session. Cleared on tab close. |
+| Key                                     | Type                   | Purpose                                                                     |
+| --------------------------------------- | ---------------------- | --------------------------------------------------------------------------- |
+| `localStorage['swRegisteredVersion']`   | string (e.g., "0.0.2") | Tracks which SW version is registered. Used to detect updates.              |
+| `sessionStorage['sw-dismissed-update']` | string ("true")        | Suppresses update dialog for current browser session. Cleared on tab close. |
 
 ## Window Extensions
 
 ```typescript
 interface Window {
   deferredInstallPrompt: BeforeInstallPromptEvent | null
-  latestSWVersion?: string          // Current version from server (version.json)
-  currentSWVersion?: string         // Version of the active/registered SW
-  swRegisteredVersion?: string      // Same as localStorage value
-  swAvailableVersion?: string       // Pending update version
-  swForceUpdate?: boolean           // Whether update is mandatory
-  swReady?: boolean                 // SW is active
-  swError?: boolean                 // SW registration failed
+  latestSWVersion?: string // Current version from server (version.json)
+  currentSWVersion?: string // Version of the active/registered SW
+  swRegisteredVersion?: string // Same as localStorage value
+  swAvailableVersion?: string // Pending update version
+  swUpdateRequired?: boolean // Whether update is mandatory (version < minSupportedVersion)
+  swMinSupportedVersion?: string // Minimum supported version from version.json
+  swReady?: boolean // SW is active
+  swError?: boolean // SW registration failed
 }
 ```
 
@@ -161,14 +186,14 @@ interface Window {
 
 ```typescript
 const {
-  currentVersion,       // string | null — currently registered version
-  availableVersion,     // string | null — version available for update
-  updateStatus,         // 'idle' | 'available' | 'downloading'
-  progress,             // number — download percentage (0-100)
-  forceUpdate,          // boolean — whether dialog is dismissible
-  dismissUpdate,        // () => void — dismiss the update dialog
-  acceptUpdate,         // () => Promise<void> — download and auto-activate the new version
-  checkForUpdates,      // () => Promise<void> — manually check version.json
+  currentVersion, // string | null — currently registered version
+  availableVersion, // string | null — version available for update
+  updateStatus, // 'idle' | 'available' | 'downloading'
+  progress, // number — download percentage (0-100)
+  forceUpdate, // boolean — whether update is mandatory (version < minSupportedVersion)
+  dismissUpdate, // () => void — dismiss the update dialog (disabled if forceUpdate)
+  acceptUpdate, // () => Promise<void> — download and auto-activate the new version
+  checkForUpdates, // () => Promise<void> — manually check version.json
 } = usePWAUpdate()
 ```
 
@@ -176,8 +201,8 @@ const {
 
 ```typescript
 const {
-  currentVersion,   // string | null — from window.currentSWVersion or localStorage
-  latestVersion,    // string | null — from window.latestSWVersion
+  currentVersion, // string | null — from window.currentSWVersion or localStorage
+  latestVersion, // string | null — from window.latestSWVersion
 } = usePWAVersion()
 ```
 
@@ -185,8 +210,8 @@ const {
 
 ```typescript
 const {
-  progress,   // number — 0-100
-  status,     // 'idle' | 'installing' | 'ready' | 'error'
+  progress, // number — 0-100
+  status, // 'idle' | 'installing' | 'ready' | 'error'
 } = useSWProgress()
 ```
 
@@ -209,14 +234,18 @@ const {
 To release a new version:
 
 1. Bump version in `package.json`:
+
    ```json
    "version": "0.0.3"
    ```
 
-2. (Optional) Set `forceUpdate: true` in `public/generate-sw.js`:
-   ```js
-   forceUpdate: true,  // make this non-dismissible
+2. (Optional) Set `minSupportedVersion` in `package.json` for critical updates:
+
+   ```json
+   "minSupportedVersion": "0.0.3"  // force all users below this version to update
    ```
+
+   If not set, defaults to `"0.0.0"` (no forced updates).
 
 3. Run `bun run build`
 

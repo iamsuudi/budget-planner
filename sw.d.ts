@@ -18,7 +18,8 @@ declare global {
     currentSWVersion?: string
     swRegisteredVersion?: string
     swAvailableVersion?: string
-    swForceUpdate?: boolean
+    swUpdateRequired?: boolean
+    swMinSupportedVersion?: string
     swReady?: boolean
     swError?: boolean
   }
