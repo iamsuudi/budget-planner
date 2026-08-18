@@ -13,7 +13,7 @@ export const Route = createFileRoute('/note/add')({
 function NoteAdd() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [editor, setEditor] = useState<any>(null)
+  const [, setEditor] = useState<any>(null)
   const navigate = useNavigate()
 
   const handleEditorRef = useCallback((ed: any) => setEditor(ed), [])

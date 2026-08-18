@@ -88,7 +88,7 @@ export function getDB() {
           try {
             const storeNames = db.objectStoreNames as unknown as string[]
             if (storeNames.includes('paymentMethods')) {
-              db.deleteObjectStore('paymentMethods')
+              db.deleteObjectStore('paymentMethods' as never)
             }
           } catch {}
         }

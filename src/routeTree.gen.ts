@@ -9,78 +9,48 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TodoIndexRouteImport } from './routes/todo/index'
-import { Route as SettingsIndexRouteImport } from './routes/settings/index'
-import { Route as SalaryIndexRouteImport } from './routes/salary/index'
-import { Route as ProfileIndexRouteImport } from './routes/profile/index'
-import { Route as NoteIndexRouteImport } from './routes/note/index'
-import { Route as ExpenseIndexRouteImport } from './routes/expense/index'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as BudgetIndexRouteImport } from './routes/budget/index'
-import { Route as TodoCategoriesRouteImport } from './routes/todo/categories'
-import { Route as TodoAddRouteImport } from './routes/todo/add'
-import { Route as SalaryAddRouteImport } from './routes/salary/add'
-import { Route as ProfileEditRouteImport } from './routes/profile/edit'
-import { Route as NoteAddRouteImport } from './routes/note/add'
+import { Route as ExpenseIndexRouteImport } from './routes/expense/index'
 import { Route as ExpenseAddRouteImport } from './routes/expense/add'
-import { Route as SettingsWalletsIndexRouteImport } from './routes/settings/wallets/index'
-import { Route as SettingsCurrencyIndexRouteImport } from './routes/settings/currency/index'
-import { Route as SalaryTransactionsIndexRouteImport } from './routes/salary/transactions/index'
-import { Route as SalaryCategoriesIndexRouteImport } from './routes/salary/categories/index'
-import { Route as ExpenseTransactionsIndexRouteImport } from './routes/expense/transactions/index'
-import { Route as ExpenseCategoriesIndexRouteImport } from './routes/expense/categories/index'
+import { Route as NoteIndexRouteImport } from './routes/note/index'
+import { Route as NoteAddRouteImport } from './routes/note/add'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as ProfileEditRouteImport } from './routes/profile/edit'
+import { Route as SalaryIndexRouteImport } from './routes/salary/index'
+import { Route as SalaryAddRouteImport } from './routes/salary/add'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as TodoIndexRouteImport } from './routes/todo/index'
+import { Route as TodoAddRouteImport } from './routes/todo/add'
+import { Route as TodoCategoriesRouteImport } from './routes/todo/categories'
 import { Route as BudgetEditIndexRouteImport } from './routes/budget/edit/index'
-import { Route as SettingsWalletsAddRouteImport } from './routes/settings/wallets/add'
-import { Route as SettingsSecurityPinRouteImport } from './routes/settings/security/pin'
-import { Route as SalaryCategoriesAddRouteImport } from './routes/salary/categories/add'
-import { Route as NoteViewIdRouteImport } from './routes/note/view.$id'
-import { Route as NoteEditIdRouteImport } from './routes/note/edit.$id'
+import { Route as ExpenseCategoriesIndexRouteImport } from './routes/expense/categories/index'
 import { Route as ExpenseCategoriesAddRouteImport } from './routes/expense/categories/add'
-import { Route as SettingsWalletsEditIdRouteImport } from './routes/settings/wallets/edit.$id'
-import { Route as SalaryTransactionsEditIdRouteImport } from './routes/salary/transactions/edit.$id'
-import { Route as SalaryCategoriesEditIdRouteImport } from './routes/salary/categories/edit.$id'
-import { Route as ExpenseTransactionsEditIdRouteImport } from './routes/expense/transactions/edit.$id'
+import { Route as ExpenseTransactionsIndexRouteImport } from './routes/expense/transactions/index'
+import { Route as NoteEditIdRouteImport } from './routes/note/edit.$id'
+import { Route as NoteViewIdRouteImport } from './routes/note/view.$id'
+import { Route as SalaryCategoriesIndexRouteImport } from './routes/salary/categories/index'
+import { Route as SalaryCategoriesAddRouteImport } from './routes/salary/categories/add'
+import { Route as SalaryTransactionsIndexRouteImport } from './routes/salary/transactions/index'
+import { Route as SettingsCurrencyIndexRouteImport } from './routes/settings/currency/index'
+import { Route as SettingsSecurityPinRouteImport } from './routes/settings/security/pin'
+import { Route as SettingsWalletsIndexRouteImport } from './routes/settings/wallets/index'
+import { Route as SettingsWalletsAddRouteImport } from './routes/settings/wallets/add'
 import { Route as ExpenseCategoriesEditIdRouteImport } from './routes/expense/categories/edit.$id'
+import { Route as ExpenseTransactionsEditIdRouteImport } from './routes/expense/transactions/edit.$id'
+import { Route as SalaryCategoriesEditIdRouteImport } from './routes/salary/categories/edit.$id'
+import { Route as SalaryTransactionsEditIdRouteImport } from './routes/salary/transactions/edit.$id'
+import { Route as SettingsWalletsEditIdRouteImport } from './routes/settings/wallets/edit.$id'
 
-const WelcomeRoute = WelcomeRouteImport.update({
-  id: '/welcome',
-  path: '/welcome',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TodoIndexRoute = TodoIndexRouteImport.update({
-  id: '/todo/',
-  path: '/todo/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsIndexRoute = SettingsIndexRouteImport.update({
-  id: '/settings/',
-  path: '/settings/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SalaryIndexRoute = SalaryIndexRouteImport.update({
-  id: '/salary/',
-  path: '/salary/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileIndexRoute = ProfileIndexRouteImport.update({
-  id: '/profile/',
-  path: '/profile/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NoteIndexRoute = NoteIndexRouteImport.update({
-  id: '/note/',
-  path: '/note/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExpenseIndexRoute = ExpenseIndexRouteImport.update({
-  id: '/expense/',
-  path: '/expense/',
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BudgetIndexRoute = BudgetIndexRouteImport.update({
@@ -88,29 +58,9 @@ const BudgetIndexRoute = BudgetIndexRouteImport.update({
   path: '/budget/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TodoCategoriesRoute = TodoCategoriesRouteImport.update({
-  id: '/todo/categories',
-  path: '/todo/categories',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TodoAddRoute = TodoAddRouteImport.update({
-  id: '/todo/add',
-  path: '/todo/add',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SalaryAddRoute = SalaryAddRouteImport.update({
-  id: '/salary/add',
-  path: '/salary/add',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileEditRoute = ProfileEditRouteImport.update({
-  id: '/profile/edit',
-  path: '/profile/edit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NoteAddRoute = NoteAddRouteImport.update({
-  id: '/note/add',
-  path: '/note/add',
+const ExpenseIndexRoute = ExpenseIndexRouteImport.update({
+  id: '/expense/',
+  path: '/expense/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExpenseAddRoute = ExpenseAddRouteImport.update({
@@ -118,24 +68,69 @@ const ExpenseAddRoute = ExpenseAddRouteImport.update({
   path: '/expense/add',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsWalletsIndexRoute = SettingsWalletsIndexRouteImport.update({
-  id: '/settings/wallets/',
-  path: '/settings/wallets/',
+const NoteIndexRoute = NoteIndexRouteImport.update({
+  id: '/note/',
+  path: '/note/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsCurrencyIndexRoute = SettingsCurrencyIndexRouteImport.update({
-  id: '/settings/currency/',
-  path: '/settings/currency/',
+const NoteAddRoute = NoteAddRouteImport.update({
+  id: '/note/add',
+  path: '/note/add',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SalaryTransactionsIndexRoute = SalaryTransactionsIndexRouteImport.update({
-  id: '/salary/transactions/',
-  path: '/salary/transactions/',
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SalaryCategoriesIndexRoute = SalaryCategoriesIndexRouteImport.update({
-  id: '/salary/categories/',
-  path: '/salary/categories/',
+const ProfileEditRoute = ProfileEditRouteImport.update({
+  id: '/profile/edit',
+  path: '/profile/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalaryIndexRoute = SalaryIndexRouteImport.update({
+  id: '/salary/',
+  path: '/salary/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalaryAddRoute = SalaryAddRouteImport.update({
+  id: '/salary/add',
+  path: '/salary/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TodoIndexRoute = TodoIndexRouteImport.update({
+  id: '/todo/',
+  path: '/todo/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TodoAddRoute = TodoAddRouteImport.update({
+  id: '/todo/add',
+  path: '/todo/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TodoCategoriesRoute = TodoCategoriesRouteImport.update({
+  id: '/todo/categories',
+  path: '/todo/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BudgetEditIndexRoute = BudgetEditIndexRouteImport.update({
+  id: '/budget/edit/',
+  path: '/budget/edit/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpenseCategoriesIndexRoute = ExpenseCategoriesIndexRouteImport.update({
+  id: '/expense/categories/',
+  path: '/expense/categories/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpenseCategoriesAddRoute = ExpenseCategoriesAddRouteImport.update({
+  id: '/expense/categories/add',
+  path: '/expense/categories/add',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExpenseTransactionsIndexRoute =
@@ -144,29 +139,9 @@ const ExpenseTransactionsIndexRoute =
     path: '/expense/transactions/',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ExpenseCategoriesIndexRoute = ExpenseCategoriesIndexRouteImport.update({
-  id: '/expense/categories/',
-  path: '/expense/categories/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BudgetEditIndexRoute = BudgetEditIndexRouteImport.update({
-  id: '/budget/edit/',
-  path: '/budget/edit/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsWalletsAddRoute = SettingsWalletsAddRouteImport.update({
-  id: '/settings/wallets/add',
-  path: '/settings/wallets/add',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsSecurityPinRoute = SettingsSecurityPinRouteImport.update({
-  id: '/settings/security/pin',
-  path: '/settings/security/pin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SalaryCategoriesAddRoute = SalaryCategoriesAddRouteImport.update({
-  id: '/salary/categories/add',
-  path: '/salary/categories/add',
+const NoteEditIdRoute = NoteEditIdRouteImport.update({
+  id: '/note/edit/$id',
+  path: '/note/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NoteViewIdRoute = NoteViewIdRouteImport.update({
@@ -174,30 +149,44 @@ const NoteViewIdRoute = NoteViewIdRouteImport.update({
   path: '/note/view/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NoteEditIdRoute = NoteEditIdRouteImport.update({
-  id: '/note/edit/$id',
-  path: '/note/edit/$id',
+const SalaryCategoriesIndexRoute = SalaryCategoriesIndexRouteImport.update({
+  id: '/salary/categories/',
+  path: '/salary/categories/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExpenseCategoriesAddRoute = ExpenseCategoriesAddRouteImport.update({
-  id: '/expense/categories/add',
-  path: '/expense/categories/add',
+const SalaryCategoriesAddRoute = SalaryCategoriesAddRouteImport.update({
+  id: '/salary/categories/add',
+  path: '/salary/categories/add',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SettingsWalletsEditIdRoute = SettingsWalletsEditIdRouteImport.update({
-  id: '/settings/wallets/edit/$id',
-  path: '/settings/wallets/edit/$id',
+const SalaryTransactionsIndexRoute = SalaryTransactionsIndexRouteImport.update({
+  id: '/salary/transactions/',
+  path: '/salary/transactions/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SalaryTransactionsEditIdRoute =
-  SalaryTransactionsEditIdRouteImport.update({
-    id: '/salary/transactions/edit/$id',
-    path: '/salary/transactions/edit/$id',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const SalaryCategoriesEditIdRoute = SalaryCategoriesEditIdRouteImport.update({
-  id: '/salary/categories/edit/$id',
-  path: '/salary/categories/edit/$id',
+const SettingsCurrencyIndexRoute = SettingsCurrencyIndexRouteImport.update({
+  id: '/settings/currency/',
+  path: '/settings/currency/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsSecurityPinRoute = SettingsSecurityPinRouteImport.update({
+  id: '/settings/security/pin',
+  path: '/settings/security/pin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsWalletsIndexRoute = SettingsWalletsIndexRouteImport.update({
+  id: '/settings/wallets/',
+  path: '/settings/wallets/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsWalletsAddRoute = SettingsWalletsAddRouteImport.update({
+  id: '/settings/wallets/add',
+  path: '/settings/wallets/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpenseCategoriesEditIdRoute = ExpenseCategoriesEditIdRouteImport.update({
+  id: '/expense/categories/edit/$id',
+  path: '/expense/categories/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExpenseTransactionsEditIdRoute =
@@ -206,9 +195,20 @@ const ExpenseTransactionsEditIdRoute =
     path: '/expense/transactions/edit/$id',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ExpenseCategoriesEditIdRoute = ExpenseCategoriesEditIdRouteImport.update({
-  id: '/expense/categories/edit/$id',
-  path: '/expense/categories/edit/$id',
+const SalaryCategoriesEditIdRoute = SalaryCategoriesEditIdRouteImport.update({
+  id: '/salary/categories/edit/$id',
+  path: '/salary/categories/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SalaryTransactionsEditIdRoute =
+  SalaryTransactionsEditIdRouteImport.update({
+    id: '/salary/transactions/edit/$id',
+    path: '/salary/transactions/edit/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SettingsWalletsEditIdRoute = SettingsWalletsEditIdRouteImport.update({
+  id: '/settings/wallets/edit/$id',
+  path: '/settings/wallets/edit/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -464,13 +464,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/welcome': {
-      id: '/welcome'
-      path: '/welcome'
-      fullPath: '/welcome'
-      preLoaderRoute: typeof WelcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -478,46 +471,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/todo/': {
-      id: '/todo/'
-      path: '/todo'
-      fullPath: '/todo/'
-      preLoaderRoute: typeof TodoIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/': {
-      id: '/settings/'
-      path: '/settings'
-      fullPath: '/settings/'
-      preLoaderRoute: typeof SettingsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/salary/': {
-      id: '/salary/'
-      path: '/salary'
-      fullPath: '/salary/'
-      preLoaderRoute: typeof SalaryIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile/': {
-      id: '/profile/'
-      path: '/profile'
-      fullPath: '/profile/'
-      preLoaderRoute: typeof ProfileIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/note/': {
-      id: '/note/'
-      path: '/note'
-      fullPath: '/note/'
-      preLoaderRoute: typeof NoteIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/expense/': {
-      id: '/expense/'
-      path: '/expense'
-      fullPath: '/expense/'
-      preLoaderRoute: typeof ExpenseIndexRouteImport
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/budget/': {
@@ -527,39 +485,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BudgetIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/todo/categories': {
-      id: '/todo/categories'
-      path: '/todo/categories'
-      fullPath: '/todo/categories'
-      preLoaderRoute: typeof TodoCategoriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/todo/add': {
-      id: '/todo/add'
-      path: '/todo/add'
-      fullPath: '/todo/add'
-      preLoaderRoute: typeof TodoAddRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/salary/add': {
-      id: '/salary/add'
-      path: '/salary/add'
-      fullPath: '/salary/add'
-      preLoaderRoute: typeof SalaryAddRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile/edit': {
-      id: '/profile/edit'
-      path: '/profile/edit'
-      fullPath: '/profile/edit'
-      preLoaderRoute: typeof ProfileEditRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/note/add': {
-      id: '/note/add'
-      path: '/note/add'
-      fullPath: '/note/add'
-      preLoaderRoute: typeof NoteAddRouteImport
+    '/expense/': {
+      id: '/expense/'
+      path: '/expense'
+      fullPath: '/expense/'
+      preLoaderRoute: typeof ExpenseIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/expense/add': {
@@ -569,46 +499,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpenseAddRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/wallets/': {
-      id: '/settings/wallets/'
-      path: '/settings/wallets'
-      fullPath: '/settings/wallets/'
-      preLoaderRoute: typeof SettingsWalletsIndexRouteImport
+    '/note/': {
+      id: '/note/'
+      path: '/note'
+      fullPath: '/note/'
+      preLoaderRoute: typeof NoteIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/currency/': {
-      id: '/settings/currency/'
-      path: '/settings/currency'
-      fullPath: '/settings/currency/'
-      preLoaderRoute: typeof SettingsCurrencyIndexRouteImport
+    '/note/add': {
+      id: '/note/add'
+      path: '/note/add'
+      fullPath: '/note/add'
+      preLoaderRoute: typeof NoteAddRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/salary/transactions/': {
-      id: '/salary/transactions/'
-      path: '/salary/transactions'
-      fullPath: '/salary/transactions/'
-      preLoaderRoute: typeof SalaryTransactionsIndexRouteImport
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/salary/categories/': {
-      id: '/salary/categories/'
-      path: '/salary/categories'
-      fullPath: '/salary/categories/'
-      preLoaderRoute: typeof SalaryCategoriesIndexRouteImport
+    '/profile/edit': {
+      id: '/profile/edit'
+      path: '/profile/edit'
+      fullPath: '/profile/edit'
+      preLoaderRoute: typeof ProfileEditRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/expense/transactions/': {
-      id: '/expense/transactions/'
-      path: '/expense/transactions'
-      fullPath: '/expense/transactions/'
-      preLoaderRoute: typeof ExpenseTransactionsIndexRouteImport
+    '/salary/': {
+      id: '/salary/'
+      path: '/salary'
+      fullPath: '/salary/'
+      preLoaderRoute: typeof SalaryIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/expense/categories/': {
-      id: '/expense/categories/'
-      path: '/expense/categories'
-      fullPath: '/expense/categories/'
-      preLoaderRoute: typeof ExpenseCategoriesIndexRouteImport
+    '/salary/add': {
+      id: '/salary/add'
+      path: '/salary/add'
+      fullPath: '/salary/add'
+      preLoaderRoute: typeof SalaryAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/': {
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/todo/': {
+      id: '/todo/'
+      path: '/todo'
+      fullPath: '/todo/'
+      preLoaderRoute: typeof TodoIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/todo/add': {
+      id: '/todo/add'
+      path: '/todo/add'
+      fullPath: '/todo/add'
+      preLoaderRoute: typeof TodoAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/todo/categories': {
+      id: '/todo/categories'
+      path: '/todo/categories'
+      fullPath: '/todo/categories'
+      preLoaderRoute: typeof TodoCategoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/budget/edit/': {
@@ -618,39 +576,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BudgetEditIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/wallets/add': {
-      id: '/settings/wallets/add'
-      path: '/settings/wallets/add'
-      fullPath: '/settings/wallets/add'
-      preLoaderRoute: typeof SettingsWalletsAddRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/security/pin': {
-      id: '/settings/security/pin'
-      path: '/settings/security/pin'
-      fullPath: '/settings/security/pin'
-      preLoaderRoute: typeof SettingsSecurityPinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/salary/categories/add': {
-      id: '/salary/categories/add'
-      path: '/salary/categories/add'
-      fullPath: '/salary/categories/add'
-      preLoaderRoute: typeof SalaryCategoriesAddRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/note/view/$id': {
-      id: '/note/view/$id'
-      path: '/note/view/$id'
-      fullPath: '/note/view/$id'
-      preLoaderRoute: typeof NoteViewIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/note/edit/$id': {
-      id: '/note/edit/$id'
-      path: '/note/edit/$id'
-      fullPath: '/note/edit/$id'
-      preLoaderRoute: typeof NoteEditIdRouteImport
+    '/expense/categories/': {
+      id: '/expense/categories/'
+      path: '/expense/categories'
+      fullPath: '/expense/categories/'
+      preLoaderRoute: typeof ExpenseCategoriesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/expense/categories/add': {
@@ -660,25 +590,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpenseCategoriesAddRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/settings/wallets/edit/$id': {
-      id: '/settings/wallets/edit/$id'
-      path: '/settings/wallets/edit/$id'
-      fullPath: '/settings/wallets/edit/$id'
-      preLoaderRoute: typeof SettingsWalletsEditIdRouteImport
+    '/expense/transactions/': {
+      id: '/expense/transactions/'
+      path: '/expense/transactions'
+      fullPath: '/expense/transactions/'
+      preLoaderRoute: typeof ExpenseTransactionsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/salary/transactions/edit/$id': {
-      id: '/salary/transactions/edit/$id'
-      path: '/salary/transactions/edit/$id'
-      fullPath: '/salary/transactions/edit/$id'
-      preLoaderRoute: typeof SalaryTransactionsEditIdRouteImport
+    '/note/edit/$id': {
+      id: '/note/edit/$id'
+      path: '/note/edit/$id'
+      fullPath: '/note/edit/$id'
+      preLoaderRoute: typeof NoteEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/salary/categories/edit/$id': {
-      id: '/salary/categories/edit/$id'
-      path: '/salary/categories/edit/$id'
-      fullPath: '/salary/categories/edit/$id'
-      preLoaderRoute: typeof SalaryCategoriesEditIdRouteImport
+    '/note/view/$id': {
+      id: '/note/view/$id'
+      path: '/note/view/$id'
+      fullPath: '/note/view/$id'
+      preLoaderRoute: typeof NoteViewIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salary/categories/': {
+      id: '/salary/categories/'
+      path: '/salary/categories'
+      fullPath: '/salary/categories/'
+      preLoaderRoute: typeof SalaryCategoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salary/categories/add': {
+      id: '/salary/categories/add'
+      path: '/salary/categories/add'
+      fullPath: '/salary/categories/add'
+      preLoaderRoute: typeof SalaryCategoriesAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salary/transactions/': {
+      id: '/salary/transactions/'
+      path: '/salary/transactions'
+      fullPath: '/salary/transactions/'
+      preLoaderRoute: typeof SalaryTransactionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/currency/': {
+      id: '/settings/currency/'
+      path: '/settings/currency'
+      fullPath: '/settings/currency/'
+      preLoaderRoute: typeof SettingsCurrencyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/security/pin': {
+      id: '/settings/security/pin'
+      path: '/settings/security/pin'
+      fullPath: '/settings/security/pin'
+      preLoaderRoute: typeof SettingsSecurityPinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/wallets/': {
+      id: '/settings/wallets/'
+      path: '/settings/wallets'
+      fullPath: '/settings/wallets/'
+      preLoaderRoute: typeof SettingsWalletsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/wallets/add': {
+      id: '/settings/wallets/add'
+      path: '/settings/wallets/add'
+      fullPath: '/settings/wallets/add'
+      preLoaderRoute: typeof SettingsWalletsAddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expense/categories/edit/$id': {
+      id: '/expense/categories/edit/$id'
+      path: '/expense/categories/edit/$id'
+      fullPath: '/expense/categories/edit/$id'
+      preLoaderRoute: typeof ExpenseCategoriesEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/expense/transactions/edit/$id': {
@@ -688,11 +674,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpenseTransactionsEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/expense/categories/edit/$id': {
-      id: '/expense/categories/edit/$id'
-      path: '/expense/categories/edit/$id'
-      fullPath: '/expense/categories/edit/$id'
-      preLoaderRoute: typeof ExpenseCategoriesEditIdRouteImport
+    '/salary/categories/edit/$id': {
+      id: '/salary/categories/edit/$id'
+      path: '/salary/categories/edit/$id'
+      fullPath: '/salary/categories/edit/$id'
+      preLoaderRoute: typeof SalaryCategoriesEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/salary/transactions/edit/$id': {
+      id: '/salary/transactions/edit/$id'
+      path: '/salary/transactions/edit/$id'
+      fullPath: '/salary/transactions/edit/$id'
+      preLoaderRoute: typeof SalaryTransactionsEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/wallets/edit/$id': {
+      id: '/settings/wallets/edit/$id'
+      path: '/settings/wallets/edit/$id'
+      fullPath: '/settings/wallets/edit/$id'
+      preLoaderRoute: typeof SettingsWalletsEditIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

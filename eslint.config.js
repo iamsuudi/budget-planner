@@ -16,6 +16,12 @@ export default [
     },
   },
   {
-    ignores: ['eslint.config.js', 'prettier.config.js'],
+    ignores: [
+      'eslint.config.js',
+      'prettier.config.js',
+      'generate-version.js',
+      'public/generate-sw.js',
+      'src/sw-template.js',
+    ],
   },
 ]

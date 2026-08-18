@@ -236,15 +236,6 @@ function TodoIndex() {
     })
   }
 
-  const scroll = (dir: 'left' | 'right') => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: dir === 'left' ? -200 : 200,
-        behavior: 'smooth',
-      })
-    }
-  }
-
   const sortedTasks = [...getFilteredTasks()].sort(
     (a, b) => a.priority - b.priority || a.name.localeCompare(b.name),
   )

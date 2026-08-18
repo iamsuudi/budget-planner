@@ -6,7 +6,6 @@ import {
   useGetWallets,
 } from '#/hooks/query'
 import { getActiveCurrency } from '#/lib/currency'
-import { useMonth } from '#/lib/month-context'
 import { Page } from '#/components/Page'
 import { TopAppBar } from '#/components/TopAppBar'
 import { Icon } from '#/components/Icon'

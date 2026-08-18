@@ -57,7 +57,6 @@ export function MonthProvider({ children }: { children: ReactNode }) {
   })
 
   const setCurrentMonth = (year: number, month: number) => {
-    const date = new Date(year, month - 1, 1)
     const selectedDate = `${year}-${String(month).padStart(2, '0')}-01`
     setCurrentMonthState({
       year,
