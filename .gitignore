@@ -17,3 +17,6 @@ src/version.ts
 # Local Netlify folder
 .netlify
 bun.lock
+Minerva.md
+tasks.md
+proposal.md
