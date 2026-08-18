@@ -12,10 +12,8 @@ dist-ssr
 __unconfig*
 todos.json
 design
-src/sw-template*.js
-public/generate-sw*.js
-generate-version.js
 src/version.ts
 
 # Local Netlify folder
 .netlify
+bun.lock
